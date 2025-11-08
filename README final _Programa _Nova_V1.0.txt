@@ -73,9 +73,28 @@ Las próximas versiones incluirán navegación avanzada, personalización de est
 Si el navegador muestra una versión anterior, usa Ctrl + F5 para refrescar la caché.
 
 ---
+---
+
+## 🧪 MODO DEMO INTERACTIVO
+
+El **Programa Nova V1.0** incluye un entorno de demostración especialmente diseñado para mostrar su funcionalidad sin riesgo de alteraciones.
+
+### 🎯 Objetivo  
+Permitir que posibles clientes, evaluadores o testers visualicen la interfaz completa del generador **sin modificar el contenido original**.
+
+### ⚙️ Funcionamiento  
+- Todos los **campos de texto, botones y formularios** aparecen visibles pero **bloqueados**.  
+- En la esquina superior derecha se muestra una **cinta roja "DEMO"** indicando el modo activo.  
+- Este modo se activa automáticamente cuando se accede al sitio mediante la siguiente URL:  
+  🔗 **[https://pmongeholgado.github.io/programanova/?demo=1](https://pmongeholgado.github.io/programanova/?demo=1)**
+
+### 🔑 Acceso de autor  
+El desarrollador (o evaluador autorizado) puede ingresar temporalmente al modo normal utilizando la siguiente clave en la URL:
+
 
 CRÉDITOS  
 © 2025 Nova & Pablo Monge  
 Todos los derechos reservados.
+
 
 
