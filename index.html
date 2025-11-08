@@ -357,9 +357,28 @@ document.addEventListener('DOMContentLoaded', function() {
   console.log("🔒 MODO DEMO activo: interacción bloqueada.");
 });
 </script>
+<!-- 🔑 Script de acceso de autor -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const claveAcceso = "nova2025"; // Cambia esta palabra si lo deseas
+  const urlParams = new URLSearchParams(window.location.search);
+  const acceso = urlParams.get('key');
+
+  if (acceso === claveAcceso) {
+    // Reactiva los formularios y botones
+    document.querySelectorAll('input, textarea, select, button').forEach(function(elem) {
+      elem.disabled = false;
+      elem.style.opacity = '1';
+      elem.style.cursor = 'auto';
+    });
+    console.log("✅ Acceso de autor activado: modo normal restaurado.");
+  }
+});
+</script>
 
 </body>
 </html>
+
 
 
 
