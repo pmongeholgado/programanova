@@ -72,7 +72,58 @@
     right: 12px;
     background: #111827;
     color: #fff;
-    padding: 10px 14px;
+    padding: 10px 14px;<script>
+(function(){
+  // Activa la demo si la URL tiene ?demo=1
+  const DEMO = new URLSearchParams(location.search).get('demo') === '1';
+  if(!DEMO) return;
+
+  // 1) Cinta "DEMO" visual
+  const rb = document.createElement('div');
+  rb.className = 'demo-ribbon';
+  rb.textContent = 'DEMO';
+  document.body.appendChild(rb);
+
+  // 2) Aviso inferior
+  const toast = document.createElement('div');
+  toast.className = 'demo-toast';
+  toast.innerHTML = '<b>Demo activa</b>: edición limitada y datos de ejemplo precargados.';
+  document.body.appendChild(toast);
+  setTimeout(()=>toast.remove(),7000);
+
+  // 3) Precargar y bloquear el Brief (primer <textarea>)
+  const tx = document.querySelector('textarea');
+  if (tx){
+    tx.value = 'Presentación del módulo "Generador IA Orquestadora – Presentaciones" para stakeholders.';
+    tx.setAttribute('readonly','true');
+    tx.style.background = '#f9fafb';
+  }
+
+  // 4) Desactivar botones por su texto visible
+  const disableByText = (txt) => {
+    [...document.querySelectorAll('button, a, input[type=button], input[type=submit]')]
+      .forEach(el=>{
+        const t = (el.textContent||el.value||'').trim().toLowerCase();
+        if (t === txt.toLowerCase()){
+          el.setAttribute('disabled','true');
+          el.title = 'Deshabilitado en modo demo';
+        }
+      });
+  };
+  disableByText('Exportar');
+  disableByText('Aplicar Brief a estructura');
+
+  // 5) Simular envío del formulario: ir a gracias.html (sin envío real)
+  const form = document.querySelector('form');
+  if (form){
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      location.href = 'gracias.html?demo=1';
+    }, {once:true});
+  }
+})();
+</script>
+
     border-radius: 10px;
     box-shadow: 0 8px 24px rgba(0,0,0,.25);
     font-size: .92rem;
@@ -268,6 +319,7 @@
   </script>
 </body>
 </html>
+
 
 
 
