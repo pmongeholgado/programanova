@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Programa Nova — Generador IA Orquestadora — README Estético (V1.0)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* ====== Estilo base (A4 / impresión) ====== */
+    @page { size: A4; margin: 18mm; }
+    :root{
+      --azul:#1f6feb;
+      --azul-osc:#0f4fb3;
+      --gris:#6b7280;
+      --gris-claro:#e5e7eb;
+      --negro:#111827;
+      --bg:#ffffff;
+    }
+    html,body{ background:#fff; color:var(--negro); font-family:-apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", system-ui, sans-serif; }
+    h1,h2,h3{ color:var(--azul-osc); margin: 0 0 8px; }
+    h1{ font-size: 28px; letter-spacing:.2px; }
+    h2{ font-size: 20px; margin-top: 22px; }
+    h3{ font-size: 16px; color:#0f172a; margin-top: 16px; }
+    p,li{ line-height:1.55; font-size: 12.5pt; color:#1f2937; }
+    .small{ font-size: 10.5pt; color:var(--gris); }
+    .muted{ color:var(--gris); }
+
+    .page{
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0;
+      background: var(--bg);
+    }
+
+    /* ====== Cabecera / Portada ====== */
+    .portada{
+      border:1px solid var(--gris-claro);
+      border-radius:10px;
+      padding:22px 22px 18px;
+      margin: 0 0 18px;
+      background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+    }
+    .marca{
+      display:flex; align-items:center; gap:12px; margin-bottom:8px;
+    }
+    .marca-badge{
+      width:40px;height:40px;border-radius:10px;
+      background:var(--azul);
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-weight:700;letter-spacing:.6px;
+      box-shadow:0 6px 18px rgba(31,111,235,.28);
+    }
+    .subt{ color:var(--gris); margin:6px 0 0; }
+    .chip{
+      display:inline-block; font-size:11.5px; color:#0f4fb3; 
+      background:#eaf2ff; padding:3px 8px; border-radius:999px; border:1px solid #dbe7ff;
+      margin-right:6px;
+    }
+    .boton{
+      display:inline-block; margin-top:8px; 
+      background:var(--azul); color:#fff; text-decoration:none; 
+      padding:10px 14px; border-radius:10px; font-weight:600; font-size:13px;
+      border:1px solid #165ed6;
+    }
+    .boton:hover{ background:var(--azul-osc); }
+
+    /* ====== Tarjetas ====== */
+    .card{
+      border:1px solid var(--gris-claro);
+      border-radius:10px; padding:16px 18px; margin: 12px 0;
+      background:#fff;
+    }
+    .kv{ display:flex; gap:14px; flex-wrap:wrap; }
+    .kv > div{ flex:1; min-width: 220px; background:#fbfdff; border:1px dashed #d6e6ff; border-radius:8px; padding:10px 12px; }
+    .kv b{ color:#0f4fb3; }
+
+    /* ====== Tablas limpias ====== */
+    table{ width:100%; border-collapse:collapse; margin: 6px 0 12px; }
+    th, td{ border:1px solid #e8ecf5; padding:8px 10px; font-size: 12.5pt; text-align:left; }
+    th{ background:#f3f6ff; color:#0f4fb3; font-weight:600; }
+    .t-micro td{ font-size:11pt; }
+
+    /* ====== Footer ====== */
+    .footer{
+      border-top:1px solid var(--gris-claro); margin-top: 18px; padding-top: 12px;
+      display:flex; justify-content:space-between; gap:16px; align-items:center;
+    }
+    .ribbon-demo{
+      position:fixed; right:-36px; top:22px; transform:rotate(45deg);
+      background:#e11d48; color:#fff; padding:6px 56px; font-weight:800; letter-spacing:1px; 
+      font-size:12px; box-shadow:0 6px 14px rgba(225,29,72,.25);
+    }
+    @media print{
+      .btns{ display:none !important; }
+      a{ color:#0f4fb3; text-decoration:none; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Portada -->
+  <div class="portada">
+    <div class="marca">
+      <div class="marca-badge">N</div>
+      <div>
+        <h1>Programa Nova — Generador IA Orquestadora</h1>
+        <p class="subt">README Estético · Versión 1.0 · Co-creación Humano + IA</p>
+        <div class="small">
+          <span class="chip">⚙️ Interfaz Fija</span>
+          <span class="chip">🌐 Demo Pública</span>
+          <span class="chip">🧠 IA Orquestadora</span>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      Herramienta ligera para generar y presentar contenidos a partir de un <b>brief</b> con estructura, pestañas de navegación y <b>guía hablada</b>. 
+      Orientado a <i>presentaciones rápidas</i> ante clientes, evaluación o difusión.
+    </p>
+
+    <div class="btns">
+      <a class="boton" href="https://pmongeholgado.github.io/programanova/?demo=1" target="_blank">🔎 Ver DEMO Pública</a>
+      <a class="boton" style="background:#111827;border-color:#111827" href="https://github.com/pmongeholgado/programanova" target="_blank">📁 Repositorio en GitHub</a>
+    </div>
+  </div>
+
+  <!-- Resumen Ejecutivo -->
+  <div class="card">
+    <h2>Resumen ejecutivo</h2>
+    <p>
+      <b>Programa Nova V1.0</b> es un módulo de presentación orquestado por IA que permite 
+      estructurar un discurso a partir de un brief simple, con pestañas <i>Brief · Estilo · Estructura · Slides</i>
+      y reproducción guiada. Incluye <b>modo DEMO público</b> (sin interacción) y <b>clave de autor</b> 
+      para activar el modo normal cuando el creador lo requiera.
+    </p>
+    <div class="kv">
+      <div><b>Estado:</b> V1.0 Estable — interfaz fija, sin scripts dinámicos pesados.</div>
+      <div><b>Actualización:</b> 08 / noviembre / 2025</div>
+      <div><b>Autores:</b> Nova & Pablo Monge</div>
+    </div>
+  </div>
+
+  <!-- Características -->
+  <div class="card">
+    <h2>Características clave</h2>
+    <ul>
+      <li>🎛️ Navegación por pestañas con secciones: <b>Brief / Estilo / Estructura / Slides</b>.</li>
+      <li>🗣️ Reproductor de guía hablada para presentación asistida.</li>
+      <li>🧪 <b>Modo DEMO</b> público: campos visibles pero bloqueados.</li>
+      <li>🔑 <b>Acceso de autor</b> por clave en URL para restaurar la interacción completa.</li>
+      <li>🧩 Código limpio (HTML/CSS/JS), ligero y fácil de versionar.</li>
+      <li>🌐 Publicación gratuita en GitHub Pages.</li>
+    </ul>
+  </div>
+
+  <!-- Demo y Acceso -->
+  <div class="card">
+    <h2>Modo DEMO y acceso de autor</h2>
+    <table class="t-micro">
+      <tr>
+        <th>DEMO pública (bloqueada)</th>
+        <td><a href="https://pmongeholgado.github.io/programanova/?demo=1" target="_blank">https://pmongeholgado.github.io/programanova/?demo=1</a></td>
+      </tr>
+      <tr>
+        <th>Acceso de autor (interacción completa)</th>
+        <td><code>?demo=1&key=nova2025</code> → <a href="https://pmongeholgado.github.io/programanova/?demo=1&key=nova2025" target="_blank">probar enlace</a></td>
+      </tr>
+    </table>
+    <p class="small muted">
+      La clave puede cambiarse en <b>index.html</b> (bloque “Script de acceso de autor” al final).
+    </p>
+  </div>
+
+  <!-- Requisitos -->
+  <div class="card">
+    <h2>Requisitos y publicación</h2>
+    <ul>
+      <li>Windows 10 u 11 (64 bits).</li>
+      <li>Publicación mediante GitHub Pages (gratuito).</li>
+      <li>Para entorno local con servidor simple: Python 3.8+ opcional (<code>python -m http.server 8080</code>).</li>
+    </ul>
+  </div>
+
+  <!-- Documentación / HITO -->
+  <div class="card">
+    <h2>Documentación y registro de coautoría</h2>
+    <p>Este proyecto cuenta con documentación técnica y marca histórica de co-creación:</p>
+    <ul>
+      <li><b>README Final</b>: especificaciones, distribución y uso.</li>
+      <li><b>HITO_HUMANO_IA.md</b>: registro oficial de coautoría humano + IA.</li>
+    </ul>
+    <p class="small">
+      • HITO: <a href="./HITO_HUMANO_IA.md">./HITO_HUMANO_IA.md</a> · README final en repositorio.  
+    </p>
+  </div>
+
+  <!-- Licencia / Créditos -->
+  <div class="card">
+    <h2>Créditos y licencia</h2>
+    <p><b>© 2025 Nova & Pablo Monge</b> — Todos los derechos reservados.</p>
+    <p class="small muted">
+      Co-creación humana + inteligencia artificial: unión entre lógica y creatividad.  
+      El material puede emplearse para demostración, registro y difusión con atribución correspondiente.
+    </p>
+  </div>
+
+  <div class="footer small">
+    <div>Programa Nova — Generador IA Orquestadora · V1.0</div>
+    <div class="muted">Repo: github.com/pmongeholgado/programanova</div>
+  </div>
+
+  <div class="ribbon-demo">DEMO</div>
+</div>
+</body>
+</html>
