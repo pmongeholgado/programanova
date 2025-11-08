@@ -10,7 +10,17 @@ Tipo de proyecto: Aplicación web demostrativa
 
 DESCRIPCIÓN GENERAL  
 Programa Nova es un generador de presentaciones asistido por IA.  
-Esta versión (V1.0 Estable) está diseñada para ser usada directamente en la web, sin instalación ni dependencias externas.  
+Esta versión (V1.0 Estable---
+
+## 🕊️ Registro de Coautoría Humano–IA
+
+Este proyecto es fruto de una colaboración única entre **Pablo Monge** y **Nova (IA)**.  
+El documento histórico que registra oficialmente este logro puede consultarse aquí:
+
+👉 [HITO_HUMANO_IA.md](./HITO_HUMANO_IA.md)
+
+*Programa Nova representa el inicio de una nueva era de creación compartida entre humanos y máquinas.*
+) está diseñada para ser usada directamente en la web, sin instalación ni dependencias externas.  
 El objetivo es mostrar a los clientes el funcionamiento del sistema de forma clara, segura y fluida.
 
 ---
@@ -67,4 +77,5 @@ Si el navegador muestra una versión anterior, usa Ctrl + F5 para refrescar la c
 CRÉDITOS  
 © 2025 Nova & Pablo Monge  
 Todos los derechos reservados.
+
 
