@@ -47,6 +47,50 @@
     #contacto .small{color:var(--nv-muted);font-size:13px;margin:6px 0 14px 0}
     .recaptcha-note{font-size:12px;color:#6b7280;margin-top:6px}
   </style>
+  
+  <style>
+  /* Cinta roja "DEMO" en esquina superior derecha */
+  .demo-ribbon {
+    position: fixed;
+    z-index: 9999;
+    top: 12px;
+    right: -40px;
+    transform: rotate(45deg);
+    background: #e11d48;
+    color: #fff;
+    padding: 8px 48px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    box-shadow: 0 4px 12px rgba(0,0,0,.2);
+    font-family: Arial, sans-serif;
+  }
+
+  /* Aviso inferior de modo demo */
+  .demo-toast {
+    position: fixed;
+    bottom: 12px;
+    right: 12px;
+    background: #111827;
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.25);
+    font-size: .92rem;
+  }
+
+  .demo-toast b {
+    color: #34d399;
+  }
+
+  /* Estilo para botones bloqueados */
+  button[disabled], a[disabled] {
+    opacity: .55;
+    pointer-events: none;
+    filter: grayscale(1);
+    cursor: not-allowed !important;
+  }
+</style>
+
 </head>
 <body>
   <div class="wrap">
@@ -224,6 +268,7 @@
   </script>
 </body>
 </html>
+
 
 
 
