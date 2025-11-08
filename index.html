@@ -336,9 +336,31 @@
   pointer-events: none;
 }
 </style>
+<!-- Script MODO DEMO: bloquea formularios y botones -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Bloquear todos los inputs, textareas y selects
+  document.querySelectorAll('input, textarea, select').forEach(function(elem) {
+    elem.disabled = true;
+    elem.style.opacity = '0.6';
+    elem.style.cursor = 'not-allowed';
+  });
+
+  // Bloquear todos los botones
+  document.querySelectorAll('button, input[type="submit"]').forEach(function(btn) {
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+    btn.style.cursor = 'not-allowed';
+  });
+
+  // Aviso en consola
+  console.log("🔒 MODO DEMO activo: interacción bloqueada.");
+});
+</script>
 
 </body>
 </html>
+
 
 
 
