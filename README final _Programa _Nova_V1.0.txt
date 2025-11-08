@@ -90,11 +90,20 @@ Permitir que posibles clientes, evaluadores o testers visualicen la interfaz com
 
 ### 🔑 Acceso de autor  
 El desarrollador (o evaluador autorizado) puede ingresar temporalmente al modo normal utilizando la siguiente clave en la URL:
+---
+
+## 📘 Documento Oficial Estético
+
+El archivo PDF con la versión estética y visual de este README puede descargarse aquí:  
+👉 [Descargar README Estético (PDF)](./README_Estetico_Programa_Nova_V1.0.pdf)
+
+---
 
 
 CRÉDITOS  
 © 2025 Nova & Pablo Monge  
 Todos los derechos reservados.
+
 
 
 
