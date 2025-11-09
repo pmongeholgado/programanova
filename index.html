@@ -205,12 +205,24 @@
     <footer>
       © 2025 Nova & Pablo Monge — Todos los derechos reservados ·
       <a href="registro_historico_coautoria.html">Registro histórico de coautoría</a>
-    </footer>
-  </main>
+      <br><br>
+      👁️ Visitas: <span id="contador">Cargando...</span>
+  
+  <script>
+    async function contarVisitas() {
+      const url = "https://api.countapi.xyz/hit/programa-nova-presentaciones/visitas";
+      const respuesta = await fetch(url);
+      const datos = await respuesta.json();
+      document.getElementById("contador").textContent = datos.value.toLocaleString();
+    }
+    contarVisitas();
+  </script>
+</footer>
 
   <!-- Cinta visible en todo momento -->
   <div class="demo-ribbon" aria-hidden="true">DEMO</div>
 </body>
 </html>
+
 
 
