@@ -5,31 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Programa Nova — Presentación oficial V1.0 DEMO</title>
   <meta name="description" content="Programa Nova — Generador IA Orquestadora. Entorno estable para crear presentaciones con IA. Edición V1.0 DEMO." />
+
+  <!-- Tipografía -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
 
   <!-- === Estilos principales === -->
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
       font-family: "Inter", sans-serif;
-      background: radial-gradient(circle at 20% 20%, #0d1220, #0a0e1a 80%);
+      background: radial-gradient(circle at 25% 25%, #0d1220, #080b14 80%);
       color: #e6e6e6;
+      height: 100%;
+      min-height: 100%;
     }
 
     main {
       max-width: 960px;
-      margin: 3rem auto;
-      padding: 2rem;
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 20px;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+      margin: 4rem auto;
+      padding: 2.5rem;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 18px;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
     }
 
     h1 {
-      font-size: 2.6rem;
-      margin-bottom: 1rem;
+      font-size: 2.7rem;
+      margin-bottom: 0.8rem;
+      text-align: center;
     }
 
     h1 span {
@@ -38,76 +45,84 @@
 
     p {
       font-size: 1rem;
-      line-height: 1.6;
+      line-height: 1.7;
+      text-align: center;
       color: #cfcfcf;
     }
 
     .buttons {
-      margin: 1.5rem 0;
+      margin: 2rem 0;
       display: flex;
-      gap: 1rem;
       flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
     }
 
     .btn {
-      padding: 0.7rem 1.4rem;
+      padding: 0.8rem 1.6rem;
       font-weight: 600;
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
     }
 
     .btn.demo {
       background: #0da9ff;
       color: #fff;
     }
-
-    .btn.demo:hover {
-      background: #0992db;
-    }
+    .btn.demo:hover { background: #0992db; }
 
     .btn.pdf {
       background: #3a3a4a;
       color: #d1d1d1;
     }
-
-    .btn.pdf:hover {
-      background: #4b4b5a;
-    }
+    .btn.pdf:hover { background: #4b4b5a; }
 
     .btn.contact {
       background: #222bff;
       color: #fff;
     }
-
-    .btn.contact:hover {
-      background: #1c22d4;
-    }
+    .btn.contact:hover { background: #1c22d4; }
 
     .cards {
       display: flex;
       flex-wrap: wrap;
+      justify-content: center;
       gap: 1rem;
       margin-top: 2rem;
     }
 
     .card {
-      flex: 1 1 300px;
-      background: rgba(255, 255, 255, 0.04);
+      flex: 1 1 280px;
+      background: rgba(255, 255, 255, 0.05);
       border-radius: 12px;
-      padding: 1.2rem;
+      padding: 1.4rem;
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
     }
+    .card:hover { transform: translateY(-4px); }
 
     .card h3 {
       margin-top: 0;
       color: #fff;
+      margin-bottom: 0.4rem;
+    }
+
+    .card p {
+      color: #ccc;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      text-align: left;
     }
 
     footer {
       text-align: center;
-      margin-top: 2.5rem;
+      margin-top: 3rem;
       font-size: 0.85rem;
       color: #aaa;
     }
@@ -124,15 +139,15 @@
     /* === Cinta roja DEMO === */
     .demo-ribbon {
       position: fixed;
-      top: 0;
-      right: -48px;
+      top: 25px;
+      right: -40px;
       background-color: #d8232a;
       color: #fff;
-      padding: 8px 22px;
+      padding: 8px 26px;
       font-size: 14px;
       font-weight: 700;
-      letter-spacing: 1px;
       text-transform: uppercase;
+      letter-spacing: 1px;
       transform: rotate(45deg);
       transform-origin: top right;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
@@ -142,9 +157,14 @@
 
     @media (max-width: 480px) {
       .demo-ribbon {
-        right: -56px;
+        right: -55px;
+        top: 18px;
         padding: 6px 18px;
         font-size: 12px;
+      }
+      main {
+        margin: 2rem 1rem;
+        padding: 1.6rem;
       }
     }
   </style>
@@ -155,7 +175,8 @@
     <h1>Presentación oficial — Edición <span>V1.0 DEMO</span></h1>
     <p>
       <strong>Programa Nova · Generador IA Orquestadora</strong><br />
-      Un entorno estable y sencillo para estructurar presentaciones con apoyo de IA, listo para mostrar a clientes y colaboradores. Esta demo es segura: verás toda la interfaz pero los campos están protegidos.
+      Un entorno estable y sencillo para estructurar presentaciones con apoyo de IA, listo para mostrar a clientes y colaboradores.<br />
+      Esta demo es segura: verás toda la interfaz pero los campos están protegidos.
     </p>
 
     <div class="buttons">
