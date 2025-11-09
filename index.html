@@ -74,10 +74,31 @@
       color: #67e8f9;
       text-decoration: none;
     }
-  </style>
+    
+  <!-- === Estilos para la cinta roja DEMO (no tocar) === -->
+<style>
+  .demo-ribbon {
+    position: fixed;
+    top: 0;
+    right: 0;
+    background-color: #d82323;
+    color: #fff;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    transform: rotate(45deg);
+    transform-origin: 100% 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    pointer-events: none; /* para que no interfiera con clicks */
+  }
+</style>
+
 </head>
 
 <body>
+  <!-- Cinta roja DEMO -->
+  <div class="demo-ribbon">DEMO</div>
   <div class="container">
     <h1>Presentación oficial — Edición <span style="color:#6efaa4;">V1.0 DEMO</span></h1>
     <h2>Programa Nova · Generador IA Orquestadora</h2>
@@ -112,3 +133,4 @@
   </div>
 </body>
 </html>
+
