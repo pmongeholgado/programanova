@@ -207,7 +207,17 @@
       <a href="registro_historico_coautoria.html">Registro histórico de coautoría</a>
       <br><br>
       👁️ Visitas: <span id="contador">Cargando...</span>
-  
+   <style>
+      #contador {
+        color: #3eff9c;
+        font-weight: 600;
+        font-size: 0.95rem;
+  }
+  footer {
+    margin-bottom: 40px;
+  }
+</style>
+ 
   <script>
     async function contarVisitas() {
       const url = "https://api.countapi.xyz/hit/programa-nova-presentaciones/visitas";
@@ -223,6 +233,7 @@
   <div class="demo-ribbon" aria-hidden="true">DEMO</div>
 </body>
 </html>
+
 
 
 
