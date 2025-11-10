@@ -1,123 +1,139 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Programa Nova — Presentación</title>
-  <meta name="description" content="Programa Nova — Generador IA Orquestadora. Landing de presentación y acceso a demo.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Programa Nova — DEMO Interactiva</title>
+  <meta name="description" content="DEMO interactiva de Programa Nova — Generador IA Orquestadora (V1.0).">
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
+
   <style>
-    :root{
-      --bg: #0b1220;
-      --panel: #101826;
-      --accent: #6EE7B7;   /* verde suave */
-      --accent-2:#38BDF8;  /* azul */
-      --text: #e8eef9;
-      --muted:#9fb0c7;
-      --card: #0f172a;
-      --btn:  #1f2937;
-      --btn-h:#111827;
-    }
-    html,body{height:100%}
+    :root{--green:#3eff9c;--bg1:#0d1220;--bg2:#0a0e1a;}
+    *{box-sizing:border-box}
     body{
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color: var(--text);
-      background:
-        radial-gradient(1200px 600px at 20% -10%, #1d2a44 0%, transparent 60%),
-        radial-gradient(1000px 500px at 120% 10%, #133353 0%, transparent 60%),
-        var(--bg);
+      margin:0;font-family:"Inter",sans-serif;color:#e6e6e6;
+      background:radial-gradient(circle at 20% 20%, var(--bg1), var(--bg2) 80%);
     }
-    .wrap{max-width: 1100px; margin: 0 auto; padding: 32px 20px 72px}
-    .hero{
-      display:grid; gap:22px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 20px; padding:28px;
-      box-shadow: 0 10px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);
-      backdrop-filter: blur(3px);
+    main{max-width:1100px;margin:2.5rem auto;padding:2rem;background:rgba(255,255,255,.02);
+      border-radius:20px;box-shadow:0 0 30px rgba(0,0,0,.4)}
+    h1{font-size:2.2rem;margin:0 0 .5rem}
+    h1 span{color:var(--green)}
+    p{color:#cfcfcf;line-height:1.6}
+    .grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-top:1.2rem}
+    .card{background:rgba(255,255,255,.04);border-radius:12px;padding:1rem 1.2rem;box-shadow:0 0 15px rgba(0,0,0,.3)}
+    .card h3{margin:.2rem 0 .6rem;color:#fff}
+    label{display:block;font-size:.9rem;margin:.4rem 0 .25rem;color:#dcdcdc}
+    input,textarea,select,button{
+      width:100%;padding:.7rem .8rem;border-radius:8px;border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.25);color:#eaeaea;font-size:.95rem
     }
-    .kicker{letter-spacing:.2em; text-transform: uppercase; color: var(--accent); font-weight: 800; font-size: .78rem}
-    h1{margin:0; font-size: clamp(28px, 4vw, 44px); line-height: 1.05}
-    p.lead{margin:0; color: var(--muted); font-size: clamp(15px, 2.2vw, 18px)}
-    .cta{display:flex; flex-wrap: wrap; gap:12px; margin-top: 12px}
-    .btn{
-      appearance:none; border:1px solid rgba(255,255,255,.08);
-      background: var(--btn); color:var(--text); padding:12px 16px;
-      border-radius: 12px; font-weight: 700; text-decoration:none;
-      transition: transform .08s ease, background .2s ease, box-shadow .2s ease;
-      display:inline-flex; align-items:center; gap:10px
+    textarea{min-height:110px;resize:vertical}
+    .row{display:flex;gap:.6rem;margin-top:.6rem}
+    .row > *{flex:1}
+    .actions{display:flex;gap:.6rem;margin-top:.8rem}
+    .btn{padding:.7rem 1rem;border-radius:8px;border:none;font-weight:600;cursor:pointer;transition:.25s}
+    .btn.primary{background:#0da9ff;color:#fff}
+    .btn.secondary{background:#3a3a4a;color:#e6e6e6}
+    .muted{font-size:.9rem;color:#bdbdbd;margin-top:.4rem}
+    .demo-ribbon{
+      position:fixed;top:0;right:-48px;background:#d8232a;color:#fff;padding:8px 22px;font-size:14px;font-weight:700;
+      letter-spacing:1px;text-transform:uppercase;transform:rotate(45deg);transform-origin:top right;box-shadow:0 2px 6px rgba(0,0,0,.35);
+      z-index:9999;pointer-events:none
     }
-    .btn:hover{ background: var(--btn-h); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,.35) }
-    .btn-primary{ background: linear-gradient(180deg, var(--accent-2), #1d9be5); border-color: transparent; color:#06101a}
-    .btn-primary:hover{ filter: brightness(0.95) }
-    .btn-outline{ background: transparent; border-color: rgba(255,255,255,.18) }
-    .grid{display:grid; gap:18px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-top: 24px}
-    .card{
-      background: var(--panel);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 16px; padding:18px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    .demo-banner{
+      margin:.8rem 0 1.2rem;padding:.8rem 1rem;border:1px dashed rgba(255,255,255,.25);
+      border-radius:10px;background:rgba(255,255,255,.03);color:#eaeaea
     }
-    .card h3{margin:0 0 6px 0; font-size: 16px}
-    .mini{color:var(--muted); font-size: 14px}
-    .foot{opacity:.75; margin-top: 26px; font-size: 13px}
-    .tag{display:inline-block; padding:4px 8px; font-size: 12px; border-radius: 999px; background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1)}
+    a.link{color:var(--green);text-decoration:none}
+    a.link:hover{text-decoration:underline}
+    footer{margin-top:1.6rem;text-align:center;color:#aaa;font-size:.9rem}
   </style>
 </head>
 <body>
-  <div class="wrap">
-
-    <div class="hero">
-      <div class="kicker">Programa Nova · Generador IA Orquestadora</div>
-      <h1>Presentación oficial — Edición <span style="color:var(--accent)">V1.0 DEMO</span></h1>
-      <p class="lead">
-        Un entorno estable y sencillo para estructurar presentaciones con apoyo de IA, listo para mostrar a clientes y colaboradores.
-        Esta demo es segura: verás toda la interfaz pero los campos están protegidos.
-      </p>
-
-      <div class="cta">
-        <!-- Ver DEMO -->
-        <a class="btn btn-primary" target="_blank" href="./?demo=1">
-          🚀 Ver DEMO interactiva
-        </a>
-
-        <!-- Ver PDF Estético -->
-        <a class="btn" target="_blank" href="./README_Estetico_Programa_Nova_V1.0.pdf">
-          📘 Ver documento estético (PDF)
-        </a>
-
-        <!-- Contacto -->
-        <a class="btn btn-outline" href="mailto:pmongeholgado@gmail.com?subject=Inter%C3%A9s%20en%20Programa%20Nova%20V1.0&body=Hola,%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20Programa%20Nova%20V1.0.%20Gracias.">
-          ✉️ Contacto
-        </a>
-      </div>
+  <main>
+    <h1>DEMO interactiva — <span>V1.0</span></h1>
+    <div id="demoBanner" class="demo-banner" style="display:none">
+      🔒 Esta es una <strong>DEMO bloqueada</strong>: los campos y botones están desactivados. Para una
+      demostración guiada, contacta en
+      <a class="link" href="mailto:pmongeholgado@gmail.com?subject=Interés DEMO Programa Nova">pmongeholgado@gmail.com</a>.
     </div>
 
     <div class="grid">
       <div class="card">
-        <div class="tag">Sin costes</div>
-        <h3>Publicación gratuita</h3>
-        <div class="mini">Alojado en GitHub Pages con una URL pública para compartir fácilmente.</div>
+        <h3>Brief del proyecto</h3>
+        <label>Título</label>
+        <input placeholder="Ej: Lanzamiento producto X"/>
+        <div class="row">
+          <div>
+            <label>Audiencia</label>
+            <input placeholder="Ej: Comité dirección"/>
+          </div>
+          <div>
+            <label>Duración</label>
+            <select>
+              <option>5 min</option><option>10 min</option><option>15 min</option><option>20 min</option>
+            </select>
+          </div>
+        </div>
+        <label>Objetivo</label>
+        <textarea placeholder="Mensaje clave, llamada a la acción…"></textarea>
       </div>
+
       <div class="card">
-        <div class="tag">Estable</div>
-        <h3>Modo DEMO seguro</h3>
-        <div class="mini">Cinta “DEMO”, campos bloqueados y navegación activa. Nadie puede modificar contenido.</div>
+        <h3>Estructura</h3>
+        <label>Secciones</label>
+        <textarea placeholder="1) Apertura&#10;2) Problema&#10;3) Propuesta&#10;4) Cierre"></textarea>
+        <div class="actions">
+          <button class="btn primary">Generar guion</button>
+          <button class="btn secondary">Borrar</button>
+        </div>
+        <p class="muted">El motor IA orquesta la narrativa y propone tiempos por sección.</p>
       </div>
+
       <div class="card">
-        <div class="tag">Documentado</div>
-        <h3>PDF estético oficial</h3>
-        <div class="mini">Documento listo para enviar a clientes, con diseño limpio y objetivo del proyecto.</div>
+        <h3>Salida</h3>
+        <label>Formato</label>
+        <select>
+          <option>PDF</option><option>PPTX</option><option>Markdown</option>
+        </select>
+        <label>Notas al presentador</label>
+        <textarea placeholder="Puntos de énfasis, pausas, ejemplos…"></textarea>
+        <div class="actions">
+          <button class="btn primary">Exportar</button>
+          <button class="btn secondary">Previsualizar</button>
+        </div>
       </div>
     </div>
 
-    <div class="foot">
-      © 2025 Nova & Pablo Monge · Todos los derechos reservados ·
-      <a class="mini" target="_blank" href="./HITO_HUMANO_IA.md" style="color:var(--accent)">Registro histórico de coautoría</a>
-    </div>
-  </div>
+    <footer>
+      © 2025 Nova & Pablo Monge — Todos los derechos reservados ·
+      <a class="link" href="index.html">Volver a inicio</a>
+    </footer>
+  </main>
+
+  <div id="ribbon" class="demo-ribbon" style="display:none">DEMO</div>
+
+  <script>
+    (function(){
+      const params = new URLSearchParams(location.search);
+      const isDemo = params.get('demo') === '1';
+
+      if (isDemo) {
+        // Cinta y banner
+        document.getElementById('ribbon').style.display = 'block';
+        document.getElementById('demoBanner').style.display = 'block';
+
+        // Desactivar toda la interfaz interactiva
+        const sels = 'input, textarea, select, button';
+        document.querySelectorAll(sels).forEach(el => {
+          el.disabled = true;
+          el.addEventListener('click', e => e.preventDefault(), true);
+          el.addEventListener('submit', e => e.preventDefault(), true);
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
