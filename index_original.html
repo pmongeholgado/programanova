@@ -231,8 +231,29 @@
 
   <!-- Cinta visible en todo momento -->
   <div class="demo-ribbon" aria-hidden="true">DEMO</div>
+  <!-- 🔢 Contador de visitas - Programa Nova -->
+<div id="contador" style="text-align:center; margin-top:10px; color:#00ff88;">
+  <small>👁️ Visitas: <span id="visitas">Cargando...</span></small>
+</div>
+
+<script>
+  // --- Contador de visitas compartido entre portada y demo ---
+  const clave = "programa_nova_visitas_global"; // nombre único
+  const contador = document.getElementById("visitas");
+
+  fetch(`https://api.countapi.xyz/hit/novapresentaciones.com/${clave}`)
+    .then(response => response.json())
+    .then(data => {
+      contador.textContent = data.value.toLocaleString();
+    })
+    .catch(() => {
+      contador.textContent = "Error";
+    });
+</script>
+  
 </body>
 </html>
+
 
 
 
