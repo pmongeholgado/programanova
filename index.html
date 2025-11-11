@@ -126,6 +126,28 @@
       <span>© 2025 Nova & Pablo Monge — Todos los derechos reservados</span>
       <a href="registro_historico_coautoria.html">Registro histórico de coautoría</a>
     </footer>
-  </main>
+</main>
+<script>
+  // --- Acceso oculto al index_original.html ---
+  // Pulsando 3 veces seguidas sobre el símbolo © del pie
+  let contadorClicks = 0;
+  const tiempoMax = 800; // milisegundos entre clics
+  let ultimoClick = 0;
+
+  document.addEventListener("click", (e) => {
+    if (e.target.textContent.includes("©")) {
+      const ahora = Date.now();
+      if (ahora - ultimoClick < tiempoMax) {
+        contadorClicks++;
+        if (contadorClicks === 3) {
+          window.location.href = "index_original.html";
+        }
+      } else {
+        contadorClicks = 1;
+      }
+      ultimoClick = ahora;
+    }
+  });
+</script>  
 </body>
 </html>
