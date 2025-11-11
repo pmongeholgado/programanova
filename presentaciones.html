@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
 
   <style>
-    :root{--green:#3eff9c;--bg1:#0d1220;--bg2:#0a0e1a;}
+    :root{--green:#3eff9c;--blue:#0da9ff;--bg1:#0d1220;--bg2:#0a0e1a;}
     *{box-sizing:border-box}
     body{
       margin:0;font-family:"Inter",sans-serif;color:#e6e6e6;
@@ -21,10 +21,11 @@
     h1{font-size:2.2rem;margin:0 0 .5rem}
     h1 span{color:var(--green)}
     p{color:#cfcfcf;line-height:1.6}
-    .grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-top:1.2rem}
+
+    .grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));margin-top:1.2rem}
     .card{background:rgba(255,255,255,.04);border-radius:12px;padding:1rem 1.2rem;box-shadow:0 0 15px rgba(0,0,0,.3)}
     .card h3{margin:.2rem 0 .6rem;color:#fff}
-    label{display:block;font-size:.9rem;margin:.4rem 0 .25rem;color:#dcdcdc}
+    label{display:block;font-size:.9rem;margin:.45rem 0 .25rem;color:#dcdcdc}
     input,textarea,select,button{
       width:100%;padding:.7rem .8rem;border-radius:8px;border:1px solid rgba(255,255,255,.12);
       background:rgba(0,0,0,.25);color:#eaeaea;font-size:.95rem
@@ -34,9 +35,10 @@
     .row > *{flex:1}
     .actions{display:flex;gap:.6rem;margin-top:.8rem}
     .btn{padding:.7rem 1rem;border-radius:8px;border:none;font-weight:600;cursor:pointer;transition:.25s}
-    .btn.primary{background:#0da9ff;color:#fff}
+    .btn.primary{background:var(--blue);color:#fff}
     .btn.secondary{background:#3a3a4a;color:#e6e6e6}
     .muted{font-size:.9rem;color:#bdbdbd;margin-top:.4rem}
+
     .demo-ribbon{
       position:fixed;top:0;right:-48px;background:#d8232a;color:#fff;padding:8px 22px;font-size:14px;font-weight:700;
       letter-spacing:1px;text-transform:uppercase;transform:rotate(45deg);transform-origin:top right;box-shadow:0 2px 6px rgba(0,0,0,.35);
@@ -49,15 +51,31 @@
     a.link{color:var(--green);text-decoration:none}
     a.link:hover{text-decoration:underline}
     footer{margin-top:1.6rem;text-align:center;color:#aaa;font-size:.9rem}
+    footer a{color:var(--green);text-decoration:none}
+    footer a:hover{text-decoration:underline}
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;inset:0;background:rgba(0,0,0,.55);
+      display:none;align-items:center;justify-content:center;z-index:9998
+    }
+    .modal{
+      width:min(560px,92%);background:#141a2b;border:1px solid rgba(255,255,255,.12);
+      border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.5);padding:1rem 1.2rem
+    }
+    .modal h3{margin:.2rem 0 .6rem}
+    .modal p{margin:.25rem 0;color:#d7d7d7}
+    .modal .close{margin-top:.8rem;padding:.6rem 1rem;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:#22283b;color:#fff;cursor:pointer}
+    .modal .close:hover{background:#2a3150}
   </style>
 </head>
 <body>
   <main>
     <h1>DEMO interactiva — <span>V1.0</span></h1>
     <div id="demoBanner" class="demo-banner" style="display:none">
-      🔒 Esta es una <strong>DEMO bloqueada</strong>: los campos y botones están desactivados. Para una
-      demostración guiada, contacta en
-      <a class="link" href="mailto:pmongeholgado@gmail.com?subject=Interés DEMO Programa Nova">pmongeholgado@gmail.com</a>.
+      🔒 Esta es una <strong>DEMO bloqueada</strong>: los campos y formularios están desactivados.
+      Puedes <strong>pulsar los botones</strong> para ver <em>qué haría</em> cada función en la versión completa.
+      Para una demo guiada: <a class="link" href="mailto:pmongeholgado@gmail.com?subject=Interés DEMO Programa Nova">pmongeholgado@gmail.com</a>.
     </div>
 
     <div class="grid">
@@ -79,6 +97,9 @@
         </div>
         <label>Objetivo</label>
         <textarea placeholder="Mensaje clave, llamada a la acción…"></textarea>
+        <div class="actions">
+          <button class="btn secondary" data-info="brief">ℹ️ ¿Qué es el Brief?</button>
+        </div>
       </div>
 
       <div class="card">
@@ -86,8 +107,8 @@
         <label>Secciones</label>
         <textarea placeholder="1) Apertura&#10;2) Problema&#10;3) Propuesta&#10;4) Cierre"></textarea>
         <div class="actions">
-          <button class="btn primary">Generar guion</button>
-          <button class="btn secondary">Borrar</button>
+          <button class="btn primary" data-info="guion">Generar guion</button>
+          <button class="btn secondary" data-info="borrar">Borrar</button>
         </div>
         <p class="muted">El motor IA orquesta la narrativa y propone tiempos por sección.</p>
       </div>
@@ -101,39 +122,111 @@
         <label>Notas al presentador</label>
         <textarea placeholder="Puntos de énfasis, pausas, ejemplos…"></textarea>
         <div class="actions">
-          <button class="btn primary">Exportar</button>
-          <button class="btn secondary">Previsualizar</button>
+          <button class="btn primary" data-info="exportar">Exportar</button>
+          <button class="btn secondary" data-info="preview">Previsualizar</button>
         </div>
       </div>
     </div>
 
     <footer>
       © 2025 Nova & Pablo Monge — Todos los derechos reservados ·
-      <a class="link" href="index.html">Volver a inicio</a>
+      <a class="link" href="./index.html">Volver a inicio</a>
     </footer>
   </main>
 
+  <!-- Cinta DEMO -->
   <div id="ribbon" class="demo-ribbon" style="display:none">DEMO</div>
+
+  <!-- Modal informativo -->
+  <div id="backdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal" role="document">
+      <h3 id="modalTitle">Información</h3>
+      <p id="modalBody">Contenido</p>
+      <button class="close" id="modalClose">Cerrar</button>
+    </div>
+  </div>
 
   <script>
     (function(){
       const params = new URLSearchParams(location.search);
       const isDemo = params.get('demo') === '1';
 
-      if (isDemo) {
-        // Cinta y banner
-        document.getElementById('ribbon').style.display = 'block';
-        document.getElementById('demoBanner').style.display = 'block';
+      const ribbon = document.getElementById('ribbon');
+      const banner = document.getElementById('demoBanner');
 
-        // Desactivar toda la interfaz interactiva
-        const sels = 'input, textarea, select, button';
+      // Mapa de mensajes informativos por botón
+      const infoTexts = {
+        brief: {
+          title: "Brief — ¿qué vería el cliente aquí?",
+          body: "En la versión completa, aquí defines el contexto: título, audiencia, duración y objetivo. El sistema usa estos datos para ajustar tono, ritmo y foco del guion."
+        },
+        guion: {
+          title: "Generar guion",
+          body: "Orquesta secciones, tiempos estimados y puntos clave según el Brief. En DEMO no se ejecuta el motor; solo visualizas la interfaz."
+        },
+        borrar: {
+          title: "Borrar",
+          body: "Limpia el área de texto de la sección. En DEMO esta acción no modifica nada."
+        },
+        exportar: {
+          title: "Exportar",
+          body: "Genera el archivo final en el formato elegido (PDF, PPTX o Markdown) con la estructura y notas. En DEMO no se genera archivo."
+        },
+        preview: {
+          title: "Previsualizar",
+          body: "Muestra una vista previa del guion antes de exportar. En DEMO la vista previa real no se carga; esta es una demostración segura."
+        }
+      };
+
+      // Modal helpers
+      const backdrop = document.getElementById('backdrop');
+      const mt = document.getElementById('modalTitle');
+      const mb = document.getElementById('modalBody');
+      const closeBtn = document.getElementById('modalClose');
+      function openModal(key){
+        const data = infoTexts[key] || {title:"Información", body:"Función demostrativa."};
+        mt.textContent = data.title;
+        mb.textContent = data.body;
+        backdrop.style.display = 'flex';
+        backdrop.setAttribute('aria-hidden','false');
+      }
+      function closeModal(){
+        backdrop.style.display = 'none';
+        backdrop.setAttribute('aria-hidden','true');
+      }
+      closeBtn.addEventListener('click', closeModal);
+      backdrop.addEventListener('click', (e)=>{ if(e.target === backdrop) closeModal(); });
+
+      if (isDemo) {
+        // Activar elementos visuales de DEMO
+        ribbon.style.display = 'block';
+        banner.style.display = 'block';
+
+        // Bloquear interacción en campos y formularios
+        const sels = 'input, textarea, select';
         document.querySelectorAll(sels).forEach(el => {
           el.disabled = true;
           el.addEventListener('click', e => e.preventDefault(), true);
-          el.addEventListener('submit', e => e.preventDefault(), true);
+          el.addEventListener('input', e => e.preventDefault(), true);
+          el.addEventListener('change', e => e.preventDefault(), true);
+          el.addEventListener('keydown', e => e.preventDefault(), true);
         });
+
+        // Botones muestran información (no ejecutan lógica real)
+        document.querySelectorAll('button[data-info]').forEach(btn=>{
+          btn.addEventListener('click', (e)=>{
+            e.preventDefault();
+            const key = btn.getAttribute('data-info');
+            openModal(key);
+          });
+        });
+
+      } else {
+        // Si NO es demo, podrías conectar aquí la lógica real.
+        // Por ahora mantenemos la interfaz sin bloqueo.
       }
     })();
   </script>
 </body>
+    feat: demo bloqueada con modales informativos
 </html>
