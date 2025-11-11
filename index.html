@@ -153,6 +153,19 @@
 <!-- 🔢 Contador de visitas - Programa Nova -->
 <div id="contador" style="text-align:center; margin-top:10px; color:#00ff88;">
   <small>👁️ Visitas: <span id="visitas">Cargando...</span></small>
+  <script>
+async function contarVisitas() {
+  try {
+    const respuesta = await fetch('https://api.countapi.xyz/hit/novapresentaciones/contador');
+    const datos = await respuesta.json();
+    document.getElementById('contador').innerText = datos.value;
+  } catch (e) {
+    document.getElementById('contador').innerText = 'Error';
+  }
+}
+contarVisitas();
+</script>
+
 </div>
 
 <script>
