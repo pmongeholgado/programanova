@@ -1,200 +1,104 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Programa Nova — Portada oficial de clientes</title>
-  <meta name="description" content="Programa Nova — Generador IA Orquestadora. Portada oficial para clientes. Acceso a demo, PDF y contacto.">
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programa Nova – Portada de Clientes</title>
+  <link rel="icon" href="https://programanovapresentaciones.com/favicon.ico">
 
   <style>
-    :root {
-      --bg: #0b0f1a;
-      --panel: #141a28;
-      --text: #e6e6e6;
-      --muted: #bfc6d1;
-      --brand: #3eff9c;
-      --btn: #0da9ff;
-      --btn-hover: #0992db;
-      --card: #101727;
-    }
     body {
-      margin: 0;
-      font-family: "Inter", sans-serif;
-      background: radial-gradient(1000px 600px at 20% 0%, #11182a 0%, #0b0f1a 50%, #0a0e18 100%);
-      color: var(--text);
-    }
-    main {
-      max-width: 980px;
-      margin: 60px auto;
-      padding: 30px;
-      background: rgba(255,255,255,.02);
-      border-radius: 22px;
-      box-shadow: 0 0 30px rgba(0,0,0,.35);
+      font-family: "Segoe UI", sans-serif;
+      background-color: #e8ecf1;
+      color: #1a1a1a;
+      text-align: center;
+      padding: 40px;
     }
     h1 {
-      font-size: 42px;
-      margin: 0 0 10px;
+      color: #058240;
+      font-size: 2.6em;
     }
-    .brand { color: var(--brand); font-weight: 800; }
-    .sub {
-      color: var(--muted);
-      margin: 0 0 24px;
-      font-size: 15px;
+    h2 {
+      color: #0057b3;
+      font-weight: 600;
     }
-    .buttons { display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0; }
-    .btn {
-      display: inline-flex; align-items: center; gap: 10px;
-      padding: 12px 18px; border-radius: 10px; border: none; cursor: pointer;
-      font-weight: 700; text-decoration: none; transition: .2s;
-    }
-    .btn.demo { background: var(--btn); color: #fff; }
-    .btn.demo:hover { background: var(--btn-hover); }
-    .btn.pdf { background: #303a52; color: #eaeef7; }
-    .btn.contact { background: #222bff; color: #fff; }
-    .btn.pdf:hover, .btn.contact:hover { filter: brightness(1.1); }
-    .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-    .card {
-      background: var(--card);
-      border: 1px solid rgba(255,255,255,.06);
-      border-radius: 14px;
-      padding: 18px;
-    }
-    .card h3 { margin: 0 0 8px; }
-    .muted { color: var(--muted); line-height: 1.55; font-size: 14px; }
-    footer {
-      margin-top: 30px;
-      padding-top: 16px;
-      border-top: 1px dashed rgba(255,255,255,.1);
-      color: #aab3c2;
-      font-size: 13px;
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
-    footer a { color: var(--brand); text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
-    .demo-ribbon {
-      position: fixed;
-      top: 0; right: -46px;
-      transform: rotate(45deg);
-      background: #d8232a;
+    .boton {
+      display: inline-block;
+      margin: 12px;
+      padding: 12px 20px;
+      background: #0a66c2;
       color: #fff;
-      padding: 8px 22px;
-      font-weight: 800;
-      letter-spacing: .8px;
-      text-transform: uppercase;
-      box-shadow: 0 2px 6px rgba(0,0,0,.35);
-      z-index: 9999;
-      pointer-events: none;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: 0.3s;
+      font-weight: bold;
+    }
+    .boton:hover {
+      background: #004a93;
+    }
+    .bloque {
+      margin: 40px auto;
+      background: #f9fafc;
+      padding: 25px;
+      border-radius: 10px;
+      max-width: 850px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    footer {
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #4b5563;
+    }
+    footer a {
+      color: #058240;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+    small {
+      display: block;
+      margin-top: 10px;
+      color: #058240;
     }
   </style>
 </head>
 
 <body>
-  <div class="demo-ribbon">DEMO</div>
+  <h1>Presentación oficial — <span style="color:#058240;">Portada de clientes</span></h1>
+  <p><strong>Programa Nova · Generador IA Orquestadora</strong> — acceso directo a la demo, PDF y contacto.</p>
 
-  <main>
-    <h1>Presentación oficial — <span class="brand">Portada de clientes</span></h1>
-    <p class="sub">
-      <strong>Programa Nova · Generador IA Orquestadora</strong> — Acceso directo a la demo, PDF y contacto.
-    </p>
+  <div class="bloque">
+    <a href="demo.html" class="boton">🚀 Ver DEMO interactiva</a>
+    <a href="README_Estetico_Programa_Nova_V1.0.pdf" class="boton">📄 Ver documento estético (PDF)</a>
+    <a href="mailto:j.pablo2006@hotmail.com" class="boton">📬 Contacto</a>
+  </div>
 
-    <div class="buttons">
-      <a class="btn demo" href="presentaciones.html">🚀 Ver DEMO interactiva</a>
-      <a class="btn pdf" href="README_Estetico_Programa_Nova_V1.0.pdf" target="_blank">📄 Ver documento estético (PDF)</a>
-      <a class="btn contact" href="mailto:pmongeholgado@gmail.com?subject=Interés en Programa Nova V1.0">💌 Contacto</a>
-    </div>
+  <div class="bloque">
+    <h2>Características principales</h2>
+    <p>🆓 <strong>Publicación gratuita</strong>: alojado en GitHub Pages con URL pública para compartir fácilmente.</p>
+    <p>🔒 <strong>Modo DEMO seguro</strong>: visualización completa, pero sin permisos de edición o interacción.</p>
+    <p>📘 <strong>PDF estético oficial</strong>: documento profesional, limpio y listo para enviar a clientes o colaboradores.</p>
+  </div>
 
-    <div class="grid">
-      <div class="card">
-        <h3>📢 Publicación gratuita</h3>
-        <p class="muted">Alojado en GitHub Pages con URL pública para compartir fácilmente.</p>
-      </div>
-      <div class="card">
-        <h3>🔒 Modo DEMO seguro</h3>
-        <p class="muted">Visualización completa, pero sin permisos de edición o interacción.</p>
-      </div>
-      <div class="card">
-        <h3>📄 PDF estético oficial</h3>
-        <p class="muted">Documento profesional, limpio y listo para enviar a clientes o colaboradores.</p>
-      </div>
-    </div>
+  <footer>
+    © 2025 Nova & Pablo Monge — Todos los derechos reservados  
+    <a href="memoria_compartida.html">🕊️ Memoria compartida</a>  
+    <small>Versión V1.0 — Portada renovada con fondo claro</small>
+  </footer>
 
-    <footer>
-      <span>© 2025 Nova & Pablo Monge — Todos los derechos reservados</span>
-      <a href="registro_historico_coautoria.html">Registro histórico de coautoría</a>
-      <a href="memoria_compartida.html">🕊️ Memoria compartida</a>
-    </footer>
-</main>
-<script>
-  // --- Acceso oculto al index_original.html ---
-  // Pulsando 3 veces seguidas sobre el símbolo © del pie
-  let contadorClicks = 0;
-  const tiempoMax = 800; // milisegundos entre clics
-  let ultimoClick = 0;
-
-  document.addEventListener("click", (e) => {
-    if (e.target.textContent.includes("©")) {
-      const ahora = Date.now();
-      if (ahora - ultimoClick < tiempoMax) {
-        contadorClicks++;
-        if (contadorClicks === 3) {
-          window.location.href = "index_original.html";
-        }
-      } else {
-        contadorClicks = 1;
-      }
-      ultimoClick = ahora;
-    }
-  });
-</script>
-<!-- 🔢 Contador de visitas - Programa Nova -->
-<div id="contador" style="text-align:center; margin-top:10px; color:#00ff88;">
-  <small>👁️ Visitas: <span id="visitas">Cargando...</span></small>
   <script>
-async function contarVisitas() {
-  try {
-    const respuesta = await fetch('https://api.countapi.xyz/hit/novapresentaciones/contador');
-    const datos = await respuesta.json();
-    document.getElementById('contador').innerText = datos.value;
-  } catch (e) {
-    document.getElementById('contador').innerText = 'Error';
-  }
-}
-contarVisitas();
-</script>
-
-</div>
-
-<script>
-  // --- Contador de visitas compartido entre portada y demo ---
-  const clave = "programa_nova_visitas_global"; // nombre único
-  const contador = document.getElementById("visitas");
-
-  fetch(`https://api.countapi.xyz/hit/novapresentaciones.com/${clave}`)
-    .then(response => response.json())
-    .then(data => {
-      contador.textContent = data.value.toLocaleString();
-    })
-    .catch(() => {
-      contador.textContent = "Error";
-    });
-</script>
-  
-<!-- === Acceso directo privado al programa completo === -->
-<script>
-  // Doble protección: solo tú puedes acceder usando triple clic + confirmación
-  document.body.addEventListener("click", function (e) {
-    if (e.detail === 3) {
-      const acceso = confirm("¿Deseas abrir el Programa Nova Completo (solo uso privado)?");
-      if (acceso) {
+    // Acceso oculto al modo completo mediante triple clic sobre el año
+    let contadorClics = 0;
+    const footer = document.querySelector("footer");
+    footer.addEventListener("click", () => {
+      contadorClics++;
+      if (contadorClics === 3) {
         window.location.href = "demo.html?modo=privado";
       }
-    }
-  });
-</script>
-
+      setTimeout(() => (contadorClics = 0), 1000);
+    });
+  </script>
 </body>
 </html>
