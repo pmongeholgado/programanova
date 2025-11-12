@@ -182,6 +182,19 @@ contarVisitas();
       contador.textContent = "Error";
     });
 </script>
+  
+<!-- === Acceso directo privado al programa completo === -->
+<script>
+  // Doble protección: solo tú puedes acceder usando triple clic + confirmación
+  document.body.addEventListener("click", function (e) {
+    if (e.detail === 3) {
+      const acceso = confirm("¿Deseas abrir el Programa Nova Completo (solo uso privado)?");
+      if (acceso) {
+        window.location.href = "demo.html?modo=privado";
+      }
+    }
+  });
+</script>
 
 </body>
 </html>
