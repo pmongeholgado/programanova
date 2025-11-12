@@ -1,0 +1,9 @@
+theme: null
+include:
+  - index.html
+  - demo.html
+  - program.html
+exclude:
+  - presentaciones.html
+  - index_original.html
+  - index_legacy*
