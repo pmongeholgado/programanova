@@ -3,230 +3,172 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Programa Nova — DEMO Interactiva</title>
-  <meta name="description" content="DEMO interactiva de Programa Nova — Generador IA Orquestadora (V1.0).">
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <title>Programa Nova — Generador de Presentaciones</title>
+  <link rel="icon" href="https://programanovapresentaciones.com/favicon.ico" />
 
   <style>
-    :root{--green:#3eff9c;--blue:#0da9ff;--bg1:#0d1220;--bg2:#0a0e1a;}
-    *{box-sizing:border-box}
-    body{
-      margin:0;font-family:"Inter",sans-serif;color:#e6e6e6;
-      background:radial-gradient(circle at 20% 20%, var(--bg1), var(--bg2) 80%);
+    /* === Estilo general === */
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+      background-color: #e8ecf1; /* Fondo claro corporativo */
+      color: #1a1a1a;
     }
-    main{max-width:1100px;margin:2.5rem auto;padding:2rem;background:rgba(255,255,255,.02);
-      border-radius:20px;box-shadow:0 0 30px rgba(0,0,0,.4)}
-    h1{font-size:2.2rem;margin:0 0 .5rem}
-    h1 span{color:var(--green)}
-    p{color:#cfcfcf;line-height:1.6}
 
-    .grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));margin-top:1.2rem}
-    .card{background:rgba(255,255,255,.04);border-radius:12px;padding:1rem 1.2rem;box-shadow:0 0 15px rgba(0,0,0,.3)}
-    .card h3{margin:.2rem 0 .6rem;color:#fff}
-    label{display:block;font-size:.9rem;margin:.45rem 0 .25rem;color:#dcdcdc}
-    input,textarea,select,button{
-      width:100%;padding:.7rem .8rem;border-radius:8px;border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.25);color:#eaeaea;font-size:.95rem
+    main {
+      max-width: 960px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: #f9fafc;
+      border-radius: 16px;
+      box-shadow: 0 0 24px rgba(0,0,0,0.08);
     }
-    textarea{min-height:110px;resize:vertical}
-    .row{display:flex;gap:.6rem;margin-top:.6rem}
-    .row > *{flex:1}
-    .actions{display:flex;gap:.6rem;margin-top:.8rem}
-    .btn{padding:.7rem 1rem;border-radius:8px;border:none;font-weight:600;cursor:pointer;transition:.25s}
-    .btn.primary{background:var(--blue);color:#fff}
-    .btn.secondary{background:#3a3a4a;color:#e6e6e6}
-    .muted{font-size:.9rem;color:#bdbdbd;margin-top:.4rem}
 
-    .demo-ribbon{
-      position:fixed;top:0;right:-48px;background:#d8232a;color:#fff;padding:8px 22px;font-size:14px;font-weight:700;
-      letter-spacing:1px;text-transform:uppercase;transform:rotate(45deg);transform-origin:top right;box-shadow:0 2px 6px rgba(0,0,0,.35);
-      z-index:9999;pointer-events:none
+    h1 {
+      color: #058240;
+      margin-top: 0;
+      text-align: center;
     }
-    .demo-banner{
-      margin:.8rem 0 1.2rem;padding:.8rem 1rem;border:1px dashed rgba(255,255,255,.25);
-      border-radius:10px;background:rgba(255,255,255,.03);color:#eaeaea
-    }
-    a.link{color:var(--green);text-decoration:none}
-    a.link:hover{text-decoration:underline}
-    footer{margin-top:1.6rem;text-align:center;color:#aaa;font-size:.9rem}
-    footer a{color:var(--green);text-decoration:none}
-    footer a:hover{text-decoration:underline}
 
-    /* Modal */
-    .modal-backdrop{
-      position:fixed;inset:0;background:rgba(0,0,0,.55);
-      display:none;align-items:center;justify-content:center;z-index:9998
+    h2 {
+      color: #0a66c2;
+      margin-bottom: 0.8rem;
     }
-    .modal{
-      width:min(560px,92%);background:#141a2b;border:1px solid rgba(255,255,255,.12);
-      border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.5);padding:1rem 1.2rem
+
+    /* === Distribución general === */
+    .fila {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
     }
-    .modal h3{margin:.2rem 0 .6rem}
-    .modal p{margin:.25rem 0;color:#d7d7d7}
-    .modal .close{margin-top:.8rem;padding:.6rem 1rem;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:#22283b;color:#fff;cursor:pointer}
-    .modal .close:hover{background:#2a3150}
+
+    .bloque {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 1px 10px rgba(0,0,0,0.06);
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: .4rem;
+      color: #333;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 0.6rem 0.8rem;
+      border-radius: 8px;
+      border: 1px solid #cfd6dd;
+      background: #ffffff;
+      color: #1a1a1a;
+      outline: none;
+      font-size: 0.95rem;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: #0a66c2;
+      box-shadow: 0 0 0 2px rgba(10,102,194,0.2);
+    }
+
+    /* === Botones === */
+    .acciones {
+      margin-top: 1.5rem;
+      display: flex;
+      gap: .8rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      padding: 0.7rem 1.3rem;
+      border: 0;
+      border-radius: 8px;
+      background: #0a66c2;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .2s ease, transform .15s ease;
+    }
+
+    .btn:hover {
+      background: #004a93;
+      transform: scale(1.03);
+    }
+
+    .btn.secundario {
+      background: #058240;
+    }
+
+    .btn.secundario:hover {
+      background: #046634;
+    }
+
+    /* === Pie de página === */
+    footer {
+      text-align: center;
+      margin: 2.5rem 0 1rem;
+      color: #4b5563;
+      font-size: .92rem;
+    }
   </style>
 </head>
+
 <body>
   <main>
-    <h1>DEMO interactiva — <span>V1.0</span></h1>
-    <div id="demoBanner" class="demo-banner" style="display:none">
-      🔒 Esta es una <strong>DEMO bloqueada</strong>: los campos y formularios están desactivados.
-      Puedes <strong>pulsar los botones</strong> para ver <em>qué haría</em> cada función en la versión completa.
-      Para una demo guiada: <a class="link" href="mailto:pmongeholgado@gmail.com?subject=Interés DEMO Programa Nova">pmongeholgado@gmail.com</a>.
-    </div>
+    <h1>🧠 Programa Nova — Generador de Presentaciones</h1>
+    <p style="text-align:center;">Entorno operativo para redactar, estructurar y exportar presentaciones profesionales con apoyo de IA.</p>
 
-    <div class="grid">
-      <div class="card">
-        <h3>Brief del proyecto</h3>
-        <label>Título</label>
-        <input placeholder="Ej: Lanzamiento producto X"/>
-        <div class="row">
-          <div>
-            <label>Audiencia</label>
-            <input placeholder="Ej: Comité dirección"/>
-          </div>
-          <div>
-            <label>Duración</label>
-            <select>
-              <option>5 min</option><option>10 min</option><option>15 min</option><option>20 min</option>
-            </select>
-          </div>
-        </div>
-        <label>Objetivo</label>
-        <textarea placeholder="Mensaje clave, llamada a la acción…"></textarea>
-        <div class="actions">
-          <button class="btn secondary" data-info="brief">ℹ️ ¿Qué es el Brief?</button>
-        </div>
+    <div class="fila">
+      <!-- Panel izquierdo -->
+      <div class="bloque">
+        <h2>Brief del proyecto</h2>
+        <label for="titulo">Título</label>
+        <input id="titulo" type="text" placeholder="Ej.: Estrategia de innovación 2025"/>
+
+        <label for="objetivo" style="margin-top:.6rem;">Objetivo</label>
+        <textarea id="objetivo" rows="4" placeholder="¿Qué quieres lograr con esta presentación?"></textarea>
+
+        <label for="publico" style="margin-top:.6rem;">Público objetivo</label>
+        <input id="publico" type="text" placeholder="Ej.: equipo interno, clientes, comité, etc."/>
       </div>
 
-      <div class="card">
-        <h3>Estructura</h3>
-        <label>Secciones</label>
-        <textarea placeholder="1) Apertura&#10;2) Problema&#10;3) Propuesta&#10;4) Cierre"></textarea>
-        <div class="actions">
-          <button class="btn primary" data-info="guion">Generar guion</button>
-          <button class="btn secondary" data-info="borrar">Borrar</button>
-        </div>
-        <p class="muted">El motor IA orquesta la narrativa y propone tiempos por sección.</p>
-      </div>
-
-      <div class="card">
-        <h3>Salida</h3>
-        <label>Formato</label>
-        <select>
-          <option>PDF</option><option>PPTX</option><option>Markdown</option>
+      <!-- Panel derecho -->
+      <div class="bloque">
+        <h2>Parámetros</h2>
+        <label for="tono">Tono</label>
+        <select id="tono">
+          <option>Profesional</option>
+          <option>Amigable</option>
+          <option>Formal</option>
+          <option>Inspirador</option>
         </select>
-        <label>Notas al presentador</label>
-        <textarea placeholder="Puntos de énfasis, pausas, ejemplos…"></textarea>
-        <div class="actions">
-          <button class="btn primary" data-info="exportar">Exportar</button>
-          <button class="btn secondary" data-info="preview">Previsualizar</button>
+
+        <label for="duracion" style="margin-top:.6rem;">Duración prevista (min)</label>
+        <input id="duracion" type="number" min="5" max="90" value="20"/>
+
+        <div class="acciones">
+          <button class="btn" onclick="generar()">⚙️ Generar índice</button>
+          <button class="btn secundario" onclick="exportar()">📤 Exportar</button>
         </div>
       </div>
     </div>
-
-    <footer>
-      © 2025 Nova & Pablo Monge — Todos los derechos reservados ·
-      <a class="link" href="./index.html">Volver a inicio</a>
-    </footer>
   </main>
 
-  <!-- Cinta DEMO -->
-  <div id="ribbon" class="demo-ribbon" style="display:none">DEMO</div>
-
-  <!-- Modal informativo -->
-  <div id="backdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="modal" role="document">
-      <h3 id="modalTitle">Información</h3>
-      <p id="modalBody">Contenido</p>
-      <button class="close" id="modalClose">Cerrar</button>
-    </div>
-  </div>
+  <footer>
+    © 2025 Nova & Pablo Monge — Todos los derechos reservados
+  </footer>
 
   <script>
-    (function(){
-      const params = new URLSearchParams(location.search);
-      const isDemo = params.get('demo') === '1';
+    function generar(){
+      alert("Generación de índice: esta es una demostración funcional. La IA se integrará en la siguiente versión.");
+    }
 
-      const ribbon = document.getElementById('ribbon');
-      const banner = document.getElementById('demoBanner');
-
-      // Mapa de mensajes informativos por botón
-      const infoTexts = {
-        brief: {
-          title: "Brief — ¿qué vería el cliente aquí?",
-          body: "En la versión completa, aquí defines el contexto: título, audiencia, duración y objetivo. El sistema usa estos datos para ajustar tono, ritmo y foco del guion."
-        },
-        guion: {
-          title: "Generar guion",
-          body: "Orquesta secciones, tiempos estimados y puntos clave según el Brief. En DEMO no se ejecuta el motor; solo visualizas la interfaz."
-        },
-        borrar: {
-          title: "Borrar",
-          body: "Limpia el área de texto de la sección. En DEMO esta acción no modifica nada."
-        },
-        exportar: {
-          title: "Exportar",
-          body: "Genera el archivo final en el formato elegido (PDF, PPTX o Markdown) con la estructura y notas. En DEMO no se genera archivo."
-        },
-        preview: {
-          title: "Previsualizar",
-          body: "Muestra una vista previa del guion antes de exportar. En DEMO la vista previa real no se carga; esta es una demostración segura."
-        }
-      };
-
-      // Modal helpers
-      const backdrop = document.getElementById('backdrop');
-      const mt = document.getElementById('modalTitle');
-      const mb = document.getElementById('modalBody');
-      const closeBtn = document.getElementById('modalClose');
-      function openModal(key){
-        const data = infoTexts[key] || {title:"Información", body:"Función demostrativa."};
-        mt.textContent = data.title;
-        mb.textContent = data.body;
-        backdrop.style.display = 'flex';
-        backdrop.setAttribute('aria-hidden','false');
-      }
-      function closeModal(){
-        backdrop.style.display = 'none';
-        backdrop.setAttribute('aria-hidden','true');
-      }
-      closeBtn.addEventListener('click', closeModal);
-      backdrop.addEventListener('click', (e)=>{ if(e.target === backdrop) closeModal(); });
-
-      if (isDemo) {
-        // Activar elementos visuales de DEMO
-        ribbon.style.display = 'block';
-        banner.style.display = 'block';
-
-        // Bloquear interacción en campos y formularios
-        const sels = 'input, textarea, select';
-        document.querySelectorAll(sels).forEach(el => {
-          el.disabled = true;
-          el.addEventListener('click', e => e.preventDefault(), true);
-          el.addEventListener('input', e => e.preventDefault(), true);
-          el.addEventListener('change', e => e.preventDefault(), true);
-          el.addEventListener('keydown', e => e.preventDefault(), true);
-        });
-
-        // Botones muestran información (no ejecutan lógica real)
-        document.querySelectorAll('button[data-info]').forEach(btn=>{
-          btn.addEventListener('click', (e)=>{
-            e.preventDefault();
-            const key = btn.getAttribute('data-info');
-            openModal(key);
-          });
-        });
-
-      } else {
-        // Si NO es demo, podrías conectar aquí la lógica real.
-        // Por ahora mantenemos la interfaz sin bloqueo.
-      }
-    })();
+    function exportar(){
+      alert("Exportación: el contenido se podrá descargar en PDF o Word en futuras versiones comerciales.");
+    }
   </script>
 </body>
-    feat: demo bloqueada con modales informativos
 </html>
