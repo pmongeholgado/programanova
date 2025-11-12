@@ -5,26 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Programa Nova – Generador IA Orquestadora</title>
   <link rel="icon" href="https://programanovapresentaciones.com/favicon.ico">
+
   <style>
     body {
       font-family: "Segoe UI", sans-serif;
-      background-color: #0d1117;
-      color: #e6edf3;
+      background-color: #e8ecf1;
+      color: #1a1a1a;
       text-align: center;
       padding: 40px;
     }
     h1 {
-      color: #4af626;
+      color: #058240;
       font-size: 2.4em;
     }
     h2 {
-      color: #58a6ff;
+      color: #0057b3;
+      font-weight: 600;
     }
     .boton {
       display: inline-block;
       margin: 12px;
       padding: 12px 20px;
-      background: #238636;
+      background: #0a66c2;
       color: #fff;
       text-decoration: none;
       border-radius: 8px;
@@ -32,32 +34,32 @@
       font-weight: bold;
     }
     .boton:hover {
-      background: #2ea043;
+      background: #004a93;
     }
     .bloque {
       margin: 40px auto;
-      background: #161b22;
+      background: #f9fafc;
       padding: 25px;
       border-radius: 10px;
-      max-width: 800px;
-      box-shadow: 0 0 15px rgba(0, 255, 100, 0.15);
+      max-width: 850px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
     footer {
       margin-top: 40px;
       font-size: 0.9em;
-      color: #8b949e;
+      color: #4b5563;
     }
     footer small {
       display: block;
       margin-top: 8px;
-      color: #4af626;
+      color: #058240;
     }
   </style>
 </head>
 
 <body>
   <h1>🧠 Programa Nova – Generador IA Orquestadora</h1>
-  <p>Bienvenido al entorno completo de <strong>Programa Nova</strong>.</p>
+  <p>Entorno completo de <strong>Programa Nova</strong> para trabajo integral y pruebas internas.</p>
   <h2>Modo activo: <span id="modo"></span></h2>
 
   <div class="bloque">
@@ -78,7 +80,7 @@
     const modo = params.get("modo") === "privado" ? "Privado (uso interno)" : "Demo Público";
     document.getElementById("modo").textContent = modo;
 
-    // Mostrar alerta de seguridad en modo privado
+    // Mostrar alerta de bienvenida en modo privado
     if (params.get("modo") === "privado") {
       alert("Acceso concedido: modo completo activado. Bienvenido, Pablo.");
     }
