@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programa Nova – Generador IA Orquestadora</title>
+  <link rel="icon" href="https://programanovapresentaciones.com/favicon.ico">
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: #0d1117;
+      color: #e6edf3;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      color: #4af626;
+      font-size: 2.4em;
+    }
+    h2 {
+      color: #58a6ff;
+    }
+    .boton {
+      display: inline-block;
+      margin: 12px;
+      padding: 12px 20px;
+      background: #238636;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: 0.3s;
+      font-weight: bold;
+    }
+    .boton:hover {
+      background: #2ea043;
+    }
+    .bloque {
+      margin: 40px auto;
+      background: #161b22;
+      padding: 25px;
+      border-radius: 10px;
+      max-width: 800px;
+      box-shadow: 0 0 15px rgba(0, 255, 100, 0.15);
+    }
+    footer {
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #8b949e;
+    }
+    footer small {
+      display: block;
+      margin-top: 8px;
+      color: #4af626;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>🧠 Programa Nova – Generador IA Orquestadora</h1>
+  <p>Bienvenido al entorno completo de <strong>Programa Nova</strong>.</p>
+  <h2>Modo activo: <span id="modo"></span></h2>
+
+  <div class="bloque">
+    <p>Desde aquí puedes acceder a las secciones principales del programa:</p>
+    <a href="presentaciones.html" class="boton">🎬 Generar Presentaciones IA</a>
+    <a href="README_Estetico_Programa_Nova_V1.0.pdf" class="boton">📄 Ver Guía Estética PDF</a>
+    <a href="memoria_compartida.html" class="boton">💫 Memoria Compartida</a>
+  </div>
+
+  <footer>
+    © 2025 Nova & Pablo Monge — Todos los derechos reservados
+    <small>Versión V1.0 — Modo Operativo</small>
+  </footer>
+
+  <script>
+    // Detectar si se abrió en modo privado desde el triple clic
+    const params = new URLSearchParams(window.location.search);
+    const modo = params.get("modo") === "privado" ? "Privado (uso interno)" : "Demo Público";
+    document.getElementById("modo").textContent = modo;
+
+    // Mostrar alerta de seguridad en modo privado
+    if (params.get("modo") === "privado") {
+      alert("Acceso concedido: modo completo activado. Bienvenido, Pablo.");
+    }
+  </script>
+</body>
+</html>
