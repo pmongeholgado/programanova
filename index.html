@@ -1,199 +1,168 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Programa Nova — Presentación oficial V1.0 DEMO</title>
-  <meta name="description" content="Programa Nova — Generador IA Orquestadora. Entorno estable para crear presentaciones con IA. Edición V1.0 DEMO." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
-
-  <!-- === Estilos principales === -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Orchestrator — Presentación Clientes</title>
+  <meta name="description" content="AI Orchestrator: orquestación sencilla y potente de múltiples Inteligencias Artificiales para tu negocio." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      margin: 0;
-      font-family: "Inter", sans-serif;
-      background: radial-gradient(circle at 20% 20%, #0d1220, #0a0e1a 80%);
-      color: #e6e6e6;
+    :root{
+      --bg:#f7f9fc; --panel:#ffffff; --text:#0f172a; --muted:#475569;
+      --primary:#2563eb; --primary-600:#1d4ed8; --ring:#93c5fd; --line:#e5e7eb;
+      --ok:#10b981; --shadow:0 10px 30px rgba(15,23,42,.06); --radius:16px;
     }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{margin:0; font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+      background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
+    a{color:var(--primary); text-decoration:none} a:hover{text-decoration:underline}
+    .container{max-width:1100px; margin:0 auto; padding:24px}
 
-    main {
-      max-width: 960px;
-      margin: 3rem auto;
-      padding: 2rem;
-      background: rgba(255, 255, 255, 0.02);
-      border-radius: 20px;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
-    }
+    /* Header */
+    header{position:sticky; top:0; z-index:10; backdrop-filter:saturate(120%) blur(6px);
+      background:rgba(247,249,252,.75); border-bottom:1px solid var(--line);}
+    .nav{display:flex; align-items:center; justify-content:space-between; gap:16px}
+    .brand{display:flex; align-items:center; gap:12px}
+    .logo{width:36px; height:36px; border-radius:10px; display:grid; place-items:center;
+      background:conic-gradient(from 180deg at 50% 50%, #1d4ed8, #60a5fa, #1d4ed8); box-shadow:var(--shadow);}
+    .logo svg{width:22px; height:22px; color:white}
+    .brand .title{font-weight:700; letter-spacing:.2px}
+    .nav-ctas{display:flex; gap:10px; flex-wrap:wrap}
+    .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 16px;
+      border-radius:12px; border:1px solid var(--line); background:var(--panel); box-shadow:var(--shadow);
+      font-weight:600; transition:all .18s ease; cursor:pointer; color:var(--text); text-decoration:none}
+    .btn:hover{transform:translateY(-1px)} .btn:focus{outline:none; box-shadow:0 0 0 4px var(--ring)}
+    .btn-primary{background:var(--primary); color:#fff; border-color:transparent}
+    .btn-primary:hover{background:var(--primary-600)}
 
-    h1 {
-      font-size: 2.6rem;
-      margin-bottom: 1rem;
-    }
+    /* Hero */
+    .hero{padding:56px 24px}
+    .hero-grid{display:grid; grid-template-columns:1.2fr .8fr; gap:28px}
+    .headline{font-size:clamp(28px,4vw,44px); line-height:1.1; margin:0 0 12px; font-weight:800}
+    .sub{font-size:clamp(16px,2vw,18px); color:var(--muted); margin:0 0 22px}
+    .cta-row{display:flex; gap:12px; flex-wrap:wrap}
 
-    h1 span {
-      color: #3eff9c;
-    }
+    /* Steps + features */
+    .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:28px}
+    .step{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+      padding:16px; box-shadow:var(--shadow)}
+    .kicker{display:inline-flex; align-items:center; gap:8px; font-size:12px; font-weight:700;
+      text-transform:uppercase; letter-spacing:.5px; color:var(--muted)}
+    .kicker .dot{width:8px; height:8px; border-radius:999px; background:var(--ok)}
 
-    p {
-      font-size: 1rem;
-      line-height: 1.6;
-      color: #cfcfcf;
-    }
+    .features{padding:12px 24px 36px}
+    .feature-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+    .card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+      padding:18px; box-shadow:var(--shadow)}
+    .card h3{margin:0 0 8px}
+    .muted{color:var(--muted)}
 
-    .buttons {
-      margin: 1.5rem 0;
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
+    /* Footer */
+    footer{border-top:1px solid var(--line); background:#fff}
+    .foot{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:22px 0;
+      font-size:14px; color:var(--muted)}
 
-    .btn {
-      padding: 0.7rem 1.4rem;
-      font-weight: 600;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-      text-decoration: none;
-      display: inline-block;
-    }
-
-    .btn.demo {
-      background: #0da9ff;
-      color: #fff;
-    }
-
-    .btn.demo:hover {
-      background: #0992db;
-    }
-
-    .btn.pdf {
-      background: #3a3a4a;
-      color: #d1d1d1;
-    }
-
-    .btn.pdf:hover {
-      background: #4b4b5a;
-    }
-
-    .btn.contact {
-      background: #222bff;
-      color: #fff;
-    }
-
-    .btn.contact:hover {
-      background: #1c22d4;
-    }
-
-    .cards {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-top: 2rem;
-    }
-
-    .card {
-      flex: 1 1 300px;
-      background: rgba(255, 255, 255, 0.04);
-      border-radius: 12px;
-      padding: 1.2rem;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-    }
-
-    .card h3 {
-      margin-top: 0;
-      color: #fff;
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 2.5rem;
-      font-size: 0.85rem;
-      color: #aaa;
-    }
-
-    footer a {
-      color: #3eff9c;
-      text-decoration: none;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
-
-    /* === Cinta roja DEMO === */
-    .demo-ribbon {
-      position: fixed;
-      top: 0;
-      right: -48px;
-      background-color: #d8232a;
-      color: #fff;
-      padding: 8px 22px;
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      transform: rotate(45deg);
-      transform-origin: top right;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
-      z-index: 9999;
-      pointer-events: none;
-    }
-
-    @media (max-width: 480px) {
-      .demo-ribbon {
-        right: -56px;
-        padding: 6px 18px;
-        font-size: 12px;
-      }
-    }
+    @media (max-width:900px){.hero-grid{grid-template-columns:1fr}}
+    @media (max-width:800px){.feature-grid{grid-template-columns:1fr}.steps{grid-template-columns:1fr}}
   </style>
 </head>
-
 <body>
-  <main>
-    <h1>Presentación oficial — Edición <span>V1.0 DEMO</span></h1>
-    <p>
-      <strong>Programa Nova · Generador IA Orquestadora</strong><br />
-      Un entorno estable y sencillo para estructurar presentaciones con apoyo de IA, listo para mostrar a clientes y colaboradores. Esta demo es segura: verás toda la interfaz pero los campos están protegidos.
-    </p>
-
-    <div class="buttons">
-      <a href="presentaciones.html" class="btn demo">🚀 Ver DEMO interactiva</a>
-      <a href="README_Estetico_Programa_Nova_V1.0.pdf" class="btn pdf">📄 Ver documento estético (PDF)</a>
-      <a
-        href="https://mail.google.com/mail/?view=cm&fs=1&to=pmongeholgado@gmail.com&su=Interés%20en%20Programa%20Nova%20V1.0&body=Hola,%20me%20interesa%20conocer%20más%20sobre%20Programa%20Nova%20V1.0.%20Gracias."
-        target="_blank"
-        class="btn contact"
-      >💌 Contacto</a>
+  <header>
+    <div class="container nav">
+      <div class="brand" aria-label="AI Orchestrator">
+        <div class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 12h18"/><path d="M12 3v18"/>
+          </svg>
+        </div>
+        <div class="title">AI Orchestrator</div>
+      </div>
+      <nav class="nav-ctas">
+        <a class="btn" href="./presentaciones/" aria-label="Ver presentaciones">Presentaciones</a>
+        <a id="btn-demo-top" class="btn btn-primary" href="./demo/" aria-label="Probar demo">Probar demo</a>
+        <a class="btn"
+           href="mailto:j.pablo2006@gmail.com?subject=Contacto%20AI%20Orchestrator&body=Hola%2C%20me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n%20sobre%20AI%20Orchestrator."
+           aria-label="Contacto por correo">Contacto</a>
+      </nav>
     </div>
+  </header>
 
-    <div class="cards">
-      <div class="card">
-        <h3>📢 Publicación gratuita</h3>
-        <p>Alojado en GitHub Pages con una URL pública para compartir fácilmente.</p>
+  <main class="container">
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="kicker"><span class="dot"></span> Orquestación IA Multimotor</div>
+          <h1 class="headline">Conecta, orquesta y lanza IA en minutos</h1>
+          <p class="sub">La capa de orquestación que integra múltiples adaptadores de IA con una interfaz clara, ligera y lista para clientes. Sin complicaciones, con seguridad y registro.</p>
+          <div class="cta-row">
+            <a id="btn-demo-hero" class="btn btn-primary" href="./demo/">Probar demo</a>
+            <a class="btn" href="./presentaciones/">Ver presentaciones</a>
+          </div>
+
+          <div class="steps" aria-labelledby="pasos-title">
+            <div class="step">
+              <h3 id="pasos-title">Acceso rápido en 3 clics</h3>
+              <p class="muted">Flujo restaurado como la última versión estable.</p>
+              <ol style="margin:8px 0 0 18px; padding:0">
+                <li><strong>Clic 1:</strong> <a href="./demo/">Probar demo</a></li>
+                <li><strong>Clic 2:</strong> <a href="./app/">Área de trabajo</a></li>
+                <li><strong>Clic 3:</strong> <a href="./program/">Abrir Programa</a></li>
+              </ol>
+            </div>
+            <div class="step">
+              <h3>Contacto directo</h3>
+              <p class="muted">Se abrirá tu cliente de correo predeterminado con tu dirección ya puesta (sin Outlook forzado).</p>
+              <a class="btn" href="mailto:j.pablo2006@gmail.com?subject=Consulta%20AI%20Orchestrator">Enviar correo</a>
+            </div>
+            <div class="step">
+              <h3>Ligero y responsive</h3>
+              <p class="muted">Carga optimizada sin imágenes pesadas. Diseño claro y adaptable a móvil, tablet y escritorio.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" role="img" aria-label="Vista previa del panel">
+          <div style="aspect-ratio:16/10; width:100%; border-radius:12px; border:1px dashed var(--line);
+                      display:grid; place-items:center; background:linear-gradient(180deg, rgba(226,232,240,.45), rgba(241,245,249,.9));">
+            <div style="text-align:center">
+              <div style="font-weight:700">Vista previa</div>
+              <div class="muted">Panel de orquestación — estilo corporativo azul/gris</div>
+            </div>
+          </div>
+          <div style="margin-top:12px" class="muted">* Ilustrativo para mantener la portada ligera.</div>
+        </div>
       </div>
+    </section>
 
-      <div class="card">
-        <h3>🔒 Modo DEMO seguro</h3>
-        <p>Cinta “DEMO”, campos bloqueados y navegación activa. Nadie puede modificar contenido.</p>
+    <section class="features">
+      <div class="feature-grid">
+        <article class="card">
+          <h3>Orquestación modular</h3>
+          <p class="muted">Adaptadores desacoplados (p. ej., OpenAI) con registro centralizado. Fácil de ampliar.</p>
+        </article>
+        <article class="card">
+          <h3>API lista para clientes</h3>
+          <p class="muted">Endpoints limpios (FastAPI) y respuestas consistentes para integraciones rápidas.</p>
+        </article>
+        <article class="card">
+          <h3>Trazas y control</h3>
+          <p class="muted">Estructura preparada para logs y manejo de errores sin ruido.</p>
+        </article>
       </div>
-
-      <div class="card">
-        <h3>📄 PDF estético oficial</h3>
-        <p>Documento listo para enviar a clientes, con diseño limpio y objetivo del proyecto.</p>
-      </div>
-    </div>
-
-    <footer>
-      © 2025 Nova & Pablo Monge — Todos los derechos reservados ·
-      <a href="registro_historico_coautoria.html">Registro histórico de coautoría</a>
-    </footer>
+    </section>
   </main>
 
-  <!-- Cinta visible en todo momento -->
-  <div class="demo-ribbon" aria-hidden="true">DEMO</div>
+  <footer>
+    <div class="container foot">
+      <div>© <span id="y"></span> AI Orchestrator · Tecnonova</div>
+      <div><a href="#" aria-label="Aviso legal">Aviso legal</a></div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
