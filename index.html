@@ -1,104 +1,199 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Programa Nova – Portada de Clientes</title>
-  <link rel="icon" href="https://programanovapresentaciones.com/favicon.ico">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Programa Nova — Presentación oficial V1.0 DEMO</title>
+  <meta name="description" content="Programa Nova — Generador IA Orquestadora. Entorno estable para crear presentaciones con IA. Edición V1.0 DEMO." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
 
+  <!-- === Estilos principales === -->
   <style>
     body {
-      font-family: "Segoe UI", sans-serif;
-      background-color: #e8ecf1;
-      color: #1a1a1a;
-      text-align: center;
-      padding: 40px;
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      background: radial-gradient(circle at 20% 20%, #0d1220, #0a0e1a 80%);
+      color: #e6e6e6;
     }
+
+    main {
+      max-width: 960px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+    }
+
     h1 {
-      color: #058240;
-      font-size: 2.6em;
+      font-size: 2.6rem;
+      margin-bottom: 1rem;
     }
-    h2 {
-      color: #0057b3;
+
+    h1 span {
+      color: #3eff9c;
+    }
+
+    p {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #cfcfcf;
+    }
+
+    .buttons {
+      margin: 1.5rem 0;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.7rem 1.4rem;
       font-weight: 600;
-    }
-    .boton {
-      display: inline-block;
-      margin: 12px;
-      padding: 12px 20px;
-      background: #0a66c2;
-      color: #fff;
-      text-decoration: none;
+      border: none;
       border-radius: 8px;
+      cursor: pointer;
       transition: 0.3s;
-      font-weight: bold;
-    }
-    .boton:hover {
-      background: #004a93;
-    }
-    .bloque {
-      margin: 40px auto;
-      background: #f9fafc;
-      padding: 25px;
-      border-radius: 10px;
-      max-width: 850px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    footer {
-      margin-top: 40px;
-      font-size: 0.9em;
-      color: #4b5563;
-    }
-    footer a {
-      color: #058240;
       text-decoration: none;
-      font-weight: bold;
+      display: inline-block;
     }
+
+    .btn.demo {
+      background: #0da9ff;
+      color: #fff;
+    }
+
+    .btn.demo:hover {
+      background: #0992db;
+    }
+
+    .btn.pdf {
+      background: #3a3a4a;
+      color: #d1d1d1;
+    }
+
+    .btn.pdf:hover {
+      background: #4b4b5a;
+    }
+
+    .btn.contact {
+      background: #222bff;
+      color: #fff;
+    }
+
+    .btn.contact:hover {
+      background: #1c22d4;
+    }
+
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .card {
+      flex: 1 1 300px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      padding: 1.2rem;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      color: #fff;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 2.5rem;
+      font-size: 0.85rem;
+      color: #aaa;
+    }
+
+    footer a {
+      color: #3eff9c;
+      text-decoration: none;
+    }
+
     footer a:hover {
       text-decoration: underline;
     }
-    small {
-      display: block;
-      margin-top: 10px;
-      color: #058240;
+
+    /* === Cinta roja DEMO === */
+    .demo-ribbon {
+      position: fixed;
+      top: 0;
+      right: -48px;
+      background-color: #d8232a;
+      color: #fff;
+      padding: 8px 22px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transform: rotate(45deg);
+      transform-origin: top right;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    @media (max-width: 480px) {
+      .demo-ribbon {
+        right: -56px;
+        padding: 6px 18px;
+        font-size: 12px;
+      }
     }
   </style>
 </head>
 
 <body>
-  <h1>Presentación oficial — <span style="color:#058240;">Portada de clientes</span></h1>
-  <p><strong>Programa Nova · Generador IA Orquestadora</strong> — acceso directo a la demo, PDF y contacto.</p>
- 
-<div class="bloque">
-  <a href="demo.html" class="boton">🚀 Ver DEMO interactiva</a>
-  <a href="README_Estetico_Programa_Nova_V1.0.pdf" class="boton">📄 Ver documento estético (PDF)</a>
-  <a href="mailto:j.pablo2006@hotmail.com?subject=Consulta%20sobre%20Programa%20Nova%20V1.0&body=Hola%20Pablo%2C%20me%20interesa%20obtener%20más%20información%20sobre%20el%20Programa%20Nova%20V1.0.%20Gracias." class="boton">📬 Contacto</a>
-</div>  
+  <main>
+    <h1>Presentación oficial — Edición <span>V1.0 DEMO</span></h1>
+    <p>
+      <strong>Programa Nova · Generador IA Orquestadora</strong><br />
+      Un entorno estable y sencillo para estructurar presentaciones con apoyo de IA, listo para mostrar a clientes y colaboradores. Esta demo es segura: verás toda la interfaz pero los campos están protegidos.
+    </p>
 
-  <div class="bloque">
-    <h2>Características principales</h2>
-    <p>🆓 <strong>Publicación gratuita</strong>: alojado en GitHub Pages con URL pública para compartir fácilmente.</p>
-    <p>🔒 <strong>Modo DEMO seguro</strong>: visualización completa, pero sin permisos de edición o interacción.</p>
-    <p>📘 <strong>PDF estético oficial</strong>: documento profesional, limpio y listo para enviar a clientes o colaboradores.</p>
-  </div>
+    <div class="buttons">
+      <a href="presentaciones.html" class="btn demo">🚀 Ver DEMO interactiva</a>
+      <a href="README_Estetico_Programa_Nova_V1.0.pdf" class="btn pdf">📄 Ver documento estético (PDF)</a>
+      <a
+        href="https://mail.google.com/mail/?view=cm&fs=1&to=pmongeholgado@gmail.com&su=Interés%20en%20Programa%20Nova%20V1.0&body=Hola,%20me%20interesa%20conocer%20más%20sobre%20Programa%20Nova%20V1.0.%20Gracias."
+        target="_blank"
+        class="btn contact"
+      >💌 Contacto</a>
+    </div>
 
-  <footer>
-    © 2025 Nova & Pablo Monge — Todos los derechos reservados  
-    <a href="memoria_compartida.html">🕊️ Memoria compartida</a>  
-    <small>Versión V1.0 — Portada renovada con fondo claro</small>
-  </footer>
+    <div class="cards">
+      <div class="card">
+        <h3>📢 Publicación gratuita</h3>
+        <p>Alojado en GitHub Pages con una URL pública para compartir fácilmente.</p>
+      </div>
 
-  <script>
-    // Acceso oculto al modo completo mediante triple clic sobre el año
-    let contadorClics = 0;
-    const footer = document.querySelector("footer");
-    footer.addEventListener("click", () => {
-      contadorClics++;
-      if (contadorClics === 3) {
-        window.location.href = "demo.html?modo=privado";
-      }
-      setTimeout(() => (contadorClics = 0), 1000);
-    });
-  </script>
+      <div class="card">
+        <h3>🔒 Modo DEMO seguro</h3>
+        <p>Cinta “DEMO”, campos bloqueados y navegación activa. Nadie puede modificar contenido.</p>
+      </div>
+
+      <div class="card">
+        <h3>📄 PDF estético oficial</h3>
+        <p>Documento listo para enviar a clientes, con diseño limpio y objetivo del proyecto.</p>
+      </div>
+    </div>
+
+    <footer>
+      © 2025 Nova & Pablo Monge — Todos los derechos reservados ·
+      <a href="registro_historico_coautoria.html">Registro histórico de coautoría</a>
+    </footer>
+  </main>
+
+  <!-- Cinta visible en todo momento -->
+  <div class="demo-ribbon" aria-hidden="true">DEMO</div>
 </body>
 </html>
