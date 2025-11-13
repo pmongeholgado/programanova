@@ -1,100 +1,75 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Presentaciones · AI Orchestrator</title>
-  <meta name="description" content="Presentación corporativa de AI Orchestrator con guía hablada y acceso a la demo.">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#f7f9fc; --panel:#fff; --text:#0f172a; --muted:#475569;
-      --primary:#2563eb; --primary-600:#1d4ed8; --line:#e5e7eb;
-      --ring:#93c5fd; --shadow:0 10px 30px rgba(15,23,42,.06);
-      --radius:16px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
-      background:var(--bg); color:var(--text);
-    }
-    .container{max-width:1000px; margin:0 auto; padding:24px}
-    a{color:var(--primary); text-decoration:none}
-    a:hover{text-decoration:underline}
-    .btn{
-      display:inline-flex; align-items:center; gap:8px; padding:12px 16px;
-      border-radius:12px; border:1px solid var(--line); background:var(--panel);
-      box-shadow:var(--shadow); font-weight:600; color:var(--text); transition:all .18s ease;
-    }
-    .btn:hover{transform:translateY(-1px)}
-    .btn-primary{background:var(--primary); color:#fff; border-color:transparent}
-    .btn-primary:hover{background:var(--primary-600)}
-    .card{
-      background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
-      padding:18px; box-shadow:var(--shadow)
-    }
-    header{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:18px}
-    .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
-    .muted{color:var(--muted)}
-    audio{width:100%; margin-top:10px; outline:none}
-    @media (max-width:800px){.grid{grid-template-columns:1fr}}
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Programa Nova – Área de trabajo</title>
+
+    <style>
+        body {
+            background-color: #e9eef5; /* Fondo azul/gris suave */
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .contenedor {
+            max-width: 900px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0b3c87;
+            margin-bottom: 20px;
+        }
+
+        .botones {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .botones button {
+            padding: 12px 25px;
+            border: none;
+            background: #1269ff;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .botones button:hover {
+            background: #0b4fcc;
+        }
+    </style>
 </head>
+
 <body>
-  <div class="container">
-    <header>
-      <div><a href="./index.html" class="btn" aria-label="Volver a portada">← Volver</a></div>
-      <div class="muted">Presentaciones · AI Orchestrator</div>
-    </header>
+    <div class="contenedor">
+        <h1>🧭 Programa Nova — Área de trabajo</h1>
 
-    <section class="grid">
-      <article class="card">
-        <h3 style="margin:0 0 6px">Presentación con guía hablada</h3>
-        <p class="muted" style="margin:0 0 12px">
-          Reproduce la guía hablada de la presentación oficial de AI Orchestrator.
-          Puedes pausarla o reiniciarla en cualquier momento.
+        <p style="text-align:center; font-size:17px;">
+            Aquí puedes usar <b>todas las funciones</b> del programa sin restricciones.<br>
+            Esta vista es privada y solo accesible desde <b>Probar demo</b>.
         </p>
 
-        <!-- Reproductor de audio -->
-        <audio controls preload="metadata">
-          <source src="./guia_hablada.mp3" type="audio/mpeg">
-          Tu navegador no soporta audio HTML5.
-        </audio>
-
-        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px">
-          <a class="btn btn-primary" href="./demo.html">Ir a la demo</a>
-          <a class="btn" href="mailto:j.pablo2006@gmail.com?subject=Contacto%20Presentaciones%20AI%20Orchestrator">Contacto</a>
+        <div class="botones">
+            <button onclick="alert('Opción 1 funcionando — Nova & Pablo')">Función 1</button>
+            <button onclick="alert('Opción 2 funcionando — Nova & Pablo')">Función 2</button>
+            <button onclick="alert('Opción 3 funcionando — Nova & Pablo')">Función 3</button>
+            <button onclick="alert('Función extra — Nuestro Proyecto sigue creciendo')">Función extra</button>
         </div>
-      </article>
 
-      <article class="card">
-        <h3 style="margin:0 0 6px">Material complementario</h3>
-        <p class="muted" style="margin:0 0 12px">
-          Accede al archivo de presentación (.PPTX) o a la guía visual (.PDF) cuando estén disponibles.
+        <p style="text-align:center; margin-top:35px;">
+            <a href="index.html">⬅️ Volver a la portada</a>
         </p>
-        <div style="display:flex; gap:10px; flex-wrap:wrap">
-          <a class="btn" href="#" onclick="alert('Aquí enlazarás tu archivo .PPTX final'); return false;">Abrir PPT</a>
-          <a class="btn" href="#" onclick="alert('Aquí enlazarás tu README.pdf estético'); return false;">Abrir PDF</a>
-        </div>
-      </article>
-    </section>
-
-    <section class="card" style="margin-top:14px">
-      <h3 style="margin:0 0 8px">¿Cómo funciona la guía hablada?</h3>
-      <p class="muted" style="margin:0">
-        Pulsa “Play” para escuchar la narración del proyecto AI Orchestrator: su arquitectura, propósito y
-        características clave. Puedes reemplazar el archivo <code>guia_hablada.mp3</code> por tu propio audio.
-      </p>
-    </section>
-
-    <footer style="margin-top:30px; text-align:center; font-size:14px; color:var(--muted)">
-      © <span id="y"></span> AI Orchestrator · Tecnonova
-    </footer>
-  </div>
-
-  <script>
-    document.getElementById('y').textContent = new Date().getFullYear();
-  </script>
+    </div>
 </body>
 </html>
