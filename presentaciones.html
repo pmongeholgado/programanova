@@ -3,73 +3,137 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Programa Nova – Área de trabajo</title>
+    <title>Presentaciones – Programa Nova</title>
 
+    <!-- Estilos rápidos corporativos -->
     <style>
         body {
-            background-color: #e9eef5; /* Fondo azul/gris suave */
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
             margin: 0;
-            font-family: Arial, sans-serif;
+            padding: 0;
+            color: #1a1a1a;
         }
 
-        .contenedor {
-            max-width: 900px;
-            margin: 40px auto;
+        header {
             background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0a2a66;
+        }
+
+        nav a {
+            margin-left: 22px;
+            text-decoration: none;
+            color: #1a1a1a;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            color: #0a58f0;
+        }
+
+        .button-blue {
+            background: #0a58f0;
+            color: white !important;
+            padding: 10px 18px;
+            border-radius: 7px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 15px;
+        }
+
+        .button-blue:hover {
+            background: #0046c7;
+        }
+
+        .container {
+            padding: 60px 9%;
         }
 
         h1 {
+            font-size: 36px;
+            color: #0a2a66;
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 28px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 28px;
+        }
+
+        .footer {
             text-align: center;
-            color: #0b3c87;
-            margin-bottom: 20px;
-        }
-
-        .botones {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .botones button {
-            padding: 12px 25px;
-            border: none;
-            background: #1269ff;
-            color: white;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .botones button:hover {
-            background: #0b4fcc;
+            padding: 40px 20px;
+            color: #666;
+            font-size: 14px;
         }
     </style>
 </head>
 
 <body>
-    <div class="contenedor">
-        <h1>🧭 Programa Nova — Área de trabajo</h1>
 
-        <p style="text-align:center; font-size:17px;">
-            Aquí puedes usar <b>todas las funciones</b> del programa sin restricciones.<br>
-            Esta vista es privada y solo accesible desde <b>Probar demo</b>.
-        </p>
+    <!-- NAV SUPERIOR -->
+    <header>
+        <div class="logo">Programa Nova · Presentaciones</div>
 
-        <div class="botones">
-            <button onclick="alert('Opción 1 funcionando — Nova & Pablo')">Función 1</button>
-            <button onclick="alert('Opción 2 funcionando — Nova & Pablo')">Función 2</button>
-            <button onclick="alert('Opción 3 funcionando — Nova & Pablo')">Función 3</button>
-            <button onclick="alert('Función extra — Nuestro Proyecto sigue creciendo')">Función extra</button>
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="demo.html">Probar demo</a>
+            <a href="programa.html" class="button-blue">Abrir Programa</a>
+        </nav>
+    </header>
+
+    <!-- CUERPO PRINCIPAL -->
+    <div class="container">
+        <h1>Presentaciones generadas</h1>
+        <p class="subtitle">Aquí puedes ver y gestionar las presentaciones creadas con el módulo IA Orquestadora.</p>
+
+        <div class="card">
+            <h3>🎤 Presentación: “Generador IA Orquestadora”</h3>
+            <p>Documento estructurado creado mediante el asistente inteligente Nova–Pablo.</p>
+            <a class="button-blue" href="programa.html">Abrir presentación</a>
         </div>
 
-        <p style="text-align:center; margin-top:35px;">
-            <a href="index.html">⬅️ Volver a la portada</a>
-        </p>
+        <div class="card">
+            <h3>📘 Versión PDF generada automáticamente</h3>
+            <p>Exportación optimizada para clientes, ferias y demostraciones comerciales.</p>
+            <a class="button-blue" href="#">(Disponible en la próxima actualización)</a>
+        </div>
+
+        <div class="card">
+            <h3>🧠 Próximas funciones</h3>
+            <ul>
+                <li>Generación automática de guiones hablados</li>
+                <li>Exportación dinámica a PowerPoint</li>
+                <li>Plantillas premium para clientes</li>
+            </ul>
+        </div>
     </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        © 2025 Programa Nova · Inteligencia Orquestada — Pablo Monge & Nova
+    </div>
+
 </body>
 </html>
