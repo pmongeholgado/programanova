@@ -1,93 +1,387 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Programa Nova – Portada de clientes</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Programa Nova · Generador IA Orquestadora · Presentaciones</title>
+  <meta name="description" content="Programa Nova — Generador IA Orquestadora de presentaciones. Capa ligera de orquestación de IA con demo interactiva y acceso directo al programa.">
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --accent: #2563eb;
+      --accent-soft: #e0ecff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border-soft: #e2e8f0;
+      --shadow-soft: 0 22px 45px rgba(15, 23, 42, 0.10);
+      --radius-xl: 18px;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: radial-gradient(circle at top, #f9fbff 0, #eef2ff 50%, #e5e7eb 100%);
+      color: var(--text-main);
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    .nav {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 18px 20px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      color: #0f172a;
+    }
+    .nav-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 12px 25px rgba(37, 99, 235, 0.55);
+      font-size: 20px;
+    }
+    .nav-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .nav-link {
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 14px;
+      color: var(--text-muted);
+      transition: background 0.18s ease, color 0.18s ease, transform 0.12s ease;
+    }
+    .nav-link:hover {
+      background: rgba(148, 163, 184, 0.12);
+      color: var(--text-main);
+      transform: translateY(-1px);
+    }
+    .nav-link.primary {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 16px 30px rgba(37, 99, 235, 0.45);
+    }
+    .nav-link.primary:hover {
+      background: #1d4ed8;
+    }
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f4f7fb;
-        }
-        .hero {
-            padding: 80px 20px;
-        }
-        .btn-main {
-            background-color: #0d6efd;
-            color: #fff;
-            border-radius: 10px;
-            padding: 12px 20px;
-            font-size: 18px;
-        }
-        .btn-main:hover {
-            background-color: #0b5ed7;
-        }
-        .card-custom {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-top: 20px;
-            box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
-        }
-        footer {
-            margin-top: 40px;
-            padding: 20px;
-            text-align: center;
-            font-size: 14px;
-            color: #555;
-        }
-        .memoria {
-            text-decoration: none;
-            color: #198754;
-        }
-    </style>
+    .hero-wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px 20px 60px;
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.6fr);
+      gap: 40px;
+      align-items: center;
+    }
+    @media (max-width: 900px) {
+      .hero-wrap {
+        grid-template-columns: minmax(0, 1fr);
+        padding-bottom: 40px;
+      }
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      background: #ecfdf3;
+      color: #166534;
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+    h1 {
+      font-size: clamp(30px, 4vw, 40px);
+      line-height: 1.1;
+      margin: 0 0 14px;
+      letter-spacing: -0.03em;
+    }
+    .hero-text {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 560px;
+      margin-bottom: 20px;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 20px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 18px 35px rgba(37, 99, 235, 0.55);
+      transition: background 0.18s ease, transform 0.12s ease,
+        box-shadow 0.18s ease;
+    }
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+      box-shadow: 0 22px 45px rgba(37, 99, 235, 0.65);
+    }
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 18px;
+      border-radius: 999px;
+      background: #e5edff;
+      color: #1e40af;
+      font-weight: 500;
+      font-size: 14px;
+      border: 1px solid rgba(129, 140, 248, 0.4);
+      cursor: pointer;
+      transition: background 0.18s ease, transform 0.12s ease;
+    }
+    .btn-ghost:hover {
+      background: #dbe3ff;
+      transform: translateY(-1px);
+    }
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 12px;
+      color: #64748b;
+    }
+    .hero-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hero-meta-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 6px;
+      background: #e0f2fe;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    .cards {
+      margin-top: 26px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+    @media (max-width: 900px) {
+      .cards {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+    .card {
+      background: var(--card);
+      border-radius: 15px;
+      padding: 16px 16px 18px;
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 14px 35px rgba(15, 23, 42, 0.07);
+    }
+    .card h3 {
+      margin: 0 0 6px;
+      font-size: 14px;
+    }
+    .card p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .card small {
+      display: block;
+      margin-top: 8px;
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    .preview-wrapper {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      padding: 18px 18px 20px;
+      box-shadow: var(--shadow-soft);
+    }
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .preview-dot-group {
+      display: inline-flex;
+      gap: 4px;
+    }
+    .preview-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #e5e7eb;
+    }
+    .preview-body {
+      background: linear-gradient(to bottom right, #eff6ff, #e0f2fe);
+      border-radius: 13px;
+      height: 210px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #1e293b;
+      text-align: center;
+    }
+    .preview-footer {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #94a3b8;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      padding: 18px 16px 26px;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+  </style>
 </head>
-
 <body>
+  <!-- NAVBAR -->
+  <header>
+    <nav class="nav">
+      <div class="nav-left">
+        <span class="nav-logo">+</span>
+        <span>Programa Nova · IA Orquestadora</span>
+      </div>
+      <div class="nav-right">
+        <a href="presentaciones.html" class="nav-link">Presentaciones</a>
+        <a href="demo.html" class="nav-link primary">Probar demo</a>
+        <a href="mailto:j.pablo2006@gmail.com" class="nav-link">Contacto</a>
+      </div>
+    </nav>
+  </header>
 
-    <div class="container text-center hero">
-        <h1 class="display-5 fw-bold">Presentación oficial — <span style="color:#00c851">Portada de clientes</span></h1>
-        <p class="lead mt-3">Acceso directo a la demo, PDF y contacto.</p>
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="hero-wrap">
+    <!-- Columna izquierda -->
+    <section>
+      <div class="pill">
+        <span class="pill-dot"></span>
+        <span>Orquestación IA multiventana</span>
+      </div>
+      <h1>Conecta, orquesta y lanza IA en minutos</h1>
+      <p class="hero-text">
+        Programa Nova — Generador IA Orquestadora de presentaciones. Una capa
+        ligera de orquestación que integra adaptadores de IA con una interfaz
+        clara, lista para clientes y preparada para comercialización.
+      </p>
 
-        <div class="mt-4">
-            <a href="demo.html?modo=seguro" class="btn btn-main me-2">🚀 Ver presentaciones</a>
-            <a href="presentaciones.html?modo=privado" class="btn btn-dark me-2">🔧 Probar demo</a>
-            <a href="mailto:j.pablo2006@hotmail.com" class="btn btn-success">💌 Contacto</a>
+      <div class="hero-actions">
+        <a href="demo.html" class="btn-primary">Probar demo</a>
+        <a href="presentaciones.html" class="btn-ghost">Ver presentaciones</a>
+      </div>
+
+      <div class="hero-meta">
+        <span><span class="hero-meta-icon">⚙️</span> Flujo guiado en 3 clics</span>
+        <span><span class="hero-meta-icon">🎧</span> Guía hablada integrada</span>
+        <span><span class="hero-meta-icon">✅</span> Listo para clientes</span>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Acceso rápido en 3 clics</h3>
+          <p>
+            Desde la portada puedes probar la demo y acceder al programa
+            principal sin complicaciones ni menús complejos.
+          </p>
+          <small>Diseño optimizado para presentaciones y demos comerciales.</small>
         </div>
-    </div>
-
-    <div class="container">
-        <div class="row justify-content-center">
-
-            <div class="col-md-4">
-                <div class="card-custom">
-                    <h5>📢 Publicación gratuita</h5>
-                    <p>Alojado en GitHub Pages con URL pública para compartir fácilmente.</p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card-custom">
-                    <h5>🔐 Modo DEMO seguro</h5>
-                    <p>Visualización completa, pero sin permisos de edición o interacción.</p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card-custom">
-                    <h5>📄 PDF estético oficial</h5>
-                    <p>Documento profesional, limpio y listo para enviar a clientes o colaboradores.</p>
-                </div>
-            </div>
-
+        <div class="card">
+          <h3>Contacto directo</h3>
+          <p>
+            Pulsando el botón de contacto se abre un correo a
+            <strong>j.pablo2006@gmail.com</strong> para gestionar demos,
+            propuestas o nuevas versiones.
+          </p>
+          <small>Fácil para que cualquier cliente pueda escribirte en un clic.</small>
         </div>
-    </div>
+        <div class="card">
+          <h3>Ligero y responsive</h3>
+          <p>
+            Portada clara y adaptada a distintos dispositivos, ideal para
+            mostrar el proyecto en reuniones, ferias o formación.
+          </p>
+          <small>Sin imágenes pesadas: carga rápida incluso en conexiones lentas.</small>
+        </div>
+      </div>
+    </section>
 
-    <footer>
-        © 2025 Nova & Pablo Monge — Todos los derechos reservados ·  
-        <a href="memoria_compartida.html" class="memoria">🕊️ Memoria compartida</a>
-    </footer>
+    <!-- Columna derecha: vista previa -->
+    <aside>
+      <div class="preview-wrapper">
+        <div class="preview-header">
+          <span>Vista previa</span>
+          <div class="preview-dot-group">
+            <span class="preview-dot"></span>
+            <span class="preview-dot"></span>
+            <span class="preview-dot"></span>
+          </div>
+        </div>
+        <div class="preview-body">
+          Panel de orquestación — estilo corporativo azul/gris<br />
+          <small>(ilustrativo, el programa completo se abre desde la demo)</small>
+        </div>
+        <div class="preview-footer">
+          Portada ligera pensada para captar interés y guiar hacia la demo y el programa.
+        </div>
+      </div>
+    </aside>
+  </main>
 
+  <footer>
+    TecnoNova · Inteligencia Orquestada para la Innovación ·
+    &copy; 2025 Pablo Monge · Programa Nova (desarrollado con asistencia de IA avanzada)
+  </footer>
 </body>
 </html>
