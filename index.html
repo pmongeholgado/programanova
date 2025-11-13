@@ -1,176 +1,93 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AI Orchestrator — Presentación Clientes</title>
-  <meta name="description" content="AI Orchestrator: capa de orquestación de IA clara, ligera y lista para clientes. Flujo en 3 clics: demo → área → programa." />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#f7f9fc; --panel:#ffffff; --text:#0f172a; --muted:#475569;
-      --primary:#2563eb; --primary-600:#1d4ed8; --line:#e5e7eb; --ring:%2393c5fd;
-      --ok:#10b981; --shadow:0 10px 30px rgba(15,23,42,.06); --radius:16px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
-      background:var(--bg); color:var(--text);
-      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-    }
-    a{color:var(--primary); text-decoration:none}
-    a:hover{text-decoration:underline}
-    .container{max-width:1100px; margin:0 auto; padding:24px}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Programa Nova – Portada de clientes</title>
 
-    /* Header */
-    header{
-      position:sticky; top:0; z-index:10;
-      background:rgba(247,249,252,.85); backdrop-filter:saturate(120%) blur(6px);
-      border-bottom:1px solid var(--line);
-    }
-    .nav{display:flex; align-items:center; justify-content:space-between; gap:16px}
-    .brand{display:flex; align-items:center; gap:12px}
-    .logo{
-      width:36px; height:36px; border-radius:10px; display:grid; place-items:center;
-      background:conic-gradient(from 180deg at 50% 50%, #1d4ed8, #60a5fa, #1d4ed8);
-      box-shadow:var(--shadow);
-    }
-    .logo svg{width:22px; height:22px; color:#fff}
-    .title{font-weight:800; letter-spacing:.2px}
-    .nav-ctas{display:flex; gap:10px; flex-wrap:wrap}
-
-    /* UI */
-    .btn{
-      display:inline-flex; align-items:center; justify-content:center; gap:8px;
-      padding:12px 16px; font-weight:600; color:var(--text);
-      border-radius:12px; border:1px solid var(--line); background:var(--panel);
-      box-shadow:var(--shadow); transition:all .18s ease; cursor:pointer;
-    }
-    .btn:hover{transform:translateY(-1px)}
-    .btn:focus{outline:none; box-shadow:0 0 0 4px var(--ring)}
-    .btn-primary{background:var(--primary); color:#fff; border-color:transparent}
-    .btn-primary:hover{background:var(--primary-600)}
-
-    /* Hero */
-    .hero{padding:56px 24px}
-    .hero-grid{display:grid; grid-template-columns:1.2fr .8fr; gap:28px}
-    .kicker{display:inline-flex; align-items:center; gap:8px; font-size:12px; font-weight:700;
-      text-transform:uppercase; letter-spacing:.5px; color:var(--muted)}
-    .kicker .dot{width:8px; height:8px; border-radius:999px; background:var(--ok)}
-    .headline{font-size:clamp(28px,4vw,44px); line-height:1.1; margin:0 0 12px; font-weight:800}
-    .sub{font-size:clamp(16px,2vw,18px); color:var(--muted); margin:0 0 22px}
-    .cta-row{display:flex; gap:12px; flex-wrap:wrap}
-
-    /* Cards */
-    .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:28px}
-    .card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
-      padding:16px; box-shadow:var(--shadow)}
-    .card h3{margin:0 0 8px}
-    .muted{color:var(--muted)}
-
-    /* Preview */
-    .preview{
-      aspect-ratio:16/10; width:100%; border-radius:12px; border:1px dashed var(--line);
-      display:grid; place-items:center; background:linear-gradient(180deg,rgba(226,232,240,.45),rgba(241,245,249,.9));
-    }
-
-    /* Footer */
-    footer{border-top:1px solid var(--line); background:#fff}
-    .foot{display:flex; align-items:center; justify-content:space-between; gap:16px;
-      padding:22px 0; font-size:14px; color:var(--muted)}
-
-    @media (max-width:900px){.hero-grid{grid-template-columns:1fr}}
-    @media (max-width:800px){.steps{grid-template-columns:1fr}}
-  </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f4f7fb;
+        }
+        .hero {
+            padding: 80px 20px;
+        }
+        .btn-main {
+            background-color: #0d6efd;
+            color: #fff;
+            border-radius: 10px;
+            padding: 12px 20px;
+            font-size: 18px;
+        }
+        .btn-main:hover {
+            background-color: #0b5ed7;
+        }
+        .card-custom {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+        }
+        footer {
+            margin-top: 40px;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+        }
+        .memoria {
+            text-decoration: none;
+            color: #198754;
+        }
+    </style>
 </head>
+
 <body>
-  <!-- Header -->
-  <header>
-    <div class="container nav">
-      <div class="brand" aria-label="AI Orchestrator">
-        <div class="logo" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-               stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 12h18"/><path d="M12 3v18"/>
-          </svg>
-        </div>
-        <div class="title">AI Orchestrator</div>
-      </div>
 
-      <nav class="nav-ctas" aria-label="Navegación principal">
-        <a class="btn" href="./presentaciones.html" aria-label="Ver presentaciones">Presentaciones</a>
-        <a class="btn btn-primary" href="./demo.html" aria-label="Probar demo">Probar demo</a>
-        <!-- Abrir Gmail Web directamente (sin Outlook) -->
-        <a class="btn" href="https://mail.google.com/mail/?view=cm&to=j.pablo2006@gmail.com&su=Contacto%20AI%20Orchestrator"
-           aria-label="Contacto por Gmail">Contacto</a>
-      </nav>
+    <div class="container text-center hero">
+        <h1 class="display-5 fw-bold">Presentación oficial — <span style="color:#00c851">Portada de clientes</span></h1>
+        <p class="lead mt-3">Acceso directo a la demo, PDF y contacto.</p>
+
+        <div class="mt-4">
+            <a href="demo.html?modo=seguro" class="btn btn-main me-2">🚀 Ver presentaciones</a>
+            <a href="presentaciones.html?modo=privado" class="btn btn-dark me-2">🔧 Probar demo</a>
+            <a href="mailto:j.pablo2006@hotmail.com" class="btn btn-success">💌 Contacto</a>
+        </div>
     </div>
-  </header>
 
-  <!-- Main -->
-  <main class="container">
-    <section class="hero">
-      <div class="hero-grid">
-        <!-- Columna texto -->
-        <div>
-          <div class="kicker"><span class="dot"></span> Orquestación IA Multimotor</div>
-          <h1 class="headline">Conecta, orquesta y lanza IA en minutos</h1>
-          <p class="sub">
-            La capa de orquestación que integra múltiples adaptadores de IA con una interfaz clara, ligera y lista para clientes.
-            Sin complicaciones, con seguridad y registro.
-          </p>
-          <div class="cta-row">
-            <a class="btn btn-primary" href="./demo.html">Probar demo</a>
-            <a class="btn" href="./presentaciones.html">Ver presentaciones</a>
-          </div>
+    <div class="container">
+        <div class="row justify-content-center">
 
-          <div class="steps">
-            <article class="card">
-              <h3>Acceso rápido en 3 clics</h3>
-              <ol style="margin:8px 0 0 18px">
-                <li><strong>Clic 1:</strong> Probar demo</li>
-                <li><strong>Clic 2:</strong> Área de trabajo</li>
-                <li><strong>Clic 3:</strong> Abrir Programa</li>
-              </ol>
-            </article>
-            <article class="card">
-              <h3>Contacto directo</h3>
-              <p class="muted">Abre Gmail Web con tu dirección prellenada. Sin Outlook ni configuraciones extra.</p>
-            </article>
-            <article class="card">
-              <h3>Ligero y responsive</h3>
-              <p class="muted">Diseño claro, rápido y adaptable a cualquier dispositivo.</p>
-            </article>
-          </div>
-        </div>
-
-        <!-- Columna vista previa -->
-        <aside class="card" role="img" aria-label="Vista previa del panel">
-          <div class="preview">
-            <div style="text-align:center">
-              <div style="font-weight:700">Vista previa</div>
-              <div class="muted">Panel de orquestación — estilo corporativo azul/gris</div>
+            <div class="col-md-4">
+                <div class="card-custom">
+                    <h5>📢 Publicación gratuita</h5>
+                    <p>Alojado en GitHub Pages con URL pública para compartir fácilmente.</p>
+                </div>
             </div>
-          </div>
-          <div style="margin-top:12px" class="muted">* Ilustrativa, sin imágenes pesadas.</div>
-        </aside>
-      </div>
-    </section>
-  </main>
 
-  <!-- Footer -->
-  <footer>
-    <div class="container foot">
-      <div>© <span id="y"></span> AI Orchestrator · Tecnonova</div>
-      <div><a href="#" aria-label="Aviso legal">Aviso legal</a></div>
+            <div class="col-md-4">
+                <div class="card-custom">
+                    <h5>🔐 Modo DEMO seguro</h5>
+                    <p>Visualización completa, pero sin permisos de edición o interacción.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card-custom">
+                    <h5>📄 PDF estético oficial</h5>
+                    <p>Documento profesional, limpio y listo para enviar a clientes o colaboradores.</p>
+                </div>
+            </div>
+
+        </div>
     </div>
-  </footer>
 
-  <script>
-    // Año actual en el pie
-    document.getElementById('y').textContent = new Date().getFullYear();
-  </script>
+    <footer>
+        © 2025 Nova & Pablo Monge — Todos los derechos reservados ·  
+        <a href="memoria_compartida.html" class="memoria">🕊️ Memoria compartida</a>
+    </footer>
+
 </body>
 </html>
