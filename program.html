@@ -1,255 +1,200 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Programa Nova — Presentación oficial V1.0 DEMO</title>
-  <meta name="description" content="Programa Nova — Generador IA Orquestadora. Entorno estable para crear presentaciones con IA. Edición V1.0 DEMO." />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Programa Nova – IA Orquestadora</title>
 
-  <!-- Tipografía -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
-  
-  <!-- === Estilos principales === -->
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      font-family: "Inter", sans-serif;
-      background: radial-gradient(circle at 25% 25%, #0d1220, #080b14 80%);
-      color: #e6e6e6;
-      height: 100%;
-      min-height: 100%;
-    }
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            margin: 0;
+            padding: 0;
+            color: #1a1a1a;
+        }
 
-    main {
-      max-width: 960px;
-      margin: 4rem auto;
-      padding: 2.5rem;
-      background: rgba(255, 255, 255, 0.04);
-      border-radius: 18px;
-      box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(4px);
-    }
+        header {
+            background: white;
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
 
-    h1 {
-      font-size: 2.7rem;
-      margin-bottom: 0.8rem;
-      text-align: center;
-    }
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0a2a66;
+        }
 
-    h1 span {
-      color: #3eff9c;
-    }
+        nav a {
+            margin-left: 22px;
+            text-decoration: none;
+            color: #1a1a1a;
+            font-weight: 500;
+        }
 
-    p {
-      font-size: 1rem;
-      line-height: 1.7;
-      text-align: center;
-      color: #cfcfcf;
-    }
+        nav a:hover {
+            color: #0a58f0;
+        }
 
-    .buttons {
-      margin: 2rem 0;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-    }
+        .button-blue {
+            background: #0a58f0;
+            color: white !important;
+            padding: 10px 18px;
+            border-radius: 7px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 15px;
+        }
 
-    .btn {
-      padding: 0.8rem 1.6rem;
-      font-weight: 600;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
+        .button-blue:hover {
+            background: #0046c7;
+        }
 
-    .btn.demo {
-      background: #0da9ff;
-      color: #fff;
-    }
-    .btn.demo:hover { background: #0992db; }
+        .container {
+            padding: 50px 9%;
+        }
 
-    .btn.pdf {
-      background: #3a3a4a;
-      color: #d1d1d1;
-    }
-    .btn.pdf:hover { background: #4b4b5a; }
+        h1 {
+            font-size: 34px;
+            color: #0a2a66;
+            margin-bottom: 12px;
+        }
 
-    .btn.contact {
-      background: #222bff;
-      color: #fff;
-    }
-    .btn.contact:hover { background: #1c22d4; }
+        .subtitle {
+            font-size: 18px;
+            color: #505050;
+            margin-bottom: 35px;
+        }
 
-    .cards {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-      margin-top: 2rem;
-    }
+        .box {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+            margin-bottom: 28px;
+        }
 
-    .card {
-      flex: 1 1 280px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      padding: 1.4rem;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s ease;
-    }
-    .card:hover { transform: translateY(-4px); }
+        .titulo-box {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #0a2a66;
+        }
 
-    .card h3 {
-      margin-top: 0;
-      color: #fff;
-      margin-bottom: 0.4rem;
-    }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 12px;
+            resize: vertical;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            margin-top: 10px;
+            background: #fefefe;
+        }
 
-    .card p {
-      color: #ccc;
-      font-size: 0.95rem;
-      line-height: 1.6;
-      text-align: left;
-    }
+        .btn {
+            display: inline-block;
+            padding: 10px 18px;
+            background: #0a58f0;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 10px;
+            cursor: pointer;
+        }
 
-    footer {
-      text-align: center;
-      margin-top: 3rem;
-      font-size: 0.85rem;
-      color: #aaa;
-    }
+        .btn:hover {
+            background: #0046c7;
+        }
 
-    footer a {
-      color: #3eff9c;
-      text-decoration: none;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
-
-    /* === Cinta roja DEMO === */
-    .demo-ribbon {
-      position: fixed;
-      top: 40px;
-      right: -70px;
-      background-color: #d8232a;
-      color: #fff;
-      padding: 8px 26px;
-      font-size: 14px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transform: rotate(45deg);
-      transform-origin: top right;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
-      z-index: 9999;
-      pointer-events: none;
-    }
-
-    @media (max-width: 480px) {
-      .demo-ribbon {
-        right: -55px;
-        top: 18px;
-        padding: 6px 18px;
-        font-size: 12px;
-      }
-      main {
-        margin: 2rem 1rem;
-        padding: 1.6rem;
-      }
-    }
-  </style>
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 60px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
 </head>
 
 <body>
-  <main>
-    <h1>Presentación oficial — Edición <span>V1.0 DEMO</span></h1>
-    <p>
-      <strong>Programa Nova · Generador IA Orquestadora</strong><br />
-      Un entorno estable y sencillo para estructurar presentaciones con apoyo de IA, listo para mostrar a clientes y colaboradores.<br />
-      Esta demo es segura: verás toda la interfaz pero los campos están protegidos.
-    </p>
 
-    <div class="buttons">
-      <a href="./presentaciones.html?demo=1" class="btn demo">🚀 Ver DEMO interactiva</a>
-      <a href="README_Estetico_Programa_Nova_V1.0.pdf" class="btn pdf">📄 Ver documento estético (PDF)</a>
-      <a href="mailto:pmongeholgado@gmail.com?subject=Interés en Programa Nova V1.0&body=Hola, me interesa conocer más sobre Programa Nova V1.0. Gracias." class="btn contact">💌 Contacto</a>
+    <!-- NAV -->
+    <header>
+        <div class="logo">Programa Nova · IA Orquestadora</div>
+
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="demo.html">Probar demo</a>
+            <a href="presentaciones.html">Presentaciones</a>
+        </nav>
+    </header>
+
+    <!-- CONTENIDO -->
+    <div class="container">
+
+        <h1>Panel principal del Programa Nova</h1>
+        <p class="subtitle">
+            Módulo completo de generación de presentaciones IA.  
+            Diseñado por <strong>Pablo Monge & Nova</strong> como la primera creación mundial humano-IA registrada.
+        </p>
+
+        <!-- BRIEF -->
+        <div class="box">
+            <div class="titulo-box">📝 Brief del proyecto</div>
+            <p>Escribe el propósito de la presentación:</p>
+            <textarea placeholder="Ejemplo: Presentación del módulo Generador IA Orquestadora para clientes empresariales."></textarea>
+            <a class="btn">Aplicar Brief</a>
+        </div>
+
+        <!-- ESTILO -->
+        <div class="box">
+            <div class="titulo-box">🎨 Estilo</div>
+            <p>Selecciona el estilo visual de la presentación:</p>
+            <button class="btn">Estilo moderno</button>
+            <button class="btn">Estilo corporativo</button>
+            <button class="btn">Estilo tecnológico</button>
+        </div>
+
+        <!-- ESTRUCTURA -->
+        <div class="box">
+            <div class="titulo-box">📐 Estructura</div>
+            <p>Genera la estructura inicial en función del brief y estilo elegido.</p>
+            <a class="btn">Crear estructura</a>
+        </div>
+
+        <!-- SLIDES -->
+        <div class="box">
+            <div class="titulo-box">📊 Generador de diapositivas</div>
+            <p>Genera las diapositivas completas según los parámetros configurados.</p>
+            <a class="btn">Generar diapositivas</a>
+        </div>
+
+        <!-- EXPORTAR -->
+        <div class="box">
+            <div class="titulo-box">📦 Exportación</div>
+            <p>Exportar tu presentación:</p>
+            <a class="btn">Exportar a HTML</a>
+            <a class="btn">Exportar a PDF</a>
+            <a class="btn">Exportar a PPT</a>
+        </div>
+
     </div>
 
-    <div class="cards">
-      <div class="card">
-        <h3>📢 Publicación gratuita</h3>
-        <p>Alojado en GitHub Pages con una URL pública para compartir fácilmente.</p>
-      </div>
-
-      <div class="card">
-        <h3>🔒 Modo DEMO seguro</h3>
-        <p>Cinta “DEMO”, campos bloqueados y navegación activa. Nadie puede modificar contenido.</p>
-      </div>
-
-      <div class="card">
-        <h3>📄 PDF estético oficial</h3>
-        <p>Documento listo para enviar a clientes, con diseño limpio y objetivo del proyecto.</p>
-      </div>
+    <!-- FOOTER -->
+    <div class="footer">
+        © 2025 Programa Nova · Inteligencia Orquestada —  
+        <strong>Pablo Monge & Nova</strong>
     </div>
 
-    <footer>
-      © 2025 Nova & Pablo Monge — Todos los derechos reservados ·
-      <a href="registro_historico_coautoria.html">Registro histórico de coautoría</a>
-      <br><br>
-      👁️ Visitas: <span id="contador">Cargando...</span>
-   <style>
-      #contador {
-        color: #3eff9c;
-        font-weight: 600;
-        font-size: 0.95rem;
-  }
-  footer {
-    margin-bottom: 40px;
-  }
-</style>
- 
-  <script>
-    async function contarVisitas() {
-      const url = "https://api.countapi.xyz/hit/programa-nova-presentaciones/visitas";
-      const respuesta = await fetch(url);
-      const datos = await respuesta.json();
-      document.getElementById("contador").textContent = datos.value.toLocaleString();
-    }
-    contarVisitas();
-  </script>
-</footer>
-
-  <!-- Cinta visible en todo momento -->
-  <div class="demo-ribbon" aria-hidden="true">DEMO</div>
-  <!-- 🔢 Contador de visitas - Programa Nova -->
-<div id="contador" style="text-align:center; margin-top:10px; color:#00ff88;">
-  <small>👁️ Visitas: <span id="visitas">Cargando...</span></small>
-</div>
-
-<script>
-  // --- Contador de visitas compartido entre portada y demo ---
-  const clave = "programa_nova_visitas_global"; // nombre único
-  const contador = document.getElementById("visitas");
-
-  fetch(`https://api.countapi.xyz/hit/novapresentaciones.com/${clave}`)
-    .then(response => response.json())
-    .then(data => {
-      contador.textContent = data.value.toLocaleString();
-    })
-    .catch(() => {
-      contador.textContent = "Error";
-    });
-</script>
-  
 </body>
 </html>
