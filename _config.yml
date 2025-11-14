@@ -1,9 +1,12 @@
 theme: null
+
 include:
   - index.html
   - demo.html
   - program.html
-exclude:
+  - plan.html
   - presentaciones.html
+
+exclude:
   - index_original.html
   - index_legacy*
