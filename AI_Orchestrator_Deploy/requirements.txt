@@ -1,0 +1,16 @@
+# ==========================================================
+#  AI_ORCHESTRATOR v1.0 - Dependencias principales
+#  Versión estable y optimizada para entorno local
+# ==========================================================
+
+openai>=1.52.0
+python-dotenv>=1.0.1
+colorama>=0.4.6
+requests>=2.31.0
+google-generativeai
+anthropic
+mistralai
+
+# Librerías estándar (no requieren instalación):
+# os, json, datetime
+
