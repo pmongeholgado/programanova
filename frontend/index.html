@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Título de la web -->
+    <title>AI Orchestrator Web</title>
+
+    <!-- Estilos CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- ICONO DE LA WEB (FAVICON) -->
+    <link rel="icon"  href="assets/AI_Orchestrator_v2.ico">
+</head>
+
+<body>
+    <div id="container">
+
+        <!-- Panel izquierdo: Chat -->
+        <div id="chat-panel">
+            <h1 class="title">AI Orchestrator Web</h1>
+            <div id="chat-window"></div>
+
+            <div id="input-area">
+                <input type="text" id="user-input" placeholder="Escribe tu mensaje..." />
+                <button id="send-btn" type="button">Enviar</button>
+            </div>
+        </div>
+
+        <!-- Panel derecho: Estado IA -->
+        <div id="side-panel">
+            <h2 class="side-title">📊 Estado del Orquestador</h2>
+
+            <div class="info-block">
+                <h3>Emoción detectada</h3>
+                <p id="emotion-value">—</p>
+            </div>
+
+            <div class="info-block">
+                <h3>Intención detectada</h3>
+                <p id="intent-value">—</p>
+            </div>
+
+            <div class="info-block">
+                <h3>Última actualización</h3>
+                <p id="time-value">—</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lógica del frontend -->
+    <script src="app.js"></script>
+</body>
+</html>
