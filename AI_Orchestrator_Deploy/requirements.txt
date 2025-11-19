@@ -1,16 +1,22 @@
-# ==========================================================
+# ==============================================================
 #  AI_ORCHESTRATOR v1.0 - Dependencias principales
-#  Versión estable y optimizada para entorno local
-# ==========================================================
+#  Versión estable y optimizada para entorno local / producción
+# ==============================================================
 
+# --- Backend API (FastAPI + servidor) ---
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+
+# --- Integraciones con modelos de IA ---
 openai>=1.52.0
-python-dotenv>=1.0.1
-colorama>=0.4.6
-requests>=2.31.0
 google-generativeai
 anthropic
 mistralai
 
+# --- Utilidades generales ---
+python-dotenv>=1.0.1
+colorama>=0.4.6
+requests>=2.31.0
+
 # Librerías estándar (no requieren instalación):
 # os, json, datetime
-
