@@ -1,21 +1,25 @@
 from flask import Flask, send_from_directory
 import os
 
-app = Flask(__name__, static_folder='sitio')
+# Ruta del directorio donde están tus archivos HTML, CSS, JS, imágenes, etc.
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+SITIO_DIR = os.path.join(BASE_DIR, "sitio")
 
-# Ruta principal -> carga index.html desde /backend/sitio/
+app = Flask(__name__, static_folder=SITIO_DIR, static_url_path='')
+
+# Página principal → entrega index.html
 @app.route('/')
 def index():
-    return send_from_directory('sitio', 'index.html')
+    return send_from_directory(SITIO_DIR, 'index.html')
 
-# Cualquier archivo de la carpeta sitio (CSS, JS, imágenes…)
-@app.route('/<path:ruta>')
-def archivos(ruta):
-    return send_from_directory('sitio', ruta)
+# Cualquier otro archivo dentro de /sitio (css, js, imágenes, otras páginas…)
+@app.route('/<path:archivo>')
+def servir_archivos(archivo):
+    return send_from_directory(SITIO_DIR, archivo)
 
 if __name__ == '__main__':
-    # Railway asigna automáticamente un puerto → lo recogemos
-    puerto = int(os.environ.get('PORT', 8000))
+    # Railway asigna automáticamente un puerto → lo obtenemos
+    puerto = int(os.environ.get("PORT", 8000))
     
-    # Ejecutar la aplicación
+    # Ejecutar aplicación en modo producción
     app.run(host='0.0.0.0', port=puerto)
