@@ -1,14 +1,20 @@
-from flask import Flask, send_from_directory
+from matraz import Matraz, enviar_desde_directorio
+import os
 
-app = Flask(__name__, static_folder='.')
+# Crear la aplicación Matraz
+aplicación = Matraz(__name__, carpeta_estática='')
 
-@app.route('/')
-def index():
-    return send_from_directory('.', 'index.html')
+# Ruta principal → devuelve index.html
+@aplicación.ruta('/')
+def índice():
+    return enviar_desde_directorio('.', 'index.html')
 
-@app.route('/<path:path>')
-def static_proxy(path):
-    return send_from_directory('.', path)
+# Ruta para servir cualquier archivo estático o recurso
+@aplicación.ruta('/<ruta:ruta>')
+def proxy_estático(camino):
+    return enviar_desde_directorio('.', camino)
 
+# Ejecución principal (compatible con Railway)
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+    puerto = int(os.environ.get('PORT', 8080))  # Puerto dinámico para Railway
+    aplicación.correr(anfitrión='0.0.0.0', puerto=puerto)
