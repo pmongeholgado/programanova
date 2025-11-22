@@ -1,4 +1,0 @@
-matraz
-openai
-python-dotenv
-requests
