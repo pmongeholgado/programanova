@@ -3,21 +3,17 @@ import os
 
 app = Flask(
     __name__,
-    static_folder='../frontend',        # Carpeta con TU WEB COMPLETA
-    static_url_path=''                 # Esto permite servir /index.html directamente
+    static_folder='../frontend',      # <-- SIRVE TODO EL FRONTEND COMPLETO
+    static_url_path=''                # <-- Permite acceder directamente a los archivos
 )
 
-# Ruta principal → muestra index.html del frontend
 @app.route('/')
-def raiz():
+def index():
     return send_from_directory('../frontend', 'index.html')
 
-
-# Rutas para cualquier archivo: CSS, JS, imágenes, assets, páginas…
-@app.route('/<path:ruta>')
-def archivos(ruta):
-    return send_from_directory('../frontend', ruta)
-
+@app.route('/<path:archivo>')
+def archivos(archivo):
+    return send_from_directory('../frontend', archivo)
 
 if __name__ == '__main__':
     puerto = int(os.environ.get('PORT', 8000))
