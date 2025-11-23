@@ -2,20 +2,23 @@ from flask import Flask, send_from_directory, request, jsonify
 from flask_cors import CORS
 import os
 
-app = Flask(__name__, static_folder='backend/frontend', static_url_path='/')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+FRONTEND_DIR = os.path.join(BASE_DIR, 'frontend')
+
+app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path='/')
 CORS(app)
 
-# Servir index.html en la raíz
+# Servir index
 @app.route('/')
 def home():
-    return send_from_directory('backend/frontend', 'index.html')
+    return send_from_directory(FRONTEND_DIR, 'index.html')
 
-# Servir recursos estáticos (css, js, imágenes, etc)
+# Servir archivos estáticos
 @app.route('/<path:path>')
 def static_files(path):
-    return send_from_directory('backend/frontend', path)
+    return send_from_directory(FRONTEND_DIR, path)
 
-# Endpoint principal de la IA
+# Endpoint IA
 @app.route('/chat', methods=['POST'])
 def chat():
     data = request.get_json()
@@ -29,7 +32,6 @@ def chat():
             "resumen": "Vacío"
         })
 
-    # Respuesta simulada
     respuesta = f"Recibí tu mensaje: {mensaje}"
     emocion = "neutral"
     intencion = "conversación"
