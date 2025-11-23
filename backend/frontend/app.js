@@ -37,7 +37,7 @@ async function sendMessage() {
     input.value = "";
 
 try {
-  const response = await fetch("https://programanova-producción-f768.up.railway.app/chat", {
+  const response = await fetch("/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ mensaje: text }),
@@ -106,4 +106,5 @@ userInput.addEventListener("keydown", (e) => {
 });
 
 console.log("Frontend listo y escuchando eventos.");
+
 
