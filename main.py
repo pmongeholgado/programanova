@@ -2,27 +2,24 @@ from flask import Flask, send_from_directory, request, jsonify
 from flask_cors import CORS
 import os
 
-app = Flask(__name__, static_folder='backend/frontend', static_url_path='')
-
-# Habilitar CORS para permitir llamadas desde tu dominio
+app = Flask(__name__, static_folder='backend/frontend', static_url_path='/')
 CORS(app)
 
-# Ruta principal -> entrega index.html
+# Servir index.html en la raíz
 @app.route('/')
-def index():
+def home():
     return send_from_directory('backend/frontend', 'index.html')
 
-# Ruta dinámica -> entrega cualquier archivo o carpeta (css, js, assets…)
-@app.route('/<path:ruta>')
-def archivos(ruta):
-    return send_from_directory('backend/frontend', ruta)
+# Servir recursos estáticos (css, js, imágenes, etc)
+@app.route('/<path:path>')
+def static_files(path):
+    return send_from_directory('backend/frontend', path)
 
-# 🚨 ENDPOINT REAL DE IA — NUESTRO ORQUESTADOR
+# Endpoint principal de la IA
 @app.route('/chat', methods=['POST'])
 def chat():
     data = request.get_json()
-
-    mensaje = data.get("mensaje", "").strip()
+    mensaje = data.get('mensaje', '').strip()
 
     if not mensaje:
         return jsonify({
@@ -32,8 +29,7 @@ def chat():
             "resumen": "Vacío"
         })
 
-    # --- AQUÍ IRÁ TU LÓGICA REAL DE IA ---
-    # Por ahora devolvemos simulación funcional
+    # Respuesta simulada
     respuesta = f"Recibí tu mensaje: {mensaje}"
     emocion = "neutral"
     intencion = "conversación"
@@ -46,7 +42,6 @@ def chat():
         "resumen": resumen
     })
 
-# Railway
 if __name__ == '__main__':
-    puerto = int(os.environ.get('PORT', 8000))
-    app.run(host='0.0.0.0', port=puerto)
+    port = int(os.environ.get("PORT", 8000))
+    app.run(host='0.0.0.0', port=port)
