@@ -1,23 +1,35 @@
-from flask import Flask, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory
 import os
 
-# Ruta absoluta hacia la carpeta frontend dentro de backend
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
+# 1. Servimos el frontend completo
+app = Flask(
+    __name__,
+    static_folder="backend/frontend",
+    static_url_path=""
+)
 
-app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path='')
+# 2. Ruta principal → index.html
+@app.route("/")
+def home():
+    return send_from_directory("backend/frontend", "index.html")
 
-# Ruta principal → sirve index.html
-@app.route('/')
-def serve_index():
-    return send_from_directory(FRONTEND_DIR, 'index.html')
+# 3. Endpoint dinámico: || chat ||
+#    — este endpoint es vital para que el frontend funcione —
+@app.route("/chat", methods=["POST"])
+def chat():
+    data = request.get_json()
+    text = data.get("mensaje", "")
 
-# Ruta para cualquier archivo dentro del frontend (CSS, JS, imágenes, assets…)
-@app.route('/<path:archivo>')
-def serve_static(archivo):
-    return send_from_directory(FRONTEND_DIR, archivo)
+    ### !!! RESPUESTA SIMULADA — PARA PROBAR EN PRODUCCIÓN !!!
+    response = {
+        "respuesta": f"📩 Recibido: {text}",
+        "emocion": "neutral",
+        "intencion": "consulta",
+        "resumen": f"El usuario escribió: {text}"
+    }
+    return jsonify(response)
 
-# Railway asigna el puerto automáticamente → recogerlo
-if __name__ == '__main__':
-    puerto = int(os.environ.get("PORT", 8000))
-    app.run(host='0.0.0.0', port=puerto)
+# 4. Railway
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    app.run(host="0.0.0.0", port=port)
