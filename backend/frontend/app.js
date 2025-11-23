@@ -37,12 +37,11 @@ async function sendMessage() {
     input.value = "";
 
 try {
-    const response = await fetch("http://127.0.0.1:8000/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mensaje: text })
-    });
-
+  const response = await fetch("https://programanova-producción-f768.up.railway.app/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ mensaje: text }),
+});
     const data = await response.json();
 
     // --- Normalizamos los datos que vienen del backend ---
@@ -107,3 +106,4 @@ userInput.addEventListener("keydown", (e) => {
 });
 
 console.log("Frontend listo y escuchando eventos.");
+
