@@ -1,35 +1,32 @@
 from flask import Flask, request, jsonify, send_from_directory
 import os
 
-# 1. Servimos el frontend completo
+# FRONTEND desde carpeta frontend (la detecta al estar dentro del backend)
 app = Flask(
     __name__,
-    static_folder="backend/frontend",
+    static_folder="frontend",
     static_url_path=""
 )
 
-# 2. Ruta principal → index.html
+# Ruta principal
 @app.route("/")
 def home():
-    return send_from_directory("backend/frontend", "index.html")
+    return send_from_directory("frontend", "index.html")
 
-# 3. Endpoint dinámico: || chat ||
-#    — este endpoint es vital para que el frontend funcione —
+# API CHAT
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()
     text = data.get("mensaje", "")
 
-    ### !!! RESPUESTA SIMULADA — PARA PROBAR EN PRODUCCIÓN !!!
     response = {
-        "respuesta": f"📩 Recibido: {text}",
+        "respuesta": f"📩 Recibido del usuario: {text}",
         "emocion": "neutral",
         "intencion": "consulta",
         "resumen": f"El usuario escribió: {text}"
     }
     return jsonify(response)
 
-# 4. Railway
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
     app.run(host="0.0.0.0", port=port)
