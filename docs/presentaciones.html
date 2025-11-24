@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Presentaciones - ProgramaNova</title>
+    <link rel="stylesheet" href="assets_styles.css">
+
+    <style>
+        textarea {
+            width: 100%;
+            height: 140px;
+            padding: 10px;
+            font-size: 1rem;
+        }
+        select, button {
+            padding: 10px;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+        .resultado {
+            background: #fafafa;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <h1>Generador de Presentaciones IA</h1>
+    <nav>
+        <a href="index.html">Inicio</a>
+        <a href="demo.html">Demo</a>
+        <a href="ia.html">Chat IA</a>
+    </nav>
+</header>
+
+<main>
+    <section>
+        <h2>Genera una presentación profesional con IA</h2>
+        <p>Describe el tema, público objetivo y duración.</p>
+
+        <textarea id="tema" placeholder="Ejemplo: Presentación de proyecto inmobiliario para clientes japoneses"></textarea><br>
+
+        <label>Formato:</label>
+        <select id="tipo">
+            <option value="corporativa">Corporativa</option>
+            <option value="comercial">Comercial</option>
+            <option value="educativa">Educativa</option>
+        </select><br>
+
+        <button onclick="generar()">Generar Presentación</button>
+
+        <div id="resultado" class="resultado" style="display:none;"></div>
+    </section>
+</main>
+
+<footer>
+    <p>ProgramaNova © 2025 - Generador de Presentaciones IA</p>
+</footer>
+
+<script>
+    const API_URL = "https://programanovabackend-production.up.railway.app/chat";
+
+    async function generar() {
+        const texto = document.getElementById("tema").value.trim();
+        const tipo = document.getElementById("tipo").value;
+
+        if (!texto) {
+            alert("Escribe primero el tema.");
+            return;
+        }
+
+        const panel = document.getElementById("resultado");
+        panel.style.display = "block";
+        panel.innerHTML = "⏳ Generando presentación...";
+
+        try {
+            const prompt = `
+                Genera una presentación ${tipo}.
+                Usa secciones con títulos.
+                Tema: ${texto}.
+                Respuesta en formato texto plano.
+            `;
+
+            const res = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ mensaje: prompt })
+            });
+
+            const data = await res.json();
+
+            panel.innerHTML = "<pre>" + data.resumen + "</pre>";
+        } catch (err) {
+            panel.innerHTML = "❌ Error al generar presentación.";
+        }
+    }
+</script>
+
+</body>
+</html>
