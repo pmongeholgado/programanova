@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat con IA - ProgramaNova</title>
+  <link rel="stylesheet" href="assets_styles.css" />
+  <style>
+    textarea {
+      width: 100%;
+      height: 140px;
+      padding: 10px;
+      font-size: 1rem;
+    }
+    button {
+      padding: 10px 18px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .respuesta-box {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      padding: 15px;
+      background: #fafafa;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Chat IA</h1>
+    <nav>
+      <a href="index.html">Inicio</a>
+      <a href="demo.html">Demo</a>
+      <a href="presentaciones.html">Presentaciones</a>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <h2>Habla con Nova 🤖</h2>
+      <p>Escribe un mensaje y la IA te responderá desde el backend.</p>
+
+      <textarea id="mensaje" placeholder="Escribe aquí tu mensaje..."></textarea>
+      <br /><br />
+      <button onclick="enviar()">Enviar</button>
+
+      <div id="respuesta" class="respuesta-box" style="display:none;"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>ProgramaNova © 2025 - Chat IA</p>
+  </footer>
+
+  <script>
+    const API_URL = "https://programanovabackend-production.up.railway.app/chat";
+
+    async function enviar() {
+      const text = document.getElementById("mensaje").value.trim();
+      if (!text) return alert("Escribe un mensaje antes!");
+
+      const respuestaBox = document.getElementById("respuesta");
+      respuestaBox.style.display = "block";
+      respuestaBox.innerHTML = "⏳ Enviando a Nova...";
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ mensaje: text }),
+        });
+
+        const data = await res.json();
+
+        respuestaBox.innerHTML = `
+          <strong>Respuesta:</strong> ${data.respuesta}<br><br>
+          <strong>Emoción:</strong> ${data.emocion}<br>
+          <strong>Intención:</strong> ${data.intencion}<br>
+          <strong>Resumen:</strong> ${data.resumen}
+        `;
+      } catch (error) {
+        respuestaBox.innerHTML = "❌ Error al conectar con el servidor.";
+      }
+    }
+  </script>
+</body>
+</html>
