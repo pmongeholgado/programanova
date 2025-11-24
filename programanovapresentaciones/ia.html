@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Interacción IA · Programa Nova Presentaciones</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <header class="sub-header">
+    <h1>Habla con la IA (Nova)</h1>
+    <a href="index.html" class="back-link">← Volver a la portada</a>
+  </header>
+
+  <main class="content">
+    <div class="chat-container">
+      <div id="chat-log" class="chat-log"></div>
+      <form id="chat-form" class="chat-form">
+        <input
+          type="text"
+          id="user-input"
+          placeholder="Escribe tu mensaje para Nova..."
+          required
+        />
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    const API_BASE = "https://TU-SERVICIO-railway.app"; // luego lo ajustamos
+
+    const form = document.getElementById("chat-form");
+    const input = document.getElementById("user-input");
+    const log = document.getElementById("chat-log");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+
+      const userBubble = document.createElement("div");
+      userBubble.className = "bubble user";
+      userBubble.textContent = text;
+      log.appendChild(userBubble);
+
+      input.value = "";
+
+      try {
+        const res = await fetch(`${API_BASE}/api/chat`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text })
+        });
+        const data = await res.json();
+
+        const botBubble = document.createElement("div");
+        botBubble.className = "bubble bot";
+        botBubble.textContent = data.reply || "[Sin respuesta]";
+        log.appendChild(botBubble);
+      } catch (err) {
+        const errorBubble = document.createElement("div");
+        errorBubble.className = "bubble error";
+        errorBubble.textContent = "Error al conectar con el servidor.";
+        log.appendChild(errorBubble);
+      }
+
+      log.scrollTop = log.scrollHeight;
+    });
+  </script>
+</body>
+</html>
