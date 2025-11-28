@@ -2,45 +2,42 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 
-# =============================
+# ================================
 # INICIAR FLASK
-# =============================
+# ================================
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
-# =============================
-# RUTA RAÍZ (CHECK)
-# =============================
+# ================================
+# RUTA RAÍZ /check
+# ================================
 @app.route("/", methods=["GET"])
-def index():
-    return jsonify({
-        "status": "ok",
-        "mensaje": "Backend Programanova funcionando ✔️🚀"
-    }), 200
+def health():
+    return "Backend Programanova funcionando 💚", 200
 
-# =============================
-# API /chat
-# =============================
+# ================================
+# RUTA /chat
+# ================================
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json() or {}
-    mensaje = data.get("mensaje", "").strip()
+    text = (data.get("mensaje") or "").strip()
 
-    if not mensaje:
-        return jsonify({"error": "El campo 'mensaje' es obligatorio"}), 400
+    if not text:
+        return jsonify({"error": "Falta el campo 'mensaje'"}), 400
 
-    # ---- RESPUESTA DEMO ----
-    return jsonify({
-        "respuesta": f"🤖 Nova recibió: {mensaje}",
+    response = {
+        "respuesta": f"🤖 Nova recibió: {text}",
         "emocion": "neutral",
-        "intencion": "demo",
-        "resumen": f"El usuario dijo: {mensaje}"
-    }), 200
+        "intencion": "consulta",
+        "resultado": f"El usuario dijo: {text}"
+    }
 
+    return jsonify(response), 200
 
-# =============================
-# RUN SERVER (IMPORTANTÍSIMO)
-# =============================
+# ================================
+# RUN SERVER
+# ================================
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
     app.run(host="0.0.0.0", port=port)
