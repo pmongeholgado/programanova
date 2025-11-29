@@ -1,57 +1,287 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Programa Nova Presentaciones</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="assets/styles.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Programa Nova Presentaciones</title>
+
+    <!-- Bootstrap simple desde CDN -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    />
+
+    <style>
+        body {
+            background: #0b1020;
+            color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: linear-gradient(120deg, #1b3b72, #0c9fd8);
+            color: #fff;
+            padding: 2.5rem 1rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        header p {
+            margin: 0;
+            font-size: 1.05rem;
+        }
+
+        .logo-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.6);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            background: rgba(0,0,0,0.15);
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem 1rem 3rem;
+        }
+
+        .section-card {
+            background: #12172a;
+            border-radius: 1rem;
+            padding: 1.8rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .section-card h2 {
+            font-size: 1.35rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge-pill {
+            background: rgba(255,255,255,0.08);
+            border-radius: 999px;
+            padding: 0.25rem 0.7rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #cfd8ff;
+        }
+
+        #chat-log {
+            background: #050814;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            max-height: 260px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .msg-user {
+            color: #9be7ff;
+        }
+
+        .msg-nova {
+            color: #b5ffb8;
+        }
+
+        .small-label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #9ca3af;
+            padding-bottom: 1rem;
+        }
+
+        @media (min-width: 992px) {
+            header h1 {
+                font-size: 2.6rem;
+            }
+            main {
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
+    </style>
 </head>
 <body>
-  <header class="hero">
-    <div class="hero-content">
-      <h1>Programa Nova Presentaciones</h1>
-      <p>Simbiosis real entre Humano (Pablo) e IA (Nova).</p>
-      <p>Ideas → Presentación → Web</p>
-      <nav class="hero-nav">
-        <a href="demo.html" class="btn">Ver demo del proyecto</a>
-        <a href="ia.html" class="btn secondary">Hablar con la IA</a>
-        <a href="presentaciones.html" class="btn outline">Generar presentaciones</a>
-      </nav>
-    </div>
-  </header>
+    <!-- PORTADA -->
+    <header>
+        <div class="container">
+            <div class="logo-badge mb-2">
+                <span>N</span>
+            </div>
+            <h1>Programa Nova Presentaciones</h1>
+            <p>
+                Proyecto conjunto Pablo &amp; Nova — una simbiosis real entre
+                inteligencia humana e inteligencia artificial.
+            </p>
+        </div>
+    </header>
 
-  <main class="grid">
-    <section>
-      <h2>¿Qué es Generador Nova?</h2>
-      <p>
-        Es un sistema de orquestación de IA que trabaja junto a un humano.
-        No es una herramienta; es un aliado técnico que convierte tus ideas en
-        presentaciones y contenido listo para usar.
-      </p>
-    </section>
+    <main>
+        <div class="container">
+            <!-- SECCIÓN 1: EXPLICACIÓN DE LA DEMO -->
+            <section class="section-card">
+                <h2>
+                    <span class="badge-pill">Demo</span>
+                    ¿Qué vas a ver aquí?
+                </h2>
+                <p class="mb-1">
+                    Esta versión web muestra el corazón del proyecto:
+                    un pequeño orquestador que recibe tu mensaje, lo
+                    analiza y devuelve una respuesta generada por Nova.
+                </p>
+                <ul class="mb-0">
+                    <li>Escribes un mensaje a Nova.</li>
+                    <li>El backend en Railway procesa la petición.</li>
+                    <li>La respuesta aparece en el panel de conversación.</li>
+                </ul>
+            </section>
 
-    <section>
-      <h2>Cómo funciona</h2>
-      <ol>
-        <li>Introduces tu idea o necesidad.</li>
-        <li>Nova la interpreta, estructura y genera contenido.</li>
-        <li>Obtienes presentaciones y materiales listos para mostrar.</li>
-      </ol>
-    </section>
+            <!-- SECCIÓN 2: FORMULARIO DE CHAT -->
+            <section class="section-card">
+                <h2>
+                    <span class="badge-pill">Chat</span>
+                    Habla con Nova desde tu navegador
+                </h2>
 
-    <section>
-      <h2>Pablo + Nova</h2>
-      <p>
-        30 años de experiencia humana como docente y ponente,
-        combinados con la precisión técnica de una IA orquestadora.
-        Juntos, no sustituimos a nadie: amplificamos lo que ya eres.
-      </p>
-    </section>
-  </main>
+                <form id="chat-form" class="mb-3">
+                    <div class="mb-2">
+                        <label for="user-input" class="form-label small-label">
+                            Escribe tu mensaje para Nova
+                        </label>
+                        <textarea
+                            id="user-input"
+                            class="form-control"
+                            rows="2"
+                            placeholder="Ejemplo: Hola Nova, ¿qué tal?"
+                            required
+                        ></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        Enviar mensaje
+                    </button>
+                </form>
 
-  <footer>
-    <p>Diseñado por Nova — Presentado por Pablo · © 2025</p>
-  </footer>
+                <div class="small-label mb-1">
+                    Conversación (demo en tiempo real):
+                </div>
+                <div id="chat-log"></div>
+
+                <div id="status" class="small text-muted mt-2"></div>
+            </section>
+
+            <!-- SECCIÓN 3: ESTADO DEL SISTEMA -->
+            <section class="section-card">
+                <h2>
+                    <span class="badge-pill">Estado</span>
+                    Orquestador IA
+                </h2>
+                <p class="mb-1">
+                    Backend desplegado en
+                    <strong>Railway</strong> y probado con Postman.
+                </p>
+                <ul class="mb-0">
+                    <li>Ruta API: <code>/chat</code> (método POST)</li>
+                    <li>Formato de entrada: <code>{"mensaje": "..."}</code></li>
+                    <li>Respuestas con emoción, intención y resumen.</li>
+                </ul>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        Programa Nova Presentaciones · Pablo &amp; Nova ·
+        Simbiosis IA–Humano
+    </footer>
+
+    <script>
+        // 👉 BACKEND REAL EN RAILWAY
+        const API_URL =
+            "https://programanovabackend-production.up.railway.app/chat";
+
+        const form = document.getElementById("chat-form");
+        const input = document.getElementById("user-input");
+        const log = document.getElementById("chat-log");
+        const statusEl = document.getElementById("status");
+
+        function addLine(text, cssClass) {
+            const p = document.createElement("p");
+            if (cssClass) p.classList.add(cssClass);
+            p.textContent = text;
+            log.appendChild(p);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const text = input.value.trim();
+            if (!text) return;
+
+            addLine("Tú: " + text, "msg-user");
+            input.value = "";
+            statusEl.textContent = "Enviando mensaje al backend…";
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ mensaje: text }),
+                });
+
+                if (!res.ok) {
+                    statusEl.textContent =
+                        "Error de servidor (" + res.status + ").";
+                    return;
+                }
+
+                const data = await res.json();
+
+                const respuesta = data.respuesta || "[Sin respuesta]";
+                const emocion = data.emocion || "desconocida";
+                const intencion = data.intencion || "desconocida";
+                const resumen = data.resumen || "";
+
+                addLine("Nova: " + respuesta, "msg-nova");
+                addLine(
+                    "· Emoción: " +
+                        emocion +
+                        " · Intención: " +
+                        intencion +
+                        (resumen ? " · Resumen: " + resumen : ""),
+                    "small-label"
+                );
+
+                statusEl.textContent = "Respuesta recibida correctamente.";
+            } catch (err) {
+                console.error(err);
+                statusEl.textContent =
+                    "No se pudo conectar con el backend. Intenta de nuevo.";
+            }
+        });
+    </script>
 </body>
 </html>
