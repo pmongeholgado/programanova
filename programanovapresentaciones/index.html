@@ -1,287 +1,516 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Programa Nova Presentaciones</title>
+  <meta charset="UTF-8" />
+  <title>Programa Nova Presentaciones</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Bootstrap simple desde CDN -->
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    />
+  <!-- Fuente y estilos simples -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+    rel="stylesheet"
+  />
 
-    <style>
-        body {
-            background: #0b1020;
-            color: #f5f5f5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        header {
-            background: linear-gradient(120deg, #1b3b72, #0c9fd8);
-            color: #fff;
-            padding: 2.5rem 1rem;
-            text-align: center;
-        }
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: radial-gradient(circle at top left, #1e3a8a, #020617 55%);
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 24px;
+    }
 
-        header h1 {
-            font-size: 2.2rem;
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-        }
+    .page {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      background: #020617ee;
+      border-radius: 24px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
 
-        header p {
-            margin: 0;
-            font-size: 1.05rem;
-        }
+    /* CABECERA / PORTADA */
+    .hero {
+      padding: 32px 32px 24px;
+      background: linear-gradient(135deg, #0f172a, #1d4ed8);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+    }
 
-        .logo-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.6);
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-            background: rgba(0,0,0,0.15);
-        }
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
 
-        main {
-            flex: 1;
-            padding: 2rem 1rem 3rem;
-        }
+    .logo-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 2px solid #a5b4fc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 20px;
+      color: #e5e7eb;
+      background: radial-gradient(circle at 30% 0%, #38bdf8, #1e3a8a);
+      box-shadow: 0 0 18px rgba(59, 130, 246, 0.8);
+    }
 
-        .section-card {
-            background: #12172a;
-            border-radius: 1rem;
-            padding: 1.8rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.04);
-        }
+    .hero-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: #f9fafb;
+    }
 
-        .section-card h2 {
-            font-size: 1.35rem;
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+    .hero-subtitle {
+      font-size: 14px;
+      color: #cbd5f5;
+      max-width: 640px;
+    }
 
-        .badge-pill {
-            background: rgba(255,255,255,0.08);
-            border-radius: 999px;
-            padding: 0.25rem 0.7rem;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #cfd8ff;
-        }
+    .hero-badges {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
 
-        #chat-log {
-            background: #050814;
-            border-radius: 0.75rem;
-            padding: 0.75rem 1rem;
-            max-height: 260px;
-            overflow-y: auto;
-            font-size: 0.9rem;
-            border: 1px solid rgba(255,255,255,0.06);
-        }
+    .badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(129, 140, 248, 0.7);
+      font-size: 11px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+    }
 
-        .msg-user {
-            color: #9be7ff;
-        }
+    /* CONTENIDO CENTRAL */
+    .content {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+      gap: 24px;
+      padding: 24px 24px 28px;
+    }
 
-        .msg-nova {
-            color: #b5ffb8;
-        }
+    @media (max-width: 900px) {
+      .content {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
 
-        .small-label {
-            font-size: 0.85rem;
-            opacity: 0.8;
-        }
+    .card {
+      background: radial-gradient(circle at top left, #020617, #020617);
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      padding: 20px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
 
-        footer {
-            text-align: center;
-            font-size: 0.8rem;
-            color: #9ca3af;
-            padding-bottom: 1rem;
-        }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.08), transparent 60%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
 
-        @media (min-width: 992px) {
-            header h1 {
-                font-size: 2.6rem;
-            }
-            main {
-                padding-left: 0;
-                padding-right: 0;
-            }
-        }
-    </style>
+    .card h2 {
+      font-size: 17px;
+      font-weight: 600;
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card h2 span.icon {
+      font-size: 19px;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: #cbd5f5;
+      line-height: 1.45;
+    }
+
+    .card ul {
+      list-style: none;
+      margin-top: 4px;
+      display: grid;
+      gap: 6px;
+      padding-left: 0;
+    }
+
+    .card li {
+      font-size: 14px;
+      color: #e5e7eb;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .card li span.bullet {
+      font-size: 14px;
+      margin-top: 1px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #94a3b8;
+    }
+
+    /* FORMULARIO CHAT */
+    .chat-box {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 4px;
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-input-row input {
+      flex: 1;
+      padding: 11px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: rgba(15, 23, 42, 0.95);
+      color: #e5e7eb;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .chat-input-row input:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.4);
+      background: #020617;
+    }
+
+    .chat-input-row button {
+      border: none;
+      border-radius: 999px;
+      padding: 0 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, #2563eb, #22c55e);
+      color: #f9fafb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 14px 30px rgba(37, 99, 235, 0.4);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+      min-width: 120px;
+    }
+
+    .chat-input-row button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.04);
+      box-shadow: 0 18px 40px rgba(56, 189, 248, 0.5);
+    }
+
+    .chat-input-row button:active {
+      transform: translateY(0);
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.8);
+    }
+
+    .chat-meta {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .chat-response {
+      background: rgba(15, 23, 42, 0.96);
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 10px 12px 9px;
+      font-size: 13px;
+      color: #e5e7eb;
+      line-height: 1.6;
+      max-height: 210px;
+      overflow-y: auto;
+    }
+
+    .response-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #94a3b8;
+      margin-bottom: 4px;
+    }
+
+    .response-row {
+      margin-bottom: 4px;
+    }
+
+    .response-row span.key {
+      font-weight: 600;
+      color: #c4d4ff;
+    }
+
+    .status-line {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: -4px;
+    }
+
+    .status-ok {
+      color: #4ade80;
+      font-weight: 500;
+    }
+
+    .status-error {
+      color: #f97373;
+      font-weight: 500;
+    }
+
+    footer {
+      padding: 10px 22px 16px;
+      border-top: 1px solid rgba(148, 163, 184, 0.25);
+      font-size: 12px;
+      color: #9ca3af;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    footer span strong {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+  </style>
 </head>
 <body>
+  <main class="page">
     <!-- PORTADA -->
-    <header>
-        <div class="container">
-            <div class="logo-badge mb-2">
-                <span>N</span>
+    <section class="hero">
+      <div class="brand-row">
+        <div class="logo-circle">N</div>
+        <div>
+          <div class="hero-title">Programa Nova Presentaciones</div>
+          <div class="hero-subtitle">
+            Proyecto conjunto <strong>Pablo &amp; Nova</strong> — una simbiosis real entre inteligencia
+            humana e inteligencia artificial para crear presentaciones vivas y conversaciones con IA.
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-badges">
+        <span class="badge">Demo interactiva</span>
+        <span class="badge">Generador de presentaciones</span>
+        <span class="badge">Chat con Nova en tiempo real</span>
+      </div>
+    </section>
+
+    <!-- CONTENIDO -->
+    <section class="content">
+      <!-- COLUMNA IZQUIERDA: EXPLICACIÓN -->
+      <article class="card">
+        <div class="section-label">Qué vas a ver aquí</div>
+        <h2><span class="icon">📘</span> Demo del Programa Nova Presentaciones</h2>
+        <p>
+          Esta página es la puerta de entrada a <strong>Programa Nova Presentaciones</strong>:
+          desde aquí podrás probar la demo del orquestador y hablar con Nova usando tu propio
+          navegador.
+        </p>
+
+        <ul>
+          <li>
+            <span class="bullet">✔</span>
+            <span>
+              <strong>Bienvenida y contexto:</strong> breve resumen de lo que hace el proyecto y cómo
+              nació la colaboración Nova–Pablo.
+            </span>
+          </li>
+          <li>
+            <span class="bullet">✔</span>
+            <span>
+              <strong>Demo en vivo:</strong> escribe un mensaje y comprueba cómo responde el backend
+              real desplegado en Railway.
+            </span>
+          </li>
+          <li>
+            <span class="bullet">✔</span>
+            <span>
+              <strong>Preparando el futuro:</strong> este mismo punto de entrada servirá para lanzar
+              el generador completo de presentaciones.
+            </span>
+          </li>
+        </ul>
+      </article>
+
+      <!-- COLUMNA DERECHA: CHAT -->
+      <article class="card">
+        <div class="section-label">Habla con Nova</div>
+        <h2><span class="icon">💬</span> Conversa con Nova desde tu navegador</h2>
+
+        <p class="chat-meta">
+          Escribe un mensaje y pulsa <strong>Enviar</strong>. La petición irá a tu backend
+          en Railway (`/chat`) y verás la respuesta estructurada: emoción, intención, resultado
+          y un pequeño resumen.
+        </p>
+
+        <div class="chat-box">
+          <form id="chat-form" class="chat-input-row">
+            <input
+              id="user-input"
+              type="text"
+              placeholder="Escribe aquí tu mensaje para Nova..."
+              autocomplete="off"
+              required
+            />
+            <button type="submit" id="send-btn">
+              <span>Enviar</span> <span>🚀</span>
+            </button>
+          </form>
+
+          <div class="status-line" id="status-line">
+            Backend: comprobando conexión…
+          </div>
+
+          <div class="chat-response" id="chat-response">
+            <div class="response-label">Respuesta de Nova</div>
+            <div class="response-row">
+              <span class="key">Estado:</span> esperando tu primer mensaje.
             </div>
-            <h1>Programa Nova Presentaciones</h1>
-            <p>
-                Proyecto conjunto Pablo &amp; Nova — una simbiosis real entre
-                inteligencia humana e inteligencia artificial.
-            </p>
+          </div>
         </div>
-    </header>
-
-    <main>
-        <div class="container">
-            <!-- SECCIÓN 1: EXPLICACIÓN DE LA DEMO -->
-            <section class="section-card">
-                <h2>
-                    <span class="badge-pill">Demo</span>
-                    ¿Qué vas a ver aquí?
-                </h2>
-                <p class="mb-1">
-                    Esta versión web muestra el corazón del proyecto:
-                    un pequeño orquestador que recibe tu mensaje, lo
-                    analiza y devuelve una respuesta generada por Nova.
-                </p>
-                <ul class="mb-0">
-                    <li>Escribes un mensaje a Nova.</li>
-                    <li>El backend en Railway procesa la petición.</li>
-                    <li>La respuesta aparece en el panel de conversación.</li>
-                </ul>
-            </section>
-
-            <!-- SECCIÓN 2: FORMULARIO DE CHAT -->
-            <section class="section-card">
-                <h2>
-                    <span class="badge-pill">Chat</span>
-                    Habla con Nova desde tu navegador
-                </h2>
-
-                <form id="chat-form" class="mb-3">
-                    <div class="mb-2">
-                        <label for="user-input" class="form-label small-label">
-                            Escribe tu mensaje para Nova
-                        </label>
-                        <textarea
-                            id="user-input"
-                            class="form-control"
-                            rows="2"
-                            placeholder="Ejemplo: Hola Nova, ¿qué tal?"
-                            required
-                        ></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">
-                        Enviar mensaje
-                    </button>
-                </form>
-
-                <div class="small-label mb-1">
-                    Conversación (demo en tiempo real):
-                </div>
-                <div id="chat-log"></div>
-
-                <div id="status" class="small text-muted mt-2"></div>
-            </section>
-
-            <!-- SECCIÓN 3: ESTADO DEL SISTEMA -->
-            <section class="section-card">
-                <h2>
-                    <span class="badge-pill">Estado</span>
-                    Orquestador IA
-                </h2>
-                <p class="mb-1">
-                    Backend desplegado en
-                    <strong>Railway</strong> y probado con Postman.
-                </p>
-                <ul class="mb-0">
-                    <li>Ruta API: <code>/chat</code> (método POST)</li>
-                    <li>Formato de entrada: <code>{"mensaje": "..."}</code></li>
-                    <li>Respuestas con emoción, intención y resumen.</li>
-                </ul>
-            </section>
-        </div>
-    </main>
+      </article>
+    </section>
 
     <footer>
-        Programa Nova Presentaciones · Pablo &amp; Nova ·
-        Simbiosis IA–Humano
+      <span>
+        Proyecto creado en simbiosis: <strong>Nova (IA)</strong> &amp; <strong>Pablo (humano)</strong>.
+      </span>
+      <span>Programa Nova Presentaciones · Cáceres · 2025</span>
     </footer>
+  </main>
 
-    <script>
-        // 👉 BACKEND REAL EN RAILWAY
-        const API_URL =
-            "https://programanovabackend-production.up.railway.app/chat";
+  <script>
+    // ⚠️ AQUÍ VA TU BACKEND REAL EN RAILWAY
+    const API_URL = "https://programanovabackend-production.up.railway.app/chat";
 
-        const form = document.getElementById("chat-form");
-        const input = document.getElementById("user-input");
-        const log = document.getElementById("chat-log");
-        const statusEl = document.getElementById("status");
+    const form = document.getElementById("chat-form");
+    const input = document.getElementById("user-input");
+    const responseBox = document.getElementById("chat-response");
+    const statusLine = document.getElementById("status-line");
+    const sendBtn = document.getElementById("send-btn");
 
-        function addLine(text, cssClass) {
-            const p = document.createElement("p");
-            if (cssClass) p.classList.add(cssClass);
-            p.textContent = text;
-            log.appendChild(p);
-            log.scrollTop = log.scrollHeight;
+    function updateStatus(message, type = "info") {
+      statusLine.textContent = message;
+      statusLine.classList.remove("status-ok", "status-error");
+      if (type === "ok") statusLine.classList.add("status-ok");
+      if (type === "error") statusLine.classList.add("status-error");
+    }
+
+    async function checkHealth() {
+      try {
+        const res = await fetch("https://programanovabackend-production.up.railway.app/");
+        if (res.ok) {
+          updateStatus("Backend conectado correctamente ✔", "ok");
+        } else {
+          updateStatus("Backend respondió, pero con código " + res.status, "error");
+        }
+      } catch (err) {
+        updateStatus("No se pudo comprobar el backend. Intenta igualmente enviar un mensaje.", "error");
+      }
+    }
+
+    checkHealth();
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+
+      updateStatus("Enviando mensaje a Nova…", "info");
+      sendBtn.disabled = true;
+      sendBtn.style.opacity = "0.7";
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ mensaje: text }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Error en el servidor");
         }
 
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const text = input.value.trim();
-            if (!text) return;
+        updateStatus("Respuesta recibida del backend ✔", "ok");
 
-            addLine("Tú: " + text, "msg-user");
-            input.value = "";
-            statusEl.textContent = "Enviando mensaje al backend…";
-
-            try {
-                const res = await fetch(API_URL, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ mensaje: text }),
-                });
-
-                if (!res.ok) {
-                    statusEl.textContent =
-                        "Error de servidor (" + res.status + ").";
-                    return;
-                }
-
-                const data = await res.json();
-
-                const respuesta = data.respuesta || "[Sin respuesta]";
-                const emocion = data.emocion || "desconocida";
-                const intencion = data.intencion || "desconocida";
-                const resumen = data.resumen || "";
-
-                addLine("Nova: " + respuesta, "msg-nova");
-                addLine(
-                    "· Emoción: " +
-                        emocion +
-                        " · Intención: " +
-                        intencion +
-                        (resumen ? " · Resumen: " + resumen : ""),
-                    "small-label"
-                );
-
-                statusEl.textContent = "Respuesta recibida correctamente.";
-            } catch (err) {
-                console.error(err);
-                statusEl.textContent =
-                    "No se pudo conectar con el backend. Intenta de nuevo.";
-            }
-        });
-    </script>
+        responseBox.innerHTML = `
+          <div class="response-label">Respuesta de Nova</div>
+          <div class="response-row">
+            <span class="key">Respuesta:</span> ${data.respuesta || "—"}
+          </div>
+          <div class="response-row">
+            <span class="key">Emoción:</span> ${data.emocion || "—"}
+          </div>
+          <div class="response-row">
+            <span class="key">Intención:</span> ${data.intencion || "—"}
+          </div>
+          <div class="response-row">
+            <span class="key">Resultado:</span> ${data.resultado || "—"}
+          </div>
+          <div class="response-row">
+            <span class="key">Resumen:</span> ${data.resumen || "—"}
+          </div>
+        `;
+      } catch (error) {
+        console.error(error);
+        updateStatus("Error al llamar al backend", "error");
+        responseBox.innerHTML = `
+          <div class="response-label">Respuesta de Nova</div>
+          <div class="response-row">
+            <span class="key">Error:</span> ${error.message}
+          </div>
+          <div class="response-row">
+            Asegúrate de que el backend en Railway está activo y vuelve a intentarlo.
+          </div>
+        `;
+      } finally {
+        sendBtn.disabled = false;
+        sendBtn.style.opacity = "1";
+        input.value = "";
+        input.focus();
+      }
+    });
+  </script>
 </body>
 </html>
