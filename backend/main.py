@@ -1,57 +1,35 @@
-from flask import Flask, request, jsonify, send_from_directory
-from flask_cors import CORS
-import os
+from flask import Flask, request, jsonify
 
-# =====================================
+# =========================
 # INICIAR FLASK
-# =====================================
-app = Flask(
-    __name__,
-    static_folder="frontend",
-    static_url_path=""
-)
+# =========================
+app = Flask(__name__)
 
-# HABILITAR CORS
-CORS(app)
+# =========================
+# RUTA RAÍZ (SALUD / CHECK)
+# =========================
+@app.route("/", methods=["GET"])
+def health():
+    return "Backend Programanova OK", 200
 
-# =====================================
-# RUTA RAÍZ -> SERVIR index.html
-# =====================================
-@app.route("/")
-def index():
-    return send_from_directory("frontend", "index.html")
-
-# =====================================
-# SERVIR ARCHIVOS ESTÁTICOS
-# =====================================
-@app.route("/<path:ruta>")
-def static_files(ruta):
-    return send_from_directory("frontend", ruta)
-
-# =====================================
+# =========================
 # API /chat
-# =====================================
+# =========================
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json() or {}
     text = (data.get("mensaje") or "").strip()
 
-    if not text:
-        return jsonify({"error": "Falta el campo 'mensaje'"}), 400
-
-    response = {
-        "respuesta": f"🤖 Nova recibió: {text}",
-        "emocion": "neutral",
-        "intencion": "consulta",
-        "resumen": f"El usuario dijo: {text}"
-    }
-
-    return jsonify(response)
+    # Respuesta DEMO muy sencilla
+    return jsonify({
+        "ok": True,
+        "mensaje_recibido": text,
+        "respuesta": f"Nova recibió: {text}",
+    })
 
 
-# =====================================
-# RUN SERVER
-# =====================================
+# =========================
+# RUN SERVER (solo local)
+# =========================
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=8000)
