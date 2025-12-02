@@ -2,35 +2,51 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import os
 
-# =====================================
+# =======================================
 # INICIAR FLASK
-# =====================================
+# =======================================
 app = Flask(
     __name__,
     static_folder="frontend",
     static_url_path=""
 )
 
+# =======================================
 # HABILITAR CORS
+# =======================================
 CORS(app)
 
-# =====================================
+
+# =======================================
+# RUTA STATUS (TEST VIDA)
+# =======================================
+@app.route("/status", methods=["GET"])
+def status():
+    return jsonify({
+        "ok": True,
+        "mensaje": "Backend activo 🚀 Nova y Pablo"
+    })
+
+
+# =======================================
 # RUTA RAÍZ -> SERVIR index.html
-# =====================================
+# =======================================
 @app.route("/")
 def index():
     return send_from_directory("frontend", "index.html")
 
-# =====================================
-# SERVIR ARCHIVOS ESTÁTICOS
-# =====================================
+
+# =======================================
+# SERVIR ESTÁTICOS
+# =======================================
 @app.route("/<path:ruta>")
 def static_files(ruta):
     return send_from_directory("frontend", ruta)
 
-# =====================================
-# API /chat
-# =====================================
+
+# =======================================
+# ENDPOINT API /chat
+# =======================================
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json() or {}
@@ -40,11 +56,10 @@ def chat():
         return jsonify({"error": "Falta el campo 'mensaje'"}), 400
 
     response = {
-        "respuesta": f"🤖 Nova recibió: {text}",
+        "respuesta": f"🧠 Nova recibió: {text}",
         "emocion": "neutral",
         "intencion": "consulta",
         "resumen": f"El usuario dijo: {text}"
     }
 
     return jsonify(response)
-
