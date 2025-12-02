@@ -1,1 +1,1 @@
-web: uvicorn programanova_backend.main:app --host 0.0.0.0 --port 8080
+web: gunicorn programanova_backend.main:app -b 0.0.0.0:8080
