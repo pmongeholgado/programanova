@@ -1,17 +1,28 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
+# ================================
+# INIT FLASK
+# ================================
 app = Flask(__name__)
 CORS(app)
 
+
+# ================================
+# HEALTH CHECK
+# ================================
 @app.route("/status", methods=["GET"])
 def status():
     return jsonify({
         "ok": True,
-        "mensaje": "Backend activo 🚀",
+        "mensaje": "Backend operativo",
         "autor": "Nova & Pablo"
     }), 200
 
+
+# ================================
+# API CHAT
+# ================================
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json() or {}
@@ -20,12 +31,10 @@ def chat():
     if not text:
         return jsonify({"error": "Falta el campo 'mensaje'"}), 400
 
-    return jsonify({
+    response = {
         "respuesta": f"🧠 Nova recibió: {text}",
         "emocion": "neutral",
-        "intencion": "consulta",
-    }), 200
+        "intencion": "consulta"
+    }
 
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    return jsonify(response), 200
