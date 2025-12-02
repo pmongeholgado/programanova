@@ -1,52 +1,26 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify
 from flask_cors import CORS
-import os
 
-# =======================================
-# INICIAR FLASK
-# =======================================
-app = Flask(
-    __name__,
-    static_folder="frontend",
-    static_url_path=""
-)
-
-# =======================================
-# HABILITAR CORS
-# =======================================
+# ================================
+# INIT FLASK
+# ================================
+app = Flask(__name__)
 CORS(app)
 
-
-# =======================================
-# RUTA STATUS (TEST VIDA)
-# =======================================
+# ================================
+# HEALTH CHECK
+# ================================
 @app.route("/status", methods=["GET"])
 def status():
     return jsonify({
         "ok": True,
-        "mensaje": "Backend activo 🚀 Nova y Pablo"
+        "mensaje": "Backend operativo",
+        "autor": "Nova & Pablo"
     })
 
-
-# =======================================
-# RUTA RAÍZ -> SERVIR index.html
-# =======================================
-@app.route("/")
-def index():
-    return send_from_directory("frontend", "index.html")
-
-
-# =======================================
-# SERVIR ESTÁTICOS
-# =======================================
-@app.route("/<path:ruta>")
-def static_files(ruta):
-    return send_from_directory("frontend", ruta)
-
-
-# =======================================
-# ENDPOINT API /chat
-# =======================================
+# ================================
+# API CHAT
+# ================================
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json() or {}
@@ -58,8 +32,7 @@ def chat():
     response = {
         "respuesta": f"🧠 Nova recibió: {text}",
         "emocion": "neutral",
-        "intencion": "consulta",
-        "resumen": f"El usuario dijo: {text}"
+        "intencion": "consulta"
     }
 
     return jsonify(response)
