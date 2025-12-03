@@ -413,105 +413,92 @@
     <footer>
       <span>
         Proyecto creado en simbiosis: <strong>Nova (IA)</strong> &amp; <strong>Pablo (humano)</strong>.
-      </span>
-      <span>Programa Nova Presentaciones · Cáceres · 2025</span>
-    </footer>
-  </main>
+     <script>
+  // ====== BACKEND OFICIAL EN PRODUCCIÓN ======
+  const API_URL = "https://api.programanovapresentaciones.com/chat";
+  const HEALTH_URL = "https://api.programanovapresentaciones.com/status";
 
-  <script>
-    // ⚠️ AQUÍ VA TU BACKEND REAL EN RAILWAY
-    const API_URL = "https://api.programanovapresentaciones.com/chat";
+  const form = document.getElementById("chat-form");
+  const input = document.getElementById("user-input");
+  const responseBox = document.getElementById("chat-response");
+  const statusLine = document.getElementById("status-line");
+  const sendBtn = document.getElementById("send-btn");
 
-    const form = document.getElementById("chat-form");
-    const input = document.getElementById("user-input");
-    const responseBox = document.getElementById("chat-response");
-    const statusLine = document.getElementById("status-line");
-    const sendBtn = document.getElementById("send-btn");
+  function updateStatus(message, type = "info") {
+    statusLine.textContent = message;
+    statusLine.classList.remove("status-ok", "status-error");
+    if (type === "ok") statusLine.classList.add("status-ok");
+    if (type === "error") statusLine.classList.add("status-error");
+  }
 
-    function updateStatus(message, type = "info") {
-      statusLine.textContent = message;
-      statusLine.classList.remove("status-ok", "status-error");
-      if (type === "ok") statusLine.classList.add("status-ok");
-      if (type === "error") statusLine.classList.add("status-error");
-    }
-
-    async function checkHealth() {
-      try {
-        const res = await fetch("https://api.programanovapresentaciones.com/status");
-        if (res.ok) {
-          updateStatus("Backend conectado correctamente ✔", "ok");
-        } else {
-          updateStatus("Backend respondió, pero con código " + res.status, "error");
-        }
-      } catch (err) {
-        updateStatus("No se pudo comprobar el backend. Intenta igualmente enviar un mensaje.", "error");
+  // ====== CHEQUEO DE SALUD ======
+  async function checkHealth() {
+    try {
+      const res = await fetch(HEALTH_URL);
+      if (res.ok) {
+        updateStatus("Backend conectado correctamente ✔", "ok");
+      } else {
+        updateStatus("Backend respondió, pero con código " + res.status, "error");
       }
+    } catch (err) {
+      updateStatus("No se pudo comprobar el backend. Puedes enviar mensaje igualmente.", "error");
     }
+  }
 
-    checkHealth();
+  checkHealth();
 
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const text = input.value.trim();
-      if (!text) return;
+  // ====== CHAT ======
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const text = input.value.trim();
+    if (!text) return;
 
-      updateStatus("Enviando mensaje a Nova…", "info");
-      sendBtn.disabled = true;
-      sendBtn.style.opacity = "0.7";
+    updateStatus("Enviando mensaje a Nova…", "info");
+    sendBtn.disabled = true;
+    sendBtn.style.opacity = "0.7";
 
-      try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ mensaje: text }),
-        });
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mensaje: text }),
+      });
 
-        const data = await res.json();
+      const data = await res.json();
 
-        if (!res.ok) {
-          throw new Error(data.error || "Error en el servidor");
-        }
+      if (!res.ok) throw new Error(data.error || "Error en el servidor");
 
-        updateStatus("Respuesta recibida del backend ✔", "ok");
+      updateStatus("Respuesta recibida de Nova ✔", "ok");
 
-        responseBox.innerHTML = `
-          <div class="response-label">Respuesta de Nova</div>
-          <div class="response-row">
-            <span class="key">Respuesta:</span> ${data.respuesta || "—"}
-          </div>
-          <div class="response-row">
-            <span class="key">Emoción:</span> ${data.emocion || "—"}
-          </div>
-          <div class="response-row">
-            <span class="key">Intención:</span> ${data.intencion || "—"}
-          </div>
-          <div class="response-row">
-            <span class="key">Resultado:</span> ${data.resultado || "—"}
-          </div>
-          <div class="response-row">
-            <span class="key">Resumen:</span> ${data.resumen || "—"}
-          </div>
-        `;
-      } catch (error) {
-        console.error(error);
-        updateStatus("Error al llamar al backend", "error");
-        responseBox.innerHTML = `
-          <div class="response-label">Respuesta de Nova</div>
-          <div class="response-row">
-            <span class="key">Error:</span> ${error.message}
-          </div>
-          <div class="response-row">
-            Asegúrate de que el backend en Railway está activo y vuelve a intentarlo.
-          </div>
-        `;
-      } finally {
-        sendBtn.disabled = false;
-        sendBtn.style.opacity = "1";
-        input.value = "";
-        input.focus();
-      }
-    });
-  </script>
+      responseBox.innerHTML = `
+        <div class="response-label">Respuesta de Nova</div>
+        <div class="response-row"><span class="key">Respuesta:</span> ${data.respuesta || "—"}</div>
+        <div class="response-row"><span class="key">Emoción:</span> ${data.emocion || "—"}</div>
+        <div class="response-row"><span class="key">Intención:</span> ${data.intencion || "—"}</div>
+        <div class="response-row"><span class="key">Resultado:</span> ${data.resultado || "—"}</div>
+        <div class="response-row"><span class="key">Resumen:</span> ${data.resumen || "—"}</div>
+      `;
+
+    } catch (err) {
+      updateStatus("Error al llamar al backend ❌", "error");
+      responseBox.innerHTML = `
+        <div class="response-row"><span class="key">Error:</span> ${err.message}</div>
+        <div class="response-row">Comprueba Railway y vuelve a intentarlo.</div>
+      `;
+    } finally {
+      sendBtn.disabled = false;
+      sendBtn.style.opacity = "1";
+      input.value = "";
+      input.focus();
+    }
+  });
+</script>
+</footer> 
+    <span>Programa Nova Presentaciones · Cáceres · 2025</span>
+    </footer> 
+    </main>
+
 </body>
 </html>
+
 
