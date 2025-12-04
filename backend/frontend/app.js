@@ -33,7 +33,8 @@ async function sendMessage() {
         const response = await fetch("https://api.programanovapresentaciones.com/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ mensaje: text })
+            body: JSON.stringify({ mensaje: text }),
+            mode: "cors"
         });
 
         const data = await response.json();
@@ -67,3 +68,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log("Frontend operativo 🔥");
 });
+
