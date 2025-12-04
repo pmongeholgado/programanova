@@ -1,6 +1,6 @@
-// ===============================
-//  FUNCIONES UI
-// ===============================
+// ======================================
+// FUNCIONES UI
+// ======================================
 function addMessage(text, sender = "bot") {
     const chatWindow = document.getElementById("chat-window");
 
@@ -18,9 +18,9 @@ function addMessage(text, sender = "bot") {
     chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
-// ===============================
-//  ENVIAR MENSAJE AL BACKEND
-// ===============================
+// ======================================
+// ENVIAR MENSAJE AL BACKEND
+// ======================================
 async function sendMessage() {
     const input = document.getElementById("user-input");
     const text = input.value.trim();
@@ -30,7 +30,7 @@ async function sendMessage() {
     input.value = "";
 
     try {
-        const response = await fetch("/chat", {
+        const response = await fetch("https://api.programanovapresentaciones.com/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ mensaje: text })
@@ -38,16 +38,8 @@ async function sendMessage() {
 
         const data = await response.json();
 
-        // 1️⃣ Mensaje principal IA
+        // 🟢 Mensaje principal IA
         addMessage(data.respuesta || "🤖 Nova no pudo generar una respuesta.", "bot");
-
-        // 2️⃣ Panel lateral
-        document.getElementById("emotion-value").innerText = data.emocion || "—";
-        document.getElementById("intent-value").innerText = data.intencion || "—";
-
-        // 3️⃣ Hora
-        const ahora = new Date().toLocaleString();
-        document.getElementById("time-value").innerText = ahora;
 
     } catch (error) {
         console.error("ERR:", error);
@@ -55,9 +47,9 @@ async function sendMessage() {
     }
 }
 
-// ===============================
-//  EVENTOS
-// ===============================
+// ======================================
+// EVENTOS
+// ======================================
 document.addEventListener("DOMContentLoaded", () => {
 
     // Enviar al pulsar botón
