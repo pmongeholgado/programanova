@@ -2,192 +2,136 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Programa Nova Presentaciones</title>
 
-    <!-- Estilos principales -->
+    <!-- Estilos -->
     <link rel="stylesheet" href="styles.css" />
 
-    <!-- Icono de la web (favicon) -->
-    <link rel="icon" href="assets/AI_Orchestrator_v2.ico" />
+    <!-- Icono -->
+    <link rel="icon" href="assets/AI_Orchestrator_v2.ico" type="image/x-icon" />
 </head>
-<body id="top">
-    <!-- ===================================== -->
-    <!-- CABECERA / HERO PRINCIPAL            -->
-    <!-- ===================================== -->
-    <header class="hero">
-        <div class="hero-left">
+<body>
+    <!-- CABECERA -->
+    <header class="hero" id="top">
+        <div class="hero-inner">
             <div class="logo-circle">N</div>
             <div class="hero-text">
                 <h1>Programa Nova Presentaciones</h1>
-                <p class="hero-subtitle">
-                    Proyecto conjunto <strong>Pablo &amp; Nova</strong> — una simbiosis real entre
-                    inteligencia humana e inteligencia artificial para crear presentaciones vivas
-                    y conversaciones con IA.
-                </p>
+                <h2>
+                    Proyecto conjunto <strong>Pablo &amp; Nova</strong> — una simbiosis real
+                    entre inteligencia humana e inteligencia artificial para crear
+                    presentaciones vivas y conversaciones con IA.
+                </h2>
             </div>
         </div>
 
-        <nav class="hero-nav">
-            <button
-                class="nav-button"
-                onclick="document.getElementById('demo').scrollIntoView({ behavior: 'smooth' });"
-            >
-                DEMO INTERACTIVA
-            </button>
-
-            <button
-                class="nav-button"
-                onclick="document.getElementById('generador').scrollIntoView({ behavior: 'smooth' });"
-            >
-                GENERADOR DE PRESENTACIONES
-            </button>
-
-            <button
-                class="nav-button"
-                onclick="document.getElementById('chat').scrollIntoView({ behavior: 'smooth' });"
-            >
-                CHAT CON NOVA EN TIEMPO REAL
-            </button>
+        <!-- MENÚ PRINCIPAL -->
+        <nav class="nav-bar">
+            <a href="#demo" class="nav-btn">DEMO INTERACTIVA</a>
+            <a href="#generador" class="nav-btn">GENERADOR DE PRESENTACIONES</a>
+            <a href="#chat" class="nav-btn">CHAT CON NOVA EN TIEMPO REAL</a>
         </nav>
     </header>
 
-    <!-- ===================================== -->
-    <!-- CONTENIDO PRINCIPAL                  -->
-    <!-- ===================================== -->
     <main>
-        <!-- =============================== -->
-        <!-- SECCIÓN DEMO (BOTÓN 1)         -->
-        <!-- =============================== -->
-        <section id="demo" class="section-wrapper">
-            <div class="two-columns">
-                <!-- Columna izquierda: descripción del programa -->
-                <div class="column card">
-                    <h2>Demo del Programa Nova Presentaciones</h2>
-
+        <!-- BLOQUE DEMO -->
+        <section id="demo" class="section">
+            <div class="section-inner">
+                <div class="col-left">
+                    <h3>Demo del Programa Nova Presentaciones</h3>
                     <p>
                         Esta página es la puerta de entrada a
-                        <strong>Programa Nova Presentaciones</strong>: desde aquí podrás probar
-                        la demo del orquestador y hablar con Nova usando tu propio navegador.
+                        <strong>Programa Nova Presentaciones</strong>: desde aquí podrás
+                        probar la demo del orquestador y hablar con Nova usando tu propio
+                        navegador.
                     </p>
-
-                    <ul class="checklist">
+                    <ul>
                         <li>
-                            <strong>Bienvenida y contexto:</strong> breve resumen de lo que hace el
-                            proyecto y cómo nació la colaboración Nova–Pablo.
+                            <strong>Bienvenida y contexto:</strong> breve resumen de lo que
+                            hace el proyecto y cómo nació la colaboración Nova–Pablo.
                         </li>
                         <li>
-                            <strong>Demo en vivo:</strong> escribe un mensaje y comprueba cómo responde
-                            el backend real desplegado en Railway.
+                            <strong>Demo en vivo:</strong> escribe un mensaje y comprueba
+                            cómo responde el backend real desplegado en Railway.
                         </li>
                         <li>
-                            <strong>Preparando el futuro:</strong> este mismo punto de entrada servirá
-                            para lanzar el generador completo de presentaciones.
+                            <strong>Preparando el futuro:</strong> este mismo punto de
+                            entrada servirá para lanzar el generador completo de
+                            presentaciones.
                         </li>
                     </ul>
                 </div>
 
-                <!-- Columna derecha: ancla visual hacia el chat -->
-                <div class="column card column-highlight">
-                    <h3>Habla con Nova desde tu navegador</h3>
-                    <p>
-                        Pulsa en <strong>“Chat con Nova en tiempo real”</strong> o desplázate hacia
-                        abajo para abrir la demo de conversación conectada al backend de Railway.
+                <!-- PANEL ESTADO IA / CHAT -->
+                <div class="col-right" id="chat">
+                    <h3>Conversa con Nova desde tu navegador</h3>
+                    <p class="small">
+                        Escribe un mensaje y pulsa <strong>Enviar</strong>.  
+                        La petición irá a tu backend en Railway (<code>/chat</code>) y verás la
+                        respuesta estructurada: emoción, intención, resultado y un pequeño
+                        resumen.
                     </p>
-                    <p>
-                        Cada mensaje que envíes se procesa en el servidor y vuelve estructurado con
-                        emoción, intención y un pequeño resumen.
-                    </p>
-                </div>
-            </div>
-        </section>
 
-        <!-- =============================== -->
-        <!-- SECCIÓN CHAT (BOTÓN 3)         -->
-        <!-- =============================== -->
-        <section id="chat" class="section-wrapper">
-            <div id="container" class="two-columns">
-                <!-- Panel izquierdo: Chat -->
-                <div id="chat-panel" class="column card">
-                    <h2 class="title">Conversa con Nova</h2>
-
-                    <div id="chat-window"></div>
-
-                    <div id="input-area">
-                        <input
-                            type="text"
-                            id="user-input"
-                            placeholder="Escribe tu mensaje..."
-                        />
-                        <button id="send-btn" type="button">Enviar</button>
-                    </div>
-                </div>
-
-                <!-- Panel derecho: Estado IA -->
-                <div id="side-panel" class="column card">
-                    <h2 class="side-title">Estado del Orquestador</h2>
-
-                    <div class="info-block">
-                        <h3>Emoción detectada</h3>
-                        <p id="emotion-value">—</p>
+                    <div class="status-bar" id="backend-status">
+                        Backend conectado correctamente ✔
                     </div>
 
-                    <div class="info-block">
-                        <h3>Intención detectada</h3>
-                        <p id="intent-value">—</p>
-                    </div>
+                    <div class="chat-card">
+                        <label for="user-input" class="chat-label">
+                            Escribe aquí tu mensaje para Nova…
+                        </label>
+                        <div class="chat-input-row">
+                            <input
+                                id="user-input"
+                                type="text"
+                                placeholder="Escribe tu mensaje..."
+                            />
+                            <button id="send-btn" type="button">Enviar 🚀</button>
+                        </div>
 
-                    <div class="info-block">
-                        <h3>Última actualización</h3>
-                        <p id="time-value">—</p>
+                        <div id="chat-window" class="chat-window"></div>
+
+                        <div class="ia-panel">
+                            <h4>Respuesta de Nova</h4>
+                            <p><strong>Respuesta:</strong> <span id="main-answer">—</span></p>
+                            <p><strong>Emoción:</strong> <span id="emotion-value">—</span></p>
+                            <p><strong>Intención:</strong> <span id="intent-value">—</span></p>
+                            <p><strong>Resultado:</strong> <span id="result-value">—</span></p>
+                            <p><strong>Resumen:</strong> <span id="summary-value">—</span></p>
+                            <p class="small">
+                                <strong>Última actualización:</strong>
+                                <span id="time-value">—</span>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- =============================== -->
-        <!-- SECCIÓN GENERADOR (BOTÓN 2)    -->
-        <!-- =============================== -->
-        <section id="generador" class="section-wrapper">
-            <div class="card">
-                <h2>Generador de Presentaciones (Próximamente)</h2>
+        <!-- BLOQUE GENERADOR (para la presentación futura) -->
+        <section id="generador" class="section section-alt">
+            <div class="section-inner">
+                <h3>Generador de Presentaciones (próximamente)</h3>
                 <p>
-                    Esta sección será el corazón del
-                    <strong>Generador Nova Presentaciones</strong>. Desde aquí podrás:
+                    Desde aquí se lanzará el <strong>orquestador completo</strong> para crear
+                    presentaciones dinámicas a partir de guiones, capítulos y contenidos que
+                    hemos ido construyendo juntos.
                 </p>
-                <ul class="checklist">
-                    <li>Definir el tema y objetivo de tu presentación.</li>
-                    <li>Elegir el tipo de público y el tono.</li>
-                    <li>
-                        Generar automáticamente el guion y las diapositivas con la simbiosis
-                        Nova (IA) + Pablo (humano).
-                    </li>
-                </ul>
-                <p>
-                    De momento, esta área está en fase de diseño. La demo de chat y el backend ya
-                    están plenamente operativos y son el primer pilar de todo el sistema.
+                <p class="small">
+                    Esta sección será el corazón del Programa Nova Presentaciones cuando
+                    activemos el generador IA de diapositivas y documentos.
                 </p>
             </div>
         </section>
     </main>
 
-    <!-- ===================================== -->
-    <!-- PIE DE PÁGINA                        -->
-    <!-- ===================================== -->
     <footer class="footer">
-        <p>
-            Proyecto creado en simbiosis:
-            <strong>Nova (IA)</strong> &amp; <strong>Pablo (humano)</strong>. Cáceres · 2025
-        </p>
+        Proyecto creado en simbiosis: <strong>Nova (IA)</strong> &amp;
+        <strong> Pablo (humano)</strong>. · Cáceres · 2025
     </footer>
 
-    <!-- Lógica del frontend -->
+    <!-- LÓGICA DEL FRONTEND -->
     <script src="app.js"></script>
 </body>
 </html>
-
-<!-- ajuste build -->
-
