@@ -1,122 +1,257 @@
-/* Estilo general */
-body {
+/* ============ RESET BÁSICO ============ */
+* {
     margin: 0;
     padding: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #f4f7fb;
+    box-sizing: border-box;
 }
 
-/* Contenedor principal (dos columnas) */
-#container {
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: radial-gradient(circle at top left, #182bff 0, #050816 40%, #02020a 100%);
+    color: #f8fafc;
+    min-height: 100vh;
+}
+
+/* ============ CABECERA / HERO ============ */
+.hero {
+    padding: 2.5rem 5vw 1.5rem;
+    background: linear-gradient(135deg, #0b1736 0, #040814 100%);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.hero-inner {
     display: flex;
-    height: 100vh;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
-/* PANEL IZQUIERDO (Chat) */
-#chat-panel {
-    flex: 2;
-    padding: 20px;
-    background-color: #ffffff;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+.logo-circle {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #38bdf8, #2563eb);
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.6rem;
+    color: white;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.65);
 }
 
-.title {
-    margin: 0;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #e0e0e0;
-    color: #1f4f8f;
+.hero-text h1 {
+    font-size: 1.9rem;
+    margin-bottom: 0.3rem;
 }
 
-/* Ventana de chat */
-#chat-window {
+.hero-text h2 {
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: #cbd5f5;
+    max-width: 780px;
+}
+
+/* ============ NAV ============ */
+.nav-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.nav-btn {
+    text-decoration: none;
+    padding: 0.55rem 1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.5);
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #e5e7eb;
+    background: rgba(15, 23, 42, 0.7);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.18s ease-out;
+}
+
+.nav-btn:hover {
+    background: #22c55e;
+    border-color: #22c55e;
+    color: #020617;
+    box-shadow: 0 0 18px rgba(34, 197, 94, 0.5);
+}
+
+/* ============ SECCIONES ============ */
+.section {
+    padding: 2.5rem 5vw;
+}
+
+.section-alt {
+    background: rgba(15, 23, 42, 0.7);
+    border-top: 1px solid rgba(148, 163, 184, 0.15);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.section-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+    gap: 1.75rem;
+}
+
+.col-left h3,
+.col-right h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.6rem;
+}
+
+.col-left p {
+    margin-bottom: 0.8rem;
+    color: #e5e7eb;
+}
+
+.col-left ul {
+    list-style: disc;
+    padding-left: 1.3rem;
+    color: #e5e7eb;
+}
+
+.col-left li + li {
+    margin-top: 0.4rem;
+}
+
+/* ============ CHAT / PANEL IA ============ */
+.status-bar {
+    margin-bottom: 0.7rem;
+    padding: 0.4rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    color: #bbf7d0;
+    background: rgba(22, 163, 74, 0.18);
+    border: 1px solid rgba(22, 163, 74, 0.5);
+}
+
+.chat-card {
+    background: rgba(15, 23, 42, 0.9);
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(148, 163, 184, 0.35);
+}
+
+.chat-label {
+    font-size: 0.85rem;
+    color: #cbd5f5;
+}
+
+.chat-input-row {
+    display: flex;
+    gap: 0.6rem;
+    margin: 0.6rem 0 0.9rem;
+}
+
+.chat-input-row input {
     flex: 1;
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #eef3fa;
-    border-radius: 10px;
-    overflow-y: auto;
-    border: 1px solid #cfd8e3;
+    padding: 0.55rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.5);
+    background: rgba(15, 23, 42, 0.9);
+    color: #e5e7eb;
 }
 
-/* Mensajes */
+.chat-input-row input:focus {
+    outline: none;
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 1px #38bdf8;
+}
+
+.chat-input-row button {
+    padding: 0.55rem 0.95rem;
+    border-radius: 999px;
+    border: none;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #020617;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 12px 20px rgba(34, 197, 94, 0.45);
+    transition: transform 0.14s ease-out, box-shadow 0.14s ease-out;
+}
+
+.chat-input-row button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 26px rgba(34, 197, 94, 0.55);
+}
+
+.chat-window {
+    min-height: 90px;
+    max-height: 220px;
+    overflow-y: auto;
+    padding: 0.6rem;
+    margin-bottom: 0.8rem;
+    border-radius: 0.7rem;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px dashed rgba(148, 163, 184, 0.5);
+    font-size: 0.84rem;
+}
+
 .message {
-    padding: 8px 12px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    max-width: 80%;
-    line-height: 1.4;
+    padding: 0.35rem 0.55rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.3rem;
 }
 
 .user-message {
-    background-color: #d3e3ff;
+    background: rgba(56, 189, 248, 0.22);
     align-self: flex-end;
 }
 
 .bot-message {
-    background-color: #ffffff;
-    border: 1px solid #c6d4e5;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(148, 163, 184, 0.45);
 }
 
-/* Input */
-#input-area {
-    display: flex;
-    gap: 10px;
-    padding-top: 15px;
+/* Panel IA */
+.ia-panel {
+    border-top: 1px solid rgba(148, 163, 184, 0.3);
+    padding-top: 0.7rem;
+    font-size: 0.85rem;
+    color: #e5e7eb;
 }
 
-#user-input {
-    flex: 1;
-    padding: 12px;
-    font-size: 14px;
-    border: 1px solid #c0c7d1;
-    border-radius: 6px;
+.ia-panel h4 {
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #a5b4fc;
 }
 
-#send-btn {
-    background-color: #1f4f8f;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-#send-btn:hover {
-    background-color: #173d6d;
-}
-
-/* PANEL DERECHO (estado IA) */
-#side-panel {
-    flex: 1;
-    padding: 20px;
-    background-color: #1f4f8f;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    box-shadow: -2px 0 10px rgba(0,0,0,0.1);
-}
-
-.side-title {
-    margin-top: 0;
+/* ============ FOOTER ============ */
+.footer {
+    padding: 1rem 5vw 1.5rem;
+    font-size: 0.8rem;
     text-align: center;
-    font-size: 22px;
+    color: #9ca3af;
 }
 
-.info-block {
-    background-color: rgba(255,255,255,0.1);
-    padding: 15px;
-    border-radius: 8px;
+/* ============ TEXTOS PEQUEÑOS ============ */
+.small {
+    font-size: 0.8rem;
+    color: #cbd5f5;
 }
 
-.info-block h3 {
-    margin-top: 0;
-}
+/* ============ RESPONSIVE ============ */
+@media (max-width: 900px) {
+    .section-inner {
+        grid-template-columns: minmax(0, 1fr);
+    }
 
-.info-block p {
-    font-size: 18px;
-    margin: 5px 0 0;
+    .hero-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
