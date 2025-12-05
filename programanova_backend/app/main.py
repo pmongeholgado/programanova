@@ -57,7 +57,7 @@ def chat():
         "resumen": f"Mensaje procesado correctamente: '{text}'",
         "ultima_actualizacion": "ahora mismo"
     }
-    return jsonify(respuesta)
+    return jsonify(respuesta), 200
 
 
 # Solo se usa si ejecutaras localmente con `python main.py`
