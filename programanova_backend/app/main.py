@@ -31,6 +31,10 @@ def status():
         "message": "Backend funcionando",
         "autor": "Nova & Pablo",
     }), 200
+    
+@app.route("/ping", methods=["GET"])
+def ping():
+    return jsonify({"alive": True}), 200
 
 # ======================================
 # ENDPOINT /chat
