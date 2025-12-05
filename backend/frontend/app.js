@@ -30,7 +30,9 @@ async function sendMessage() {
     input.value = "";
 
     try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/chat`, {
+        const API_BASE_URL = "https://programanova.onrender.com";
+
+        const response = await fetch(`${API_BASE_URL}/chat`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ mensaje: text }),
@@ -68,5 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log("Frontend operativo 🔥");
 });
+
 
 
