@@ -54,7 +54,7 @@ def chat():
 
     # DEMO RESPONSE
     respuesta = {
-        "respuesta": f"💬 Nova recibió tu mensaje: {text}",
+        "respuesta": f"Nova recibió tu mensaje: {text}",
         "emocion": "neutral",
         "intencion": "demo",
         "resultado": "OK",
