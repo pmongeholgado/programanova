@@ -49,11 +49,13 @@ def chat():
     if not text:
         return jsonify({"error": "Falta el campo 'mensaje'"}), 400
 
-    # Respuesta de demo
-    respuesta = {
+# Solo se usa si ejecutaras lrespuesta = {
         "respuesta": f"🧠 Nova recibió tu mensaje: {text}",
         "emocion": "neutral",
         "intencion": "demo",
+        "resultado": "OK",
+        "resumen": f"Mensaje procesado correctamente: '{text}'",
+        "ultima_actualizacion": "ahora mismo"
     }
     return jsonify(respuesta)
 
