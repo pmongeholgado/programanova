@@ -58,19 +58,16 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("resp-resumen").innerText = data.resumen || "—";
     document.getElementById("resp-ultima").innerText = data.ultima_actualizacion || "—";
 
-    // Enviar al pulsar botón
-    document.getElementById("send-btn")
-        .addEventListener("click", () => sendMessage());
+    //  Conectar botón enviar
+     document.getElementById("send-btn").addEventListener("click", () => sendMessage());
 
-    // Enviar al pulsar Enter
-    document.getElementById("user-input")
-        .addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-});
+    //  Conectar tecla Enter
+    document.getElementById("user-input").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
 
 
 
