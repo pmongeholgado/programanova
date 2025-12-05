@@ -39,21 +39,23 @@ async function sendMessage() {
             mode: "cors"
         });
 
-        const data = await response.json();
-
-        // 🟢 Mensaje principal IA
-        addMessage(data.respuesta || "🤖 Nova no pudo generar una respuesta.", "bot");
-
-    } catch (error) {
-        console.error("ERR:", error);
-        addMessage("⚠️ Error conectando con el servidor.", "bot");
-    }
-}
-
+        const data = await response.json() 
+ 
 // ======================================
 // EVENTOS
 // ======================================
 document.addEventListener("DOMContentLoaded", () => {
+    
+// Pintar burbuja principal
+addMessage(data.respuesta || "🤖 Nova no pudo generar una respuesta.", "bot");
+
+// Pintar datos estructurados debajo
+document.getElementById("resp-respuesta").innerText = data.respuesta || "—";
+document.getElementById("resp-emocion").innerText = data.emocion || "—";
+document.getElementById("resp-intencion").innerText = data.intencion || "—";
+document.getElementById("resp-resultado").innerText = data.resultado || "—";
+document.getElementById("resp-resumen").innerText = data.resumen || "—";
+document.getElementById("resp-ultima").innerText = data.ultima_actualizacion || "—";
 
     // Enviar al pulsar botón
     document.getElementById("send-btn")
@@ -70,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log("Frontend operativo 🔥");
 });
+
 
 
 
