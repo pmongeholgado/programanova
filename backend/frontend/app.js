@@ -44,18 +44,19 @@ async function sendMessage() {
 // ======================================
 // EVENTOS
 // ======================================
-document.addEventListener("DOMContentLoaded", () => {
-    
-// Pintar burbuja principal
-addMessage(data.respuesta || "🤖 Nova no pudo generar una respuesta.", "bot");
 
-// Pintar datos estructurados debajo
-document.getElementById("resp-respuesta").innerText = data.respuesta || "—";
-document.getElementById("resp-emocion").innerText = data.emocion || "—";
-document.getElementById("resp-intencion").innerText = data.intencion || "—";
-document.getElementById("resp-resultado").innerText = data.resultado || "—";
-document.getElementById("resp-resumen").innerText = data.resumen || "—";
-document.getElementById("resp-ultima").innerText = data.ultima_actualizacion || "—";
+document.addEventListener("DOMContentLoaded", () => {
+
+    // Pintar burbuja principal
+    addMessage(data.respuesta || "🤖 Nova no pudo generar una respuesta.", "bot");
+
+    // Pintar datos estructurados debajo
+    document.getElementById("resp-respuesta").innerText = data.respuesta || "—";
+    document.getElementById("resp-emocion").innerText = data.emocion || "—";
+    document.getElementById("resp-intencion").innerText = data.intencion || "—";
+    document.getElementById("resp-resultado").innerText = data.resultado || "—";
+    document.getElementById("resp-resumen").innerText = data.resumen || "—";
+    document.getElementById("resp-ultima").innerText = data.ultima_actualizacion || "—";
 
     // Enviar al pulsar botón
     document.getElementById("send-btn")
@@ -69,9 +70,8 @@ document.getElementById("resp-ultima").innerText = data.ultima_actualizacion || 
                 sendMessage();
             }
         });
-
-    console.log("Frontend operativo 🔥");
 });
+
 
 
 
