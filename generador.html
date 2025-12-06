@@ -89,8 +89,59 @@
 </div>
 
 <script>
-function generar() {
-    document.getElementById("estado").innerText = "🚀 Preparado. El generador se activará cuando conectemos la IA el día 10.";
+// URL de nuestro backend en Render
+const API_BASE_URL = "https://programanova.onrender.com";
+
+async function generar() {
+    const tituloEl = document.getElementById("titulo");
+    const slidesEl = document.getElementById("slides");
+    const contenidoEl = document.getElementById("contenido");
+    const estadoEl = document.getElementById("estado");
+
+    const titulo = (tituloEl.value || "").trim();
+    const numDiapositivas = slidesEl.value;
+    const contenido = (contenidoEl.value || "").trim();
+
+    // Validación sencilla
+    if (!contenido) {
+        estadoEl.innerText = "⚠️ Por favor, pega un capítulo o texto antes de generar.";
+        return;
+    }
+
+    estadoEl.innerText = "⏳ Enviando petición al backend (demo sin IA todavía)...";
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/generar`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                titulo,
+                num_diapositivas: numDiapositivas,
+                contenido,
+            }),
+            mode: "cors",
+        });
+
+        if (!response.ok) {
+            const text = await response.text();
+            console.error("Error HTTP /generar:", response.status, text);
+            estadoEl.innerText = `❌ Error del servidor (${response.status}).`;
+            return;
+        }
+
+        const data = await response.json().catch(() => ({}));
+        console.log("Respuesta /generar (demo):", data);
+
+        const mensaje =
+            data.mensaje ||
+            data.message ||
+            "✅ Petición recibida correctamente (demo sin IA todavía).";
+
+        estadoEl.innerText = mensaje;
+    } catch (err) {
+        console.error("ERR /generar", err);
+        estadoEl.innerText = "❌ No se pudo conectar con el backend /generar.";
+    }
 }
 </script>
 
