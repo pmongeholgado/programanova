@@ -88,3 +88,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log("Frontend operativo 🔥");
 });
+
+// =======================
+// GENERADOR (futuro)
+// =======================
+function abrirGenerador() {
+    // Usamos el enlace oculto del index
+    const link = document.getElementById("btn-generador");
+
+    if (!link) {
+        console.warn("[Nova] Botón oculto del generador no encontrado todavía.");
+        return;
+    }
+
+    // Redirigir a la página del generador
+    window.location.href = link.href;
+}
