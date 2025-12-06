@@ -104,3 +104,13 @@ function abrirGenerador() {
     // Redirigir a la página del generador
     window.location.href = link.href;
 }
+
+// ======================================
+// ATAJO PRIVADO (Ctrl + G) PARA ABRIR EL GENERADOR
+// ======================================
+document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.key.toLowerCase() === "g") {
+        console.warn("[Nova&Pablo] Llave maestra activada → generador.html");
+        abrirGenerador();
+    }
+});
