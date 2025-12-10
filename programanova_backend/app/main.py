@@ -2,14 +2,14 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 
-# ===================================
-# INIT FLASK
-# ===================================
+# ==========================================
+# INIT APP
+# ==========================================
 app = Flask(__name__)
 
-# ===================================
+# ==========================================
 # CORS PERMITIDO A TODO
-# ===================================
+# ==========================================
 CORS(app, resources={r"/*": {"origins": "*"}},
      supports_credentials=False,
      allow_headers=["Content-Type", "Authorization"],
@@ -24,14 +24,12 @@ def add_cors_headers(response):
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
     return response
 
-
-# ===================================
+# ==========================================
 # HEALTH CHECK
-# ===================================
+# ==========================================
 @app.route("/", methods=["GET"])
 def root():
     return jsonify({"ok": True, "message": "API operativa", "autor": "Nova & Pablo"}), 200
-
 
 @app.route("/status", methods=["GET"])
 def status():
@@ -41,18 +39,15 @@ def status():
         "autor": "Nova & Pablo",
     }), 200
 
-
 @app.route("/ping", methods=["GET"])
 def ping():
     return jsonify({"alive": True}), 200
 
-
-# ===================================
-# ENDPOINT CHAT (YA FUNCIONAL)
-# ===================================
+# ==========================================
+# ENDPOINT CHAT (TOTALMENTE FUNCIONAL)
+# ==========================================
 @app.route("/chat", methods=["POST", "OPTIONS"])
 def chat():
-
     if request.method == "OPTIONS":
         return "", 204
 
@@ -73,13 +68,11 @@ def chat():
 
     return jsonify(respuesta), 200
 
-
-# ===================================================
-# 🆕 ENDPOINT NUEVO: /generar (SIN GPT, SIN IA AÚN)
-# ===================================================
+# ==========================================
+# ENDPOINT GENERADOR (modo demo)
+# ==========================================
 @app.route("/generar", methods=["POST", "OPTIONS"])
 def generar():
-
     if request.method == "OPTIONS":
         return "", 204
 
@@ -89,7 +82,6 @@ def generar():
     if not tema:
         return jsonify({"error": "Falta el campo 'tema'"}), 400
 
-    # Respuesta inicial de prueba
     diapositivas_demo = [
         {"titulo": "Introducción", "contenido": f"Presentación sobre {tema}"},
         {"titulo": "Punto clave 1", "contenido": "Desarrollo del primer punto"},
@@ -103,10 +95,9 @@ def generar():
         "diapositivas": diapositivas_demo
     }), 200
 
-
-# ===================================
-# RUN LOCAL (IGNORADO POR RENDER)
-# ===================================
+# ==========================================
+# RUN LOCAL (IGNORADO EN RENDER)
+# ==========================================
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
