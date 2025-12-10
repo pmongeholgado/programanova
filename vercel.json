@@ -1,6 +1,8 @@
 {
   "cleanUrls": true,
+  "trailingSlash": false,
   "rewrites": [
-    { "source": "/generador", "destination": "/generador.html" }
+    { "source": "/generador", "destination": "/generador.html" },
+    { "source": "/generador/", "destination": "/generador.html" }
   ]
 }
