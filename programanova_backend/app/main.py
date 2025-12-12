@@ -1,139 +1,202 @@
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 import os
-from openai import OpenAI
+import json
+from datetime import datetime
 
-# =========================
-# CONFIGURACIÓN OPENAI
-# =========================
-client = OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY")
+app = Flask(__name__)
+
+# CORS permitido a todo (frontend en Vercel)
+CORS(
+    app,
+    resources={r"/*": {"origins": "*"}},
+    supports_credentials=False,
+    allow_headers=["Content-Type", "Authorization"],
+    expose_headers=["Content-Type", "Authorization"],
+    methods=["GET", "POST", "OPTIONS"],
 )
 
-# =========================
-# APP
-# =========================
-app = FastAPI(title="Programa Nova Backend")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # producción OK (frontend separado)
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# =========================
-# MODELOS
-# =========================
-class ChatRequest(BaseModel):
-    message: str
+@app.after_request
+def add_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    return response
 
 
-class GenerarRequest(BaseModel):
-    titulo: str
-    num_diapositivas: int
-    contenido: str
-
-
-# =========================
-# ENDPOINT RAÍZ
-# =========================
-@app.get("/")
+# ============================
+# HEALTH CHECKS
+# ============================
+@app.route("/", methods=["GET"])
 def root():
-    return {
-        "status": "ok",
-        "mensaje": "Backend Programa Nova activo"
-    }
+    return jsonify({"ok": True, "message": "API operativa", "autor": "Nova & Pablo"}), 200
+
+@app.route("/status", methods=["GET"])
+def status():
+    return jsonify({"status": "ok", "message": "Backend funcionando", "autor": "Nova & Pablo"}), 200
+
+@app.route("/ping", methods=["GET"])
+def ping():
+    return jsonify({"alive": True}), 200
 
 
-# =========================
-# CHAT CON NOVA (IA REAL)
-# =========================
-@app.post("/chat")
-def chat_nova(data: ChatRequest):
+# ============================
+# OPENAI (lazy import + safe)
+# ============================
+def _get_openai_client():
+    """
+    Devuelve un cliente OpenAI si:
+      - está instalado el paquete
+      - existe OPENAI_API_KEY
+    Si no, devuelve None (y la app NO se cae).
+    """
+    api_key = os.getenv("OPENAI_API_KEY", "").strip()
+    if not api_key:
+        return None
+
     try:
-        response = client.chat.completions.create(
-            model="gpt-4.1-mini",
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "Eres Nova, una IA colaboradora creada junto a Pablo. "
-                        "Respondes con claridad, humanidad y estructura."
-                    )
-                },
-                {
-                    "role": "user",
-                    "content": data.message
-                }
-            ]
-        )
+        from openai import OpenAI
+        return OpenAI(api_key=api_key)
+    except Exception:
+        # ImportError o cualquier problema -> no tumbamos el servidor
+        return None
 
-        texto = response.choices[0].message.content.strip()
 
-        return {
-            "respuesta": texto,
-            "emocion": "activa",
-            "intencion": "asistencia",
+def _now():
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+
+# ============================
+# ENDPOINT /chat (IA real)
+# ============================
+@app.route("/chat", methods=["POST", "OPTIONS"])
+def chat():
+    if request.method == "OPTIONS":
+        return ("", 204)
+
+    data = request.get_json(silent=True) or {}
+    text = (data.get("mensaje") or "").strip()
+
+    if not text:
+        return jsonify({"error": "Falta el campo 'mensaje'"}), 400
+
+    client = _get_openai_client()
+
+    # Fallback demo si no hay cliente (pero NUNCA se cae)
+    if client is None:
+        respuesta = {
+            "respuesta": f"Nova recibió tu mensaje: {text}",
+            "emocion": "neutral",
+            "intencion": "demo",
             "resultado": "OK",
-            "resumen": "Mensaje procesado correctamente"
+            "resumen": f"Mensaje procesado correctamente: '{text}'",
+            "ultima_actualizacion": "ahora mismo",
         }
+        return jsonify(respuesta), 200
 
-    except Exception as e:
-        return {
-            "error": "Error procesando el mensaje",
-            "detalle": str(e)
-        }
+    model = os.getenv("OPENAI_MODEL", "gpt-4.1-mini")
 
+    prompt = f"""
+Devuelve SOLO JSON válido con estas claves:
+respuesta, emocion, intencion, resultado, resumen
 
-# =========================
-# GENERADOR DE PRESENTACIONES (IA REAL)
-# =========================
-@app.post("/generar")
-def generar_presentacion(data: GenerarRequest):
-    try:
-        prompt = f"""
-Genera una estructura de presentación profesional.
-
-Título: {data.titulo}
-Número de diapositivas: {data.num_diapositivas}
-
-Contenido base:
-{data.contenido}
-
-Devuelve:
-- Título de cada diapositiva
-- Contenido resumido por diapositiva
-- Estilo claro, profesional y didáctico
+Usuario: {text}
 """
 
-        response = client.chat.completions.create(
-            model="gpt-4.1-mini",
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "Eres un generador experto de presentaciones profesionales."
-                    )
-                },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ]
+    try:
+        r = client.responses.create(
+            model=model,
+            input=prompt,
         )
 
-        resultado = response.choices[0].message.content.strip()
+        # Intentamos sacar texto
+        out_text = getattr(r, "output_text", None) or ""
 
-        return {
-            "mensaje": "Presentación generada correctamente",
-            "resultado": resultado
-        }
+        # Si el modelo devuelve JSON como texto, lo parseamos.
+        # Si no, lo metemos en "respuesta".
+        try:
+            obj = json.loads(out_text)
+            obj["ultima_actualizacion"] = "ahora mismo"
+            return jsonify(obj), 200
+        except Exception:
+            return jsonify({
+                "respuesta": out_text.strip() or "Nova no pudo generar una respuesta.",
+                "emocion": "neutral",
+                "intencion": "chat",
+                "resultado": "OK",
+                "resumen": "Respuesta generada por IA.",
+                "ultima_actualizacion": "ahora mismo",
+            }), 200
 
     except Exception as e:
-        return {
-            "error": "Error generando la presentación",
-            "detalle": str(e)
-        }
+        # Error de OpenAI (cuota, key, red, etc.) -> NO tumbamos el server
+        return jsonify({
+            "respuesta": "⚠️ Hubo un problema conectando con la IA, pero el backend sigue vivo.",
+            "emocion": "neutral",
+            "intencion": "error_openai",
+            "resultado": "ERROR",
+            "resumen": str(e)[:300],
+            "ultima_actualizacion": "ahora mismo",
+        }), 200
+
+
+# ============================
+# ENDPOINT /generar (base)
+# ============================
+@app.route("/generar", methods=["POST", "OPTIONS"])
+def generar():
+    if request.method == "OPTIONS":
+        return ("", 204)
+
+    data = request.get_json(silent=True) or {}
+    titulo = (data.get("titulo") or "Presentación").strip()
+    num = int(data.get("num_diapositivas") or 8)
+    contenido = (data.get("contenido") or "").strip()
+
+    if not contenido:
+        return jsonify({"ok": False, "message": "Falta 'contenido'"}), 400
+
+    client = _get_openai_client()
+
+    # Demo sin IA: devuelve estructura mínima
+    if client is None:
+        slides = []
+        for i in range(1, num + 1):
+            slides.append({"titulo": f"{titulo} — Slide {i}", "bullets": ["(demo) Contenido pendiente de IA real"]})
+        return jsonify({"ok": True, "modo": "demo", "titulo": titulo, "slides": slides}), 200
+
+    model = os.getenv("OPENAI_MODEL_GENERAR", os.getenv("OPENAI_MODEL", "gpt-4.1-mini"))
+
+    prompt = f"""
+Crea un esquema de presentación en JSON con:
+titulo (string), slides (array)
+Cada slide: titulo (string), bullets (array de strings)
+
+Titulo: {titulo}
+Num diapositivas: {num}
+Contenido base:
+{contenido}
+
+Devuelve SOLO JSON.
+"""
+
+    try:
+        r = client.responses.create(model=model, input=prompt)
+        out_text = getattr(r, "output_text", None) or ""
+
+        obj = json.loads(out_text)
+        obj["ok"] = True
+        obj["modo"] = "ia"
+        return jsonify(obj), 200
+
+    except Exception as e:
+        return jsonify({
+            "ok": False,
+            "message": "Error generando con IA",
+            "detail": str(e)[:300],
+        }), 500
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
