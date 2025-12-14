@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <title>Generador de Presentaciones - Nova</title>
+    <title>Generador de Presentaciones · Nova</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <style>
@@ -60,17 +60,18 @@
             text-align: center;
             margin-top: 20px;
             color: #7dd3fc;
+            font-weight: bold;
         }
     </style>
 </head>
 
 <body>
 
-<h1>Generador Nova Presentaciones</h1>
+<h1>Generador Nova · Presentaciones</h1>
 
 <div class="box">
     <label>Título de la presentación</label>
-    <input type="text" id="titulo" placeholder="Ejemplo: Innovación y futuro del IA+Humano" />
+    <input type="text" id="titulo" placeholder="Ejemplo: Innovación y futuro de la colaboración humano-IA" />
 
     <label>Número de diapositivas</label>
     <select id="slides">
@@ -80,16 +81,15 @@
         <option value="20">20 diapositivas</option>
     </select>
 
-    <label>Contenido base (capítulo / texto / guion)</label>
-    <textarea id="contenido" rows="6" placeholder="Pega aquí tu capítulo o guion..."></textarea>
+    <label>Contenido base (capítulo, texto o guion)</label>
+    <textarea id="contenido" rows="6" placeholder="Pega aquí tu capítulo, texto o guion base…"></textarea>
 
-    <button onclick="generar()">Generar presentación (.pptx)</button>
+    <button onclick="generar()">Generar estructura de presentación</button>
 
-    <div class="estado" id="estado">⏳ Pendiente...</div>
+    <div class="estado" id="estado">🟢 Generador listo</div>
 </div>
 
 <script>
-// URL de nuestro backend en Render
 const API_BASE_URL = "https://programanova.onrender.com";
 
 async function generar() {
@@ -102,13 +102,12 @@ async function generar() {
     const numDiapositivas = slidesEl.value;
     const contenido = (contenidoEl.value || "").trim();
 
-    // Validación sencilla
     if (!contenido) {
-        estadoEl.innerText = "⚠️ Por favor, pega un capítulo o texto antes de generar.";
+        estadoEl.innerText = "⚠️ Introduce un texto base antes de generar la presentación.";
         return;
     }
 
-    estadoEl.innerText = "⏳ Enviando petición al backend (demo sin IA todavía)...";
+    estadoEl.innerText = "⏳ Procesando solicitud…";
 
     try {
         const response = await fetch(`${API_BASE_URL}/generar`, {
@@ -123,24 +122,17 @@ async function generar() {
         });
 
         if (!response.ok) {
-            const text = await response.text();
-            console.error("Error HTTP /generar:", response.status, text);
-            estadoEl.innerText = `❌ Error del servidor (${response.status}).`;
+            estadoEl.innerText = "❌ Error al procesar la solicitud.";
             return;
         }
 
         const data = await response.json().catch(() => ({}));
-        console.log("Respuesta /generar (demo):", data);
 
-        const mensaje =
+        estadoEl.innerText =
             data.mensaje ||
-            data.message ||
-            "✅ Petición recibida correctamente (demo sin IA todavía).";
-
-        estadoEl.innerText = mensaje;
+            "✅ Solicitud recibida correctamente. Preparando generación avanzada.";
     } catch (err) {
-        console.error("ERR /generar", err);
-        estadoEl.innerText = "❌ No se pudo conectar con el backend /generar.";
+        estadoEl.innerText = "❌ No se pudo conectar con el servicio.";
     }
 }
 </script>
