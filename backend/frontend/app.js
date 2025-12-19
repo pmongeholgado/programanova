@@ -25,7 +25,7 @@ async function sendMessage() {
     input.value = "";
 
     try {
-        const API_BASE_URL = "https://programanova.onrender.com";
+        const API_BASE_URL = "https://api.programanovapresentaciones.com";
 
         const response = await fetch(`${API_BASE_URL}/chat`, {
             method: "POST",
@@ -114,3 +114,4 @@ document.addEventListener("keydown", (e) => {
         abrirGenerador();
     }
 });
+
