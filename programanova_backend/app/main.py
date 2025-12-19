@@ -20,14 +20,6 @@ CORS(
     methods=["GET", "POST", "OPTIONS"],
 )
 
-# Para asegurar cabeceras CORS incluso si algo falla
-@app.after_request
-def add_cors_headers(response):
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
-    return response
-
 
 # =========================================
 # CONFIG GPT (OpenAI)
@@ -67,7 +59,12 @@ def call_openai_chat(system_prompt: str, user_prompt: str) -> str:
         raise RuntimeError(f"OpenAI error {r.status_code}: {r.text}")
 
     data = r.json()
-    text = data["choices"][0]["message"]["content"]
+    text = (
+    data.get("choices", [{}])[0]
+        .get("message", {})
+        .get("content", "")
+)
+
     return text
 
 
