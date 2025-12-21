@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from datetime import datetime
+from fastapi.middleware.cors import CORSMiddleware
 
 app = Flask(__name__)
 
@@ -8,13 +9,15 @@ app = Flask(__name__)
 # CORS (igual que antes)
 # =========================
 CORS(
-    app,
-    resources={r"/*": {"origins": "*"}},
-    supports_credentials=False,
-    allow_headers=["Content-Type", "Authorization"],
-    expose_headers=["Content-Type", "Authorization"],
-    methods=["GET", "POST", "OPTIONS"],
-)
+        app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[
+            "https://programanovapresentaciones.com"
+        ],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 @app.after_request
 def add_cors_headers(response):
