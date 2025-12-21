@@ -3,29 +3,22 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-# ✅ CORS correcto (una sola vez, global)
-CORS(app, resources={
-    r"/*": {
-        "origins": [
-            "https://programanovapresentaciones.com",
-            "https://www.programanovapresentaciones.com"
-        ],
-        "methods": ["GET", "POST", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"]
-    }
-})
+# CORS DEFINITIVO (una sola vez, sin after_request)
+CORS(
+    app,
+    resources={r"/*": {"origins": "https://programanovapresentaciones.com"}},
+    supports_credentials=False
+)
 
 @app.route("/status", methods=["GET"])
 def status():
-    return jsonify({
-        "status": "ok",
-        "service": "programanova-backend"
-    })
+    return jsonify({"status": "ok"})
 
 @app.route("/chat", methods=["POST"])
 def chat():
-    data = request.json or {}
+    data = request.get_json()
     mensaje = data.get("mensaje", "")
+
     return jsonify({
         "respuesta": f"Nova recibió tu mensaje: {mensaje}",
         "emocion": "neutral",
@@ -37,10 +30,10 @@ def chat():
 
 @app.route("/generar", methods=["POST"])
 def generar():
-    data = request.json or {}
+    data = request.get_json()
     return jsonify({
         "mensaje": "Petición recibida correctamente (demo sin IA todavía)."
     })
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=8000)
