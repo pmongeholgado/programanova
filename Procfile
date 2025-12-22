@@ -1,1 +1,1 @@
-web: gunicorn programanova_backend.main:app -b 0.0.0.0:8080
+web: gunicorn app.main:app --bind 0.0.0.0:$PORT
