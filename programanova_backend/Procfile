@@ -1,1 +1,1 @@
-gunicorn programanova_backend.app.main:app --bind 0.0.0.0:$PORT
+web: gunicorn app.main:app --bind 0.0.0.0:$PORT --workers 1
