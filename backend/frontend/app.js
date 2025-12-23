@@ -1,4 +1,9 @@
 // ===============================
+// CONFIGURACIÓN BACKEND (Railway)
+// ===============================
+const API_BASE_URL = "https://programanovabackend-production.up.railway.app";
+
+// ===============================
 // FUNCIONES UI
 // ===============================
 function addMessage(text, sender = "bot") {
@@ -21,18 +26,22 @@ async function sendMessage() {
     const text = input.value.trim();
     if (!text) return;
 
-    addMessage(text, "user"); // Muestra mensaje del usuario
+    addMessage(text, "user");
     input.value = "";
 
     try {
-        const API_BASE_URL = "https://api.programanovapresentaciones.com";
-
         const response = await fetch(`${API_BASE_URL}/chat`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify({ mensaje: text }),
-            mode: "cors",
+            mode: "cors"
         });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error ${response.status}`);
+        }
 
         const data = await response.json();
 
@@ -45,7 +54,7 @@ async function sendMessage() {
         );
 
         // ===============================
-        // PINTAR DATOS EN PANEL INFERIOR
+        // PANEL DE DATOS (INFERIOR)
         // ===============================
         document.getElementById("main-answer").innerText =
             data.respuesta || "—";
@@ -93,7 +102,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // GENERADOR (futuro)
 // =======================
 function abrirGenerador() {
-    // Usamos el enlace oculto del index
     const link = document.getElementById("btn-generador");
 
     if (!link) {
@@ -101,17 +109,15 @@ function abrirGenerador() {
         return;
     }
 
-    // Redirigir a la página del generador
     window.location.href = link.href;
 }
 
 // ======================================
-// ATAJO PRIVADO (Ctrl + G) PARA ABRIR EL GENERADOR
+// ATAJO PRIVADO (Ctrl + G) PARA GENERADOR
 // ======================================
 document.addEventListener("keydown", (e) => {
     if (e.ctrlKey && e.key.toLowerCase() === "g") {
-        console.warn("[Nova&Pablo] Llave maestra activada → generador.html");
+        console.warn("[Nova & Pablo] Llave maestra activada → generador.html");
         abrirGenerador();
     }
 });
-
