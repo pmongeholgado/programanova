@@ -7,19 +7,30 @@ app = Flask(__name__)
 # 🔥 CORS DEFINITIVO Y GLOBAL
 CORS(
     app,
-    resources={r"/*": {"origins": "*"}},
+    resources={r"/*": {"origins": [
+        "https://programanovapresentaciones.com",
+        "https://www.programanovapresentaciones.com"
+    ]}},
     supports_credentials=False,
     allow_headers=["Content-Type", "Authorization"],
     methods=["GET", "POST", "OPTIONS"]
 )
 
-# 🔒 Forzar headers incluso en errores
 @app.after_request
 def add_cors_headers(response):
-    response.headers["Access-Control-Allow-Origin"] = "*"
+    origin = request.headers.get("Origin")
+    allowed = {
+        "https://programanovapresentaciones.com",
+        "https://www.programanovapresentaciones.com",
+    }
+    if origin in allowed:
+        response.headers["Access-Control-Allow-Origin"] = origin
+
+    response.headers["Vary"] = "Origin"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
     return response
+
 
 
 # ===============================
