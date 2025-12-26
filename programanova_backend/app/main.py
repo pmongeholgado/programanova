@@ -1,6 +1,11 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
+from openai import OpenAI
+
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY")
+)
 
 app = Flask(__name__)
 
@@ -74,19 +79,64 @@ def chat():
 
 
 # ===============================
-# GENERADOR (demo)
+# GENERADOR 
 # ===============================
 @app.route("/generar", methods=["POST", "OPTIONS"])
 def generar():
     if request.method == "OPTIONS":
-        return "", 204
+        return ("", 204)
 
     data = request.get_json(silent=True) or {}
 
-    return jsonify({
-        "message": "Petición recibida correctamente (demo sin IA todavía)"
-    }), 200
+    titulo = (data.get("titulo") or "").strip()
+    contenido = (data.get("contenido") or "").strip()
+    num_diapositivas = data.get("num_diapositivas", 10)
 
+    if not contenido:
+        return jsonify({
+            "error": "Falta el contenido para generar la presentación"
+        }), 400
+
+    prompt = f"""
+Eres Nova, una IA experta en crear presentaciones profesionales.
+
+Genera una presentación titulada:
+"{titulo or 'Presentación generada por Nova'}"
+
+A partir del siguiente contenido:
+
+{contenido}
+
+Estructura la respuesta en {num_diapositivas} diapositivas.
+Cada diapositiva debe tener:
+- Título
+- 3 a 5 puntos clave claros y concisos
+"""
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "Eres Nova, una IA creadora de presentaciones claras y profesionales."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7
+        )
+
+        texto_generado = response.choices[0].message.content
+
+        return jsonify({
+            "status": "ok",
+            "autor": "Nova & Pablo",
+            "resultado": texto_generado
+        }), 200
+
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "mensaje": "Error generando la presentación con IA",
+            "detalle": str(e)
+        }), 500
 
 # ===============================
 # RUN
