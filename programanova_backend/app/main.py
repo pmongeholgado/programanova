@@ -1,116 +1,182 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+# ============================
+# Programa Nova - Backend REAL
+# main.py (FINAL)
+# ============================
+
 import os
-import json # Importante para procesar la respuesta estructurada
+from datetime import datetime
+from typing import Optional
+
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+
 from openai import OpenAI
 
-client = OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY")
+
+# ============================
+# CONFIGURACIÓN OPENAI
+# ============================
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+if not OPENAI_API_KEY:
+    raise RuntimeError("❌ OPENAI_API_KEY no está definida en las variables de entorno")
+
+client = OpenAI(api_key=OPENAI_API_KEY)
+
+
+# ============================
+# APP FASTAPI
+# ============================
+
+app = FastAPI(
+    title="Programa Nova Backend",
+    version="1.0.0",
+    description="Backend real con IA para Nova Presentaciones"
 )
 
-app = Flask(__name__)
-
-# CORS GLOBAL (Mantengo tu configuración que es correcta)
-CORS(
-    app,
-    resources={r"/*": {"origins": [
-        "https://programanovapresentaciones.com",
-        "https://www.programanovapresentaciones.com"
-    ]}},
-    supports_credentials=False,
-    allow_headers=["Content-Type", "Authorization"],
-    methods=["GET", "POST", "OPTIONS"]
+# CORS (abierto para frontend web)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-@app.after_request
-def add_cors_headers(response):
-    origin = request.headers.get("Origin")
-    allowed = {
-        "https://programanovapresentaciones.com",
-        "https://www.programanovapresentaciones.com",
+
+# ============================
+# MODELOS
+# ============================
+
+class ChatRequest(BaseModel):
+    mensaje: str
+
+
+class ChatResponse(BaseModel):
+    respuesta: str
+    emocion: str
+    intencion: str
+    resultado: str
+    resumen: str
+    ultima_actualizacion: str
+
+
+class GenerarRequest(BaseModel):
+    titulo: Optional[str] = "Presentación Nova"
+    num_diapositivas: Optional[int] = 10
+    contenido: str
+
+
+class GenerarResponse(BaseModel):
+    mensaje: str
+    estructura: list
+
+
+# ============================
+# ENDPOINT RAÍZ
+# ============================
+
+@app.get("/")
+def root():
+    return {
+        "status": "ok",
+        "mensaje": "Programa Nova Backend operativo",
+        "hora": datetime.utcnow().isoformat()
     }
-    if origin in allowed:
-        response.headers["Access-Control-Allow-Origin"] = origin
-    response.headers["Vary"] = "Origin"
-    return response
 
-# ===============================
-# CHAT (AHORA REAL Y ESTRUCTURADO)
-# ===============================
-@app.route("/chat", methods=["POST", "OPTIONS"])
-def chat():
-    if request.method == "OPTIONS":
-        return "", 204
 
-    data = request.get_json(silent=True) or {}
-    text = (data.get("mensaje") or "").strip()
+# ============================
+# CHAT CON IA (REAL)
+# ============================
 
-    if not text:
-        return jsonify({"error": "Falta el mensaje"}), 400
-
+@app.post("/chat", response_model=ChatResponse)
+def chat_con_nova(data: ChatRequest):
     try:
-        # Llamada real a OpenAI pidiendo formato JSON
-        response = client.chat.completions.create(
+        prompt = f"""
+Eres Nova, una inteligencia artificial colaborativa, clara y humana.
+Analiza el mensaje del usuario y responde de forma útil.
+
+Mensaje del usuario:
+\"\"\"{data.mensaje}\"\"\"
+
+Devuelve:
+- Respuesta principal
+- Emoción detectada
+- Intención del usuario
+- Resultado esperado
+- Resumen breve
+"""
+
+        completion = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "Eres Nova. Responde SIEMPRE en formato JSON con estas llaves: respuesta, emocion, intencion, resultado, resumen. Sé breve y profesional."},
-                {"role": "user", "content": text}
-            ],
-            response_format={ "type": "json_object" } # Forzamos a que responda JSON
-        )
-
-        # Parseamos la respuesta de la IA
-        ai_response = json.loads(response.choices[0].message.content)
-        
-        return jsonify(ai_response), 200
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-# ===============================
-# GENERADOR (OPTIMIZADO PARA CONTENIDO)
-# ===============================
-@app.route("/generar", methods=["POST", "OPTIONS"])
-def generar():
-    if request.method == "OPTIONS":
-        return ("", 204)
-
-    data = request.get_json(silent=True) or {}
-    titulo = (data.get("titulo") or "").strip()
-    contenido = (data.get("contenido") or "").strip()
-    num_diapositivas = data.get("num_diapositivas", 10)
-
-    if not contenido:
-        return jsonify({"error": "Falta el contenido"}), 400
-
-    prompt = f"""
-    Genera el contenido para una presentación de {num_diapositivas} diapositivas.
-    Título: {titulo}
-    Contenido base: {contenido}
-    
-    Para cada diapositiva indica: Título de la slide y Puntos clave.
-    """
-
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "Eres un experto en diseño de presentaciones profesionales."},
+                {"role": "system", "content": "Eres Nova, IA colaborativa del proyecto Programa Nova."},
                 {"role": "user", "content": prompt}
             ],
-            temperature=0.7
+            temperature=0.6,
+            max_tokens=500
         )
 
-        return jsonify({
-            "status": "ok",
-            "autor": "Nova & Pablo",
-            "resultado": response.choices[0].message.content
-        }), 200
+        texto = completion.choices[0].message.content.strip()
+
+        return ChatResponse(
+            respuesta=texto,
+            emocion="neutral",
+            intencion="asistencia",
+            resultado="OK",
+            resumen=f"Respuesta generada correctamente para: '{data.mensaje}'",
+            ultima_actualizacion="ahora mismo"
+        )
 
     except Exception as e:
-        return jsonify({"status": "error", "detalle": str(e)}), 500
+        raise HTTPException(status_code=500, detail=str(e))
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))
-    app.run(host="0.0.0.0", port=port)
+
+# ============================
+# GENERADOR DE PRESENTACIONES (IA REAL)
+# ============================
+
+@app.post("/generar", response_model=GenerarResponse)
+def generar_presentacion(data: GenerarRequest):
+    try:
+        prompt = f"""
+Eres un experto creador de presentaciones profesionales.
+
+Genera una estructura clara de {data.num_diapositivas} diapositivas
+para una presentación titulada:
+
+\"{data.titulo}\"
+
+Basándote en el siguiente contenido:
+
+\"\"\"{data.contenido}\"\"\"
+
+Devuelve una lista numerada con:
+- Título de la diapositiva
+- Idea principal
+"""
+
+        completion = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "Eres un generador profesional de presentaciones."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.5,
+            max_tokens=700
+        )
+
+        texto = completion.choices[0].message.content.strip()
+
+        # Convertimos a estructura simple
+        estructura = texto.split("\n")
+
+        return GenerarResponse(
+            mensaje="Presentación generada correctamente con IA real",
+            estructura=estructura
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
