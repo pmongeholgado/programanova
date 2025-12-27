@@ -392,18 +392,6 @@
       if (type === "error") statusLine.classList.add("status-error");
     }
 
-    async function checkHealth() {
-      try {
-        const res = await fetch(HEALTH_URL);
-        if (res.ok) updateStatus("Backend conectado correctamente ✔", "ok");
-        else updateStatus("Backend respondió, pero con código " + res.status, "error");
-      } catch (err) {
-        updateStatus("No se pudo comprobar el backend. Puedes enviar mensaje igualmente.", "error");
-      }
-    }
-
-    checkHealth();
-
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       const text = input.value.trim();
@@ -449,6 +437,7 @@
   </script>
 </body>
 </html>
+
 
 
 
