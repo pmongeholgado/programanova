@@ -41,8 +41,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://programanovapresentaciones.com",
                     "https://www.programanovapresentaciones.com"],
-    allow_credentials=False,
-    allow_methods=["*"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
