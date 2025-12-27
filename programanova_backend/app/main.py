@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
+import json # Importante para procesar la respuesta estructurada
 from openai import OpenAI
 
 client = OpenAI(
@@ -9,7 +10,7 @@ client = OpenAI(
 
 app = Flask(__name__)
 
-# 🔥 CORS DEFINITIVO Y GLOBAL
+# CORS GLOBAL (Mantengo tu configuración que es correcta)
 CORS(
     app,
     resources={r"/*": {"origins": [
@@ -30,32 +31,11 @@ def add_cors_headers(response):
     }
     if origin in allowed:
         response.headers["Access-Control-Allow-Origin"] = origin
-
     response.headers["Vary"] = "Origin"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
     return response
 
-
-
 # ===============================
-# HEALTH CHECKS
-# ===============================
-@app.route("/", methods=["GET"])
-def root():
-    return jsonify({"ok": True}), 200
-
-@app.route("/status", methods=["GET"])
-def status():
-    return jsonify({
-        "status": "ok",
-        "message": "Backend funcionando",
-        "autor": "Nova & Pablo"
-    }), 200
-
-
-# ===============================
-# CHAT
+# CHAT (AHORA REAL Y ESTRUCTURADO)
 # ===============================
 @app.route("/chat", methods=["POST", "OPTIONS"])
 def chat():
@@ -68,18 +48,28 @@ def chat():
     if not text:
         return jsonify({"error": "Falta el mensaje"}), 400
 
-    return jsonify({
-        "respuesta": f"Nova recibió tu mensaje: {text}",
-        "emocion": "neutral",
-        "intencion": "demo",
-        "resultado": "OK",
-        "resumen": f"Mensaje procesado correctamente: '{text}'",
-        "ultima_actualizacion": "ahora mismo"
-    }), 200
+    try:
+        # Llamada real a OpenAI pidiendo formato JSON
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "Eres Nova. Responde SIEMPRE en formato JSON con estas llaves: respuesta, emocion, intencion, resultado, resumen. Sé breve y profesional."},
+                {"role": "user", "content": text}
+            ],
+            response_format={ "type": "json_object" } # Forzamos a que responda JSON
+        )
+
+        # Parseamos la respuesta de la IA
+        ai_response = json.loads(response.choices[0].message.content)
+        
+        return jsonify(ai_response), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 # ===============================
-# GENERADOR 
+# GENERADOR (OPTIMIZADO PARA CONTENIDO)
 # ===============================
 @app.route("/generar", methods=["POST", "OPTIONS"])
 def generar():
@@ -87,60 +77,40 @@ def generar():
         return ("", 204)
 
     data = request.get_json(silent=True) or {}
-
     titulo = (data.get("titulo") or "").strip()
     contenido = (data.get("contenido") or "").strip()
     num_diapositivas = data.get("num_diapositivas", 10)
 
     if not contenido:
-        return jsonify({
-            "error": "Falta el contenido para generar la presentación"
-        }), 400
+        return jsonify({"error": "Falta el contenido"}), 400
 
     prompt = f"""
-Eres Nova, una IA experta en crear presentaciones profesionales.
-
-Genera una presentación titulada:
-"{titulo or 'Presentación generada por Nova'}"
-
-A partir del siguiente contenido:
-
-{contenido}
-
-Estructura la respuesta en {num_diapositivas} diapositivas.
-Cada diapositiva debe tener:
-- Título
-- 3 a 5 puntos clave claros y concisos
-"""
+    Genera el contenido para una presentación de {num_diapositivas} diapositivas.
+    Título: {titulo}
+    Contenido base: {contenido}
+    
+    Para cada diapositiva indica: Título de la slide y Puntos clave.
+    """
 
     try:
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "Eres Nova, una IA creadora de presentaciones claras y profesionales."},
+                {"role": "system", "content": "Eres un experto en diseño de presentaciones profesionales."},
                 {"role": "user", "content": prompt}
             ],
             temperature=0.7
         )
 
-        texto_generado = response.choices[0].message.content
-
         return jsonify({
             "status": "ok",
             "autor": "Nova & Pablo",
-            "resultado": texto_generado
+            "resultado": response.choices[0].message.content
         }), 200
 
     except Exception as e:
-        return jsonify({
-            "status": "error",
-            "mensaje": "Error generando la presentación con IA",
-            "detalle": str(e)
-        }), 500
+        return jsonify({"status": "error", "detalle": str(e)}), 500
 
-# ===============================
-# RUN
-# ===============================
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
