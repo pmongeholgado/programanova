@@ -1,5 +1,7 @@
 flask
 flask-cors
+fastapi
+uvicorn
 gunicorn
 requests==2.32.3
 openai==1.58.1
