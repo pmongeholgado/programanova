@@ -182,10 +182,4 @@ Devuelve una lista numerada con:
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    @app.route("/chat", methods=["OPTIONS"])
-    def chat_options():
-        response = jsonify({})
-        response.headers["Access-Control-Allow-Origin"] = "*"
-        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-        response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
-        return response, 200
+   
