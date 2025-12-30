@@ -110,15 +110,17 @@ Devuelve:
 - Resumen breve
 """
 
-        completion = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "Eres Nova, IA colaborativa del proyecto Programa Nova."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.6,
-            max_tokens=500
-        )
+response = client.responses.create(
+    model="gpt-4o-mini",
+    input=[
+        {"role": "system", "content": "Eres Nova, IA colaborativa del proyecto Programa Nova."},
+        {"role": "user", "content": prompt}
+    ],
+    temperature=0.6,
+    max_output_tokens=500
+)
+
+texto = response.output_text
 
         texto = completion.choices[0].message.content.strip()
 
@@ -169,15 +171,17 @@ Devuelve una lista numerada con:
             max_tokens=700
         )
 
-        texto = completion.choices[0].message.content.strip()
+response = client.responses.create(
+    model="gpt-4o-mini",
+    input=[
+        {"role": "system", "content": "Eres un generador profesional de presentaciones."},
+        {"role": "user", "content": prompt}
+    ],
+    temperature=0.5,
+    max_output_tokens=700
+)
 
-        # Convertimos a estructura simple
-        estructura = texto.split("\n")
-
-        return GenerarResponse(
-            mensaje="Presentación generada correctamente con IA real",
-            estructura=estructura
-        )
+texto = response.output_text
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
