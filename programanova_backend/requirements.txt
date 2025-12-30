@@ -1,7 +1,5 @@
-flask
-flask-cors
-fastapi
-uvicorn
-gunicorn
-requests==2.32.3
-openai==1.58.1
+fastapi>=0.110.0
+uvicorn[standard]>=0.30.0
+openai>=1.0.0
+pydantic>=2.0.0
+requests>=2.32.0
