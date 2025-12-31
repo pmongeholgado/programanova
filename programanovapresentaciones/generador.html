@@ -6,61 +6,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #0c0f17;
-            color: #e5e7eb;
-            margin: 0;
-            padding: 24px;
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #0c0f17;
+                color: #e5e7eb;
+                margin: 0;
+                padding: 24px;
+            }
+
+            h1 {
+                text-align: center;
+                color: #5ddcff;
+            }
+
+            .box {
+                max-width: 640px;
+                margin: auto;
+                background: rgba(255,255,255,0.04);
+                border: 1px solid rgba(255,255,255,0.1);
+                padding: 24px;
+                border-radius: 12px;
+            }
+
+            label {
+                font-weight: bold;
+            }
+
+            input, textarea, select {
+                width: 100%;
+                padding: 12px;
+                margin-top: 8px;
+                margin-bottom: 16px;
+                border-radius: 8px;
+                border: none;
+            }
+
+            button {
+                width: 100%;
+                padding: 14px;
+                background: linear-gradient(90deg, #1e90ff, #00c2ff);
+                border: none;
+                border-radius: 8px;
+                color: white;
+                font-size: 18px;
+                cursor: pointer;
+            }
+
+            button:hover {
+                background: linear-gradient(90deg, #00c2ff, #1e90ff);
+            }
+
+            .estado {
+                text-align: center;
+                margin-top: 20px;
+                color: #7dd3fc;
+                font-weight: bold;
+            }
+
+        #resultado {
+            margin-top: 24px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 16px;
+            border-radius: 10px;
         }
 
-        h1 {
-            text-align: center;
+        #resultado h3 {
             color: #5ddcff;
-        }
-
-        .box {
-            max-width: 640px;
-            margin: auto;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 24px;
-            border-radius: 12px;
-        }
-
-        label {
-            font-weight: bold;
-        }
-
-        input, textarea, select {
-            width: 100%;
-            padding: 12px;
-            margin-top: 8px;
-            margin-bottom: 16px;
-            border-radius: 8px;
-            border: none;
-        }
-
-        button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(90deg, #1e90ff, #00c2ff);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: linear-gradient(90deg, #00c2ff, #1e90ff);
-        }
-
-        .estado {
+            margin-bottom: 12px;
             text-align: center;
-            margin-top: 20px;
-            color: #7dd3fc;
-            font-weight: bold;
+        }
+
+        #resultado ul {
+            padding-left: 20px;
+        }
+
+        #resultado li {
+            margin-bottom: 8px;
+            line-height: 1.4;
         }
     </style>
 </head>
@@ -85,11 +108,18 @@
     <textarea id="contenido" rows="6" placeholder="Pega aquí tu capítulo, texto o guion base…"></textarea>
 
     <button onclick="generar()">Generar estructura de presentación</button>
+    <button id="btnPPT" onclick="exportarPPT()" disabled>📤 Exportar a PPT</button>
+    <button onclick="exportarPPT()">📊 Exportar a PowerPoint</button>
 
     <div class="estado" id="estado">🟢 Generador listo</div>
+    <div id="resultado" style="margin-top:20px;"></div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+    
 <script>
+let estructuraGenerada = [];
+    
 const API_BASE_URL = "https://programanovabackend-production.up.railway.app";
 
 async function generar() {
@@ -131,10 +161,45 @@ async function generar() {
         estadoEl.innerText =
             data.mensaje ||
             "✅ Solicitud recibida correctamente. Preparando generación avanzada.";
+        const resultadoEl = document.getElementById("resultado");
+
+        if (Array.isArray(data.estructura)) {
+            estructuraGenerada = data.estructura;
+
+            document.getElementById("btnPPT").disabled = false;
+            
+            resultadoEl.innerHTML = `
+                <h3>Estructura generada</h3>
+                <ul>
+                    ${data.estructura.map(item => `<li>${item}</li>`).join("")}
+                </ul>
+            `;
+        }
     } catch (err) {
         estadoEl.innerText = "❌ No se pudo conectar con el servicio.";
     }
 }
+function exportarPPT() {
+    if (!estructuraGenerada.length) {
+        alert("Primero genera una presentación.");
+        return;
+    }
+
+    const pptx = new PptxGenJS();
+
+    estructuraGenerada.forEach((item, index) => {
+        const slide = pptx.addSlide();
+        slide.addText(`Diapositiva ${index + 1}`, {
+            x: 0.5, y: 0.5, fontSize: 18, bold: true
+        });
+        slide.addText(item, {
+            x: 0.5, y: 1.5, fontSize: 14, wrap: true
+        });
+    });
+
+    pptx.writeFile("Nova_Presentacion.pptx");
+}
+    
 </script>
 
 </body>
