@@ -92,6 +92,14 @@
 
 <h1>Generador Nova · Presentaciones</h1>
 
+<div style="text-align:center; margin-bottom:16px;">
+    <select id="langSelector" onchange="setLanguage(this.value)">
+        <option value="es">Español</option>
+        <option value="en">English</option>
+        <option value="ja">日本語</option>
+    </select>
+</div>
+    
 <div class="box">
     <label>Título de la presentación</label>
     <input type="text" id="titulo" placeholder="Ejemplo: Innovación y futuro de la colaboración humano-IA" />
@@ -120,8 +128,80 @@
 <script>
 let estructuraGenerada = [];
 let ultimaEstructuraLimpia = []; // lo que realmente exportaremos
+let currentLang = "es";
 
-const API_BASE_URL = "https://programanovabackend-production.up.railway.app";
+const textos = {
+
+    es: {
+        titulo: "Generador Nova · Presentaciones",
+        labelTitulo: "Título de la presentación",
+        labelSlides: "Número de diapositivas",
+        labelContenido: "Contenido base (capítulo, texto o guion)",
+        btnGenerar: "Generar estructura de presentación",
+        btnPPT: "📤 Exportar a PPT",
+        estadoListo: "🟢 Generador listo",
+        estadoProcesando: "⏳ Procesando solicitud…",
+        errorContenido: "⚠️ Introduce un texto base antes de generar la presentación.",
+        errorConexion: "❌ No se pudo conectar con el servicio."
+        phTitulo: "Ejemplo: Innovación y futuro de la colaboración humano-IA",
+        phContenido: "Pega aquí tu capítulo, texto o guion base…"      
+    },
+    en: {
+        titulo: "Nova Presentation Generator",
+        labelTitulo: "Presentation title",
+        labelSlides: "Number of slides",
+        labelContenido: "Base content (chapter, text or script)",
+        btnGenerar: "Generate presentation structure",
+        btnPPT: "📤 Export to PPT",
+        estadoListo: "🟢 Generator ready",
+        estadoProcesando: "⏳ Processing request…",
+        errorContenido: "⚠️ Please enter base content before generating.",
+        errorConexion: "❌ Could not connect to the service."
+        phTitulo: "Example: Innovation and the future of human-AI collaboration",
+        phContenido: "Paste your chapter, text, or script here…           
+    },
+    ja: {
+        titulo: "Nova プレゼンテーション生成器",
+        labelTitulo: "プレゼンテーションのタイトル",
+        labelSlides: "スライド数",
+        labelContenido: "ベース内容（章・テキスト・台本）",
+        btnGenerar: "プレゼンテーション構成を生成",
+        btnPPT: "📤 PPTにエクスポート",
+        estadoListo: "🟢 準備完了",
+        estadoProcesando: "⏳ 処理中…",
+        errorContenido: "⚠️ 生成する前に内容を入力してください。",
+        errorConexion: "❌ サービスに接続できませんでした。"
+        phTitulo: "例：人間×AI協働の革新と未来",
+        phContenido: "ここに章・本文・台本を貼り付けてください…",   
+    }
+};
+
+function setLanguage(lang) {
+    const t = textos[lang] || textos.es;
+    
+    currentLang = lang;
+    localStorage.setItem("nova_lang", lang);
+
+    document.querySelector("h1").innerText = t.titulo;
+
+    document.querySelector("label[for='titulo']")?.innerText = t.labelTitulo;
+    document.querySelector("label[for='slides']")?.innerText = t.labelSlides;
+    document.querySelector("label[for='contenido']")?.innerText = t.labelContenido;
+
+    document.getElementById("titulo").placeholder = t.phTitulo;
+    document.getElementById("contenido").placeholder = t.phContenido;
+
+    document.querySelector("button[onclick='generar()']").innerText = t.btnGenerar;
+    document.getElementById("btnPPT").innerText = t.btnPPT;
+
+    document.getElementById("estado").innerText = t.estadoListo;
+}
+    const saved = localStorage.getItem("nova_lang") || "es";
+    setLanguage(saved);
+    document.getElementById("langSelector").value = saved;  
+</script>
+    
+    const API_BASE_URL = "https://programanovabackend-production.up.railway.app";
 
 /** Limpia markdown, numeración y separa título + bullets */
 function normalizarItem(item) {
