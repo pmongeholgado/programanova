@@ -109,8 +109,8 @@
 
     <button onclick="generar()">Generar estructura de presentación</button>
     <button id="btnPPT" onclick="exportarPPT()" disabled>📤 Exportar a PPT</button>
-    <button onclick="exportarPPT()">📊 Exportar a PowerPoint</button>
-
+    <button id="btnPPT2" onclick="exportarPPT()" disabled>📊 Exportar a PowerPoint</button>
+    
     <div class="estado" id="estado">🟢 Generador listo</div>
     <div id="resultado" style="margin-top:20px;"></div>
 </div>
@@ -119,85 +119,178 @@
     
 <script>
 let estructuraGenerada = [];
-    
+let ultimaEstructuraLimpia = []; // lo que realmente exportaremos
+
 const API_BASE_URL = "https://programanovabackend-production.up.railway.app";
 
-async function generar() {
-    const tituloEl = document.getElementById("titulo");
-    const slidesEl = document.getElementById("slides");
-    const contenidoEl = document.getElementById("contenido");
-    const estadoEl = document.getElementById("estado");
+/** Limpia markdown, numeración y separa título + bullets */
+function normalizarItem(item) {
+  let s = String(item || "").trim();
 
-    const titulo = (tituloEl.value || "").trim();
-    const numDiapositivas = slidesEl.value;
-    const contenido = (contenidoEl.value || "").trim();
+  // Quitar markdown fuerte **texto**
+  s = s.replace(/\*\*/g, "");
 
-    if (!contenido) {
-        estadoEl.innerText = "⚠️ Introduce un texto base antes de generar la presentación.";
-        return;
-    }
+  // Quitar numeración tipo "1. " al inicio
+  s = s.replace(/^\s*\d+\.\s*/, "");
 
-    estadoEl.innerText = "⏳ Procesando solicitud…";
+  // Quitar guiones repetidos tipo "- "
+  s = s.replace(/^\s*-\s*/gm, "");
 
-    try {
-        const response = await fetch(`${API_BASE_URL}/generar`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                titulo,
-                num_diapositivas: numDiapositivas,
-                contenido,
-            }),
-            mode: "cors",
-        });
+  // Si contiene " - Idea principal:" lo separamos
+  let titulo = s;
+  let bullets = [];
 
-        if (!response.ok) {
-            estadoEl.innerText = "❌ Error al procesar la solicitud.";
-            return;
-        }
+  const parts = s.split(/\s*-\s*Idea principal:\s*/i);
+  if (parts.length > 1) {
+    titulo = parts[0].trim();
+    const idea = parts.slice(1).join(" - Idea principal: ").trim();
+    if (idea) bullets.push(idea);
+  }
 
-        const data = await response.json().catch(() => ({}));
+  // Si el título aún trae ":" tipo "Portada: ..." separamos
+  const colon = titulo.split(/\s*:\s*/);
+  if (colon.length > 1) {
+    titulo = colon[0].trim();
+    const resto = colon.slice(1).join(": ").trim();
+    if (resto) bullets.push(resto);
+  }
 
-        estadoEl.innerText =
-            data.mensaje ||
-            "✅ Solicitud recibida correctamente. Preparando generación avanzada.";
-        const resultadoEl = document.getElementById("resultado");
+  // Si hay líneas múltiples, primera = título y el resto bullets
+  const lines = titulo.split("\n").map(l => l.trim()).filter(Boolean);
+  if (lines.length > 1) {
+    titulo = lines[0];
+    bullets = bullets.concat(lines.slice(1));
+  }
 
-        if (Array.isArray(data.estructura)) {
-            estructuraGenerada = data.estructura;
+  // Quitar frases no deseadas si vienen mezcladas
+  const basura = [
+    "Aquí tienes la estructura de la presentación",
+    "Estructura generada",
+    "Presentación generada correctamente"
+  ];
+  if (basura.some(b => titulo.toLowerCase().includes(b.toLowerCase()))) {
+    // Si detectamos basura, intentamos quedarnos con algo útil
+    // (si no hay, devolvemos vacío)
+    titulo = titulo.replace(/Aquí tienes.*?:/i, "").trim();
+  }
 
-            document.getElementById("btnPPT").disabled = false;
-            
-            resultadoEl.innerHTML = `
-                <h3>Estructura generada</h3>
-                <ul>
-                    ${data.estructura.map(item => `<li>${item}</li>`).join("")}
-                </ul>
-            `;
-        }
-    } catch (err) {
-        estadoEl.innerText = "❌ No se pudo conectar con el servicio.";
-    }
+  return { titulo: titulo.trim(), bullets: bullets.map(b => b.trim()).filter(Boolean) };
 }
-function exportarPPT() {
-    if (!estructuraGenerada.length) {
-        alert("Primero genera una presentación.");
-        return;
-    }
 
-    const pptx = new PptxGenJS();
+/** Construye estructura limpia (array de {titulo, bullets}) */
+function construirEstructuraLimpia(arr) {
+  const out = [];
+  for (const it of (arr || [])) {
+    const obj = normalizarItem(it);
+    if (!obj.titulo) continue;
+    out.push(obj);
+  }
+  return out;
+}
 
-    estructuraGenerada.forEach((item, index) => {
-        const slide = pptx.addSlide();
-        slide.addText(`Diapositiva ${index + 1}`, {
-            x: 0.5, y: 0.5, fontSize: 18, bold: true
-        });
-        slide.addText(item, {
-            x: 0.5, y: 1.5, fontSize: 14, wrap: true
-        });
+async function generar() {
+  const tituloEl = document.getElementById("titulo");
+  const slidesEl = document.getElementById("slides");
+  const contenidoEl = document.getElementById("contenido");
+  const estadoEl = document.getElementById("estado");
+  const resultadoEl = document.getElementById("resultado");
+
+  const titulo = (tituloEl.value || "").trim();
+  const numDiapositivas = slidesEl.value;
+  const contenido = (contenidoEl.value || "").trim();
+
+  if (!contenido) {
+    estadoEl.innerText = "⚠️ Introduce un texto base antes de generar la presentación.";
+    return;
+  }
+
+  estadoEl.innerText = "⏳ Procesando solicitud…";
+  resultadoEl.innerHTML = "";
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/generar`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ titulo, num_diapositivas: numDiapositivas, contenido }),
+      mode: "cors",
     });
 
-    pptx.writeFile("Nova_Presentacion.pptx");
+    if (!response.ok) {
+      estadoEl.innerText = "❌ Error al procesar la solicitud.";
+      return;
+    }
+
+    const data = await response.json().catch(() => ({}));
+
+    estadoEl.innerText = data.mensaje || "✅ Estructura generada correctamente.";
+
+    if (Array.isArray(data.estructura)) {
+      estructuraGenerada = data.estructura;
+      ultimaEstructuraLimpia = construirEstructuraLimpia(data.estructura);
+
+      // Habilitar ambos botones de exportación
+      document.getElementById("btnPPT").disabled = false;
+      document.getElementById("btnPPT2").disabled = false;
+
+      // Mostrar la versión "limpia" en pantalla (más bonita)
+      resultadoEl.innerHTML = `
+        <h3>Estructura generada</h3>
+        <ul>
+          ${ultimaEstructuraLimpia.map((obj, i) => {
+            const bullets = obj.bullets.length
+              ? `<ul>${obj.bullets.map(b => `<li>${b}</li>`).join("")}</ul>`
+              : "";
+            return `<li><b>${i+1}. ${obj.titulo}</b>${bullets}</li>`;
+          }).join("")}
+        </ul>
+      `;
+    } else {
+      estadoEl.innerText = "⚠️ No se recibió una estructura válida.";
+    }
+
+  } catch (err) {
+    estadoEl.innerText = "❌ No se pudo conectar con el servicio.";
+  }
+}
+
+function exportarPPT() {
+  if (!ultimaEstructuraLimpia.length) {
+    alert("Primero genera una presentación.");
+    return;
+  }
+
+  const titulo = (document.getElementById("titulo").value || "Nova_Presentacion").trim();
+  const safeTitle = titulo.replace(/[^\w\-]+/g, "_").slice(0, 40);
+  const fileName = `${safeTitle || "Nova_Presentacion"}_${new Date().toISOString().slice(0,19).replace(/[:T]/g,"-")}.pptx`;
+
+  const pptx = new PptxGenJS();
+
+  ultimaEstructuraLimpia.forEach((obj, index) => {
+    const slide = pptx.addSlide();
+
+    // Título diapositiva
+    slide.addText(`${index + 1}. ${obj.titulo}`, {
+      x: 0.5, y: 0.5, w: 9, h: 0.8,
+      fontSize: 22, bold: true
+    });
+
+    // Bullets (si existen)
+    if (obj.bullets.length) {
+      slide.addText(obj.bullets.map(b => `• ${b}`).join("\n"), {
+        x: 0.7, y: 1.5, w: 9, h: 4.5,
+        fontSize: 16, wrap: true
+      });
+    } else {
+      // Si no hay bullets, metemos una línea limpia
+      slide.addText("• Idea principal: (sin detalle adicional)", {
+        x: 0.7, y: 1.5, w: 9, h: 1.0,
+        fontSize: 16, wrap: true
+      });
+    }
+  });
+    
+  const fileName = `${titulo || "Nova_Presentacion"}.pptx`;
+  pptx.writeFile({ fileName });
 }
     
 </script>
