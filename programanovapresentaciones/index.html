@@ -467,43 +467,47 @@
         input.focus();
       }
     });
-        const saved = localStorage.getItem("nova_lang") || "es";
-        setLanguage(saved);
-        document.getElementById("langSelector").value = saved;
-        aplicarIdiomaChat(saved);
 
+        const textosChat = {
+          es: {
+            placeholder: "Escribe aquí tu mensaje para Nova...",
+            boton: "Enviar 🚀",
+            estadoOK: "Respuesta recibida de Nova ✓",
+            estadoError: "❌ Error al conectar con Nova"
+          },
+          en: {
+            placeholder: "Type your message for Nova...",
+            boton: "Send 🚀",
+            estadoOK: "Response received from Nova ✓",
+            estadoError: "❌ Error connecting to Nova"
+          },
+          ja: {
+            placeholder: "Novaへのメッセージを入力してください...",
+            boton: "送信 🚀",
+            estadoOK: "Novaからの応答を受信しました ✓",
+            estadoError: "❌ Novaへの接続エラー"
+          }
+        };
+
+        function aplicarIdiomaChat(lang) {
+          const t = textosChat[lang] || textosChat.es;
+
+          document.getElementById("user-input").placeholder = t.placeholder;
+          document.getElementById("sendBtn").innerText = t.boton;
+          }
+    // ===== Inicialización final del idioma (Portada + Chat) =====
+    document.addEventListener("DOMContentLoaded", () => {
+      const saved = localStorage.getItem("nova_lang") || "es";
+      setLanguage(saved);
+      const sel = document.getElementById("langSelector");
+      if (sel) sel.value = saved;
+      aplicarIdiomaChat(saved);
+    });
   </script>
-
-const textosChat = {
-  es: {
-    placeholder: "Escribe aquí tu mensaje para Nova...",
-    boton: "Enviar 🚀",
-    estadoOK: "Respuesta recibida de Nova ✓",
-    estadoError: "❌ Error al conectar con Nova"
-  },
-  en: {
-    placeholder: "Type your message for Nova...",
-    boton: "Send 🚀",
-    estadoOK: "Response received from Nova ✓",
-    estadoError: "❌ Error connecting to Nova"
-  },
-  ja: {
-    placeholder: "Novaへのメッセージを入力してください...",
-    boton: "送信 🚀",
-    estadoOK: "Novaからの応答を受信しました ✓",
-    estadoError: "❌ Novaへの接続エラー"
-  }
-};
-
-function aplicarIdiomaChat(lang) {
-  const t = textosChat[lang] || textosChat.es;
-
-  document.getElementById("user-input").placeholder = t.placeholder;
-  document.getElementById("sendBtn").innerText = t.boton;
-}
   
 </body>
 </html>
+
 
 
 
