@@ -202,40 +202,39 @@
     // 🔹 Inicialización final del idioma (ÚNICA)
     const savedLang = localStorage.getItem("nova_lang") || "es";
     setLanguage(savedLang);
-    document.getElementById("langSelector").value = savedLang; 
-</script>   
+    document.getElementById("langSelector").value = savedLang;    
     
-/** Limpia markdown, numeración y separa título + bullets */
-function normalizarItem(item) {
-  let s = String(item || "").trim();
+    /** Limpia markdown, numeración y separa título + bullets */
+      function normalizarItem(item) {
+        let s = String(item || "").trim();
 
-  // Quitar markdown fuerte **texto**
-  s = s.replace(/\*\*/g, "");
+      // Quitar markdown fuerte **texto**
+      s = s.replace(/\*\*/g, "");
 
-  // Quitar numeración tipo "1. " al inicio
-  s = s.replace(/^\s*\d+\.\s*/, "");
+      // Quitar numeración tipo "1. " al inicio
+      s = s.replace(/^\s*\d+\.\s*/, "");
 
-  // Quitar guiones repetidos tipo "- "
-  s = s.replace(/^\s*-\s*/gm, "");
+      // Quitar guiones repetidos tipo "- "
+      s = s.replace(/^\s*-\s*/gm, "");
 
   // Si contiene " - Idea principal:" lo separamos
-  let titulo = s;
-  let bullets = [];
+      let titulo = s;
+      let bullets = [];
 
-  const parts = s.split(/\s*-\s*Idea principal:\s*/i);
-  if (parts.length > 1) {
-    titulo = parts[0].trim();
+    const parts = s.split(/\s*-\s*Idea principal:\s*/i);
+      if (parts.length > 1) {
+          titulo = parts[0].trim();
     const idea = parts.slice(1).join(" - Idea principal: ").trim();
-    if (idea) bullets.push(idea);
-  }
+      if (idea) bullets.push(idea);
+      }
 
   // Si el título aún trae ":" tipo "Portada: ..." separamos
   const colon = titulo.split(/\s*:\s*/);
-  if (colon.length > 1) {
-    titulo = colon[0].trim();
-    const resto = colon.slice(1).join(": ").trim();
-    if (resto) bullets.push(resto);
-  }
+      if (colon.length > 1) {
+          titulo = colon[0].trim();
+  const resto = colon.slice(1).join(": ").trim();
+      if (resto) bullets.push(resto);
+      }
 
   // Si hay líneas múltiples, primera = título y el resto bullets
   const lines = titulo.split("\n").map(l => l.trim()).filter(Boolean);
@@ -388,6 +387,6 @@ function exportarPPT() {
   // Export correcto
   pptx.writeFile({ fileName });
 }    
-
+</script>
 </body>
 </html>
