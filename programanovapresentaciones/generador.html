@@ -340,35 +340,25 @@ async function generar() {
                 });
 
                 // Contenido
-                if (siguiente?.bullets?.length) {
-                  slide.addText(
-                    siguiente.bullets.map(b => `- ${b}`).join("\n"),
-                    {
-                      x: 0.7,
-                      y: 1.5,
-                      w: 9,
-                      h: 4.5,
-                      fontSize: 16,
-                      wrap: true,
-                    }
-                  );
-                }
-
-                i++; // saltamos la idea principal ya usada
-              }
-            }
-
-
   } catch (err) {
     estadoEl.innerText = "❌ No se pudo conectar con el servicio.";
   }
 }
 
 function exportarPPT() {
-  if (!ultimaEstructuraLimpia.length) {
-    alert("Primero genera una presentación.");
-    return;
-  }
+if (siguiente?.bullets?.length) {
+    slide.addText(
+        siguiente.bullets.map(b => `- ${b}`).join("\n"),
+        {
+          x: 0.7,
+          y: 1.5,
+          w: 9,
+          h: 4.5,
+          fontSize: 16,
+          wrap: true,
+        }
+      );
+    }
 
   const titulo = (document.getElementById("titulo").value || "Nova_Presentacion").trim();
   const safeTitle = titulo.replace(/[^\w\-]+/g, "_").slice(0, 40);
