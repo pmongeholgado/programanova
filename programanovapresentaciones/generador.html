@@ -342,7 +342,7 @@ async function generar() {
                 // Contenido
                 if (siguiente?.bullets?.length) {
                   slide.addText(
-                    siguiente.bullets.map(b => `• ${b}`).join("\n"),
+                    siguiente.bullets.map(b => `- ${b}`).join("\n"),
                     {
                       x: 0.7,
                       y: 1.5,
