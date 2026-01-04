@@ -101,10 +101,10 @@
 </div>
     
 <div class="box">
-    <label>Título de la presentación</label>
+    <label for="titulo">Título de la presentación</label>
     <input type="text" id="titulo" placeholder="Ejemplo: Innovación y futuro de la colaboración humano-IA" />
 
-    <label>Número de diapositivas</label>
+    <label for="slides">Número de diapositivas</label>
     <select id="slides">
         <option value="10">10 diapositivas</option>
         <option value="12">12 diapositivas</option>
@@ -112,7 +112,7 @@
         <option value="20">20 diapositivas</option>
     </select>
 
-    <label>Contenido base (capítulo, texto o guion)</label>
+    <label for="contenido">Contenido base (capítulo, texto o guion)</label>
     <textarea id="contenido" rows="6" placeholder="Pega aquí tu capítulo, texto o guion base…"></textarea>
 
     <button onclick="generar()">Generar estructura de presentación</button>
@@ -310,17 +310,19 @@ async function generar() {
       document.getElementById("btnPPT2").disabled = false;
 
       // Mostrar la versión "limpia" en pantalla (más bonita)
-      resultadoEl.innerHTML = "";
-        <h3>Estructura generada</h3>
-        <ul>
-          ${ultimaEstructuraLimpia.map((obj, i) => {
-            const bullets = obj.bullets.length
-              ? `<ul>${obj.bullets.map(b => `<li>${b}</li>`).join("")}</ul>`
-              : "";
-            return `<li><b>${i+1}. ${obj.titulo}</b>${bullets}</li>`;
-          }).join("")}
-        </ul>
-      `;
+      const resultadoEl = document.getElementById("resultado");
+
+      resultadoEl.innerHTML = `
+          <h3>Estructura generada</h3>
+          <ul>
+            ${ultimaEstructuraLimpia.map((obj, i) => {
+              const bullets = obj.bullets.length
+                ? `<ul>${obj.bullets.map(b => `<li>${b}</li>`).join("")}</ul>`
+                : "";
+              return `<li><b>${i + 1}. ${obj.titulo}</b>${bullets}</li>`;
+            }).join("")}
+          </ul>
+        `;
     }  
 
   } catch (err) {
@@ -362,7 +364,6 @@ function exportarPPT() {
         x: 0.7, y: 1.5, w: 9, h: 4.5,
         fontSize: 16, wrap: true
       });
-    } else {
       slide.addText("• Idea principal: (sin detalle adicional)", {
         x: 0.7,
         y: 1.5,
