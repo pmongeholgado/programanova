@@ -177,33 +177,32 @@
       }
     };
    
-    function setLanguage(lang) {
-        const t = textos[lang] || textos.es;
-    
-        currentLang = lang;
-        localStorage.setItem("nova_lang", lang);
+function setLanguage(lang) { 
+    const t = textos[lang] || textos.es;
 
-        document.querySelector("h1").innerText = t.titulo;
+    currentLang = lang;
+    localStorage.setItem("nova_lang", lang);
 
-        document.querySelector("label[for='titulo']")?.innerText = t.labelTitulo;
-        document.querySelector("label[for='slides']")?.innerText = t.labelSlides;
-        document.querySelector("label[for='contenido']")?.innerText = t.labelContenido;
+    document.querySelector("h1").innerText = t.titulo;
 
-        document.getElementById("titulo").placeholder = t.phTitulo;
-        document.getElementById("contenido").placeholder = t.phContenido;
+    document.querySelector("label[for='titulo']").innerText = t.labelTitulo;
+    document.querySelector("label[for='slides']").innerText = t.labelSlides;
+    document.querySelector("label[for='contenido']").innerText = t.labelContenido;
 
-        document.querySelector("button[onclick='generar()']").innerText = t.btnGenerar;
-        document.getElementById("btnPPT").innerText = t.btnPPT;
+    document.getElementById("titulo").placeholder = t.phTitulo;
+    document.getElementById("contenido").placeholder = t.phContenido;
 
-        document.getElementById("estado").innerText = t.estadoListo;
+    document.querySelector("button[onclick='generar()']").innerText = t.btnGenerar;
+    document.getElementById("btnPPT").innerText = t.btnPPT;
+
+    document.getElementById("estado").innerText = t.estadoListo;
     }
     
     const API_BASE_URL = "https://programanovabackend-production.up.railway.app";
     // 🔹 Inicialización final del idioma (ÚNICA)
     const savedLang = localStorage.getItem("nova_lang") || "es";
-    setLanguage(savedLang);
     document.getElementById("langSelector").value = savedLang;    
-    
+    setLanguage(savedLang);
     /** Limpia markdown, numeración y separa título + bullets */
       function normalizarItem(item) {
         let s = String(item || "").trim();
@@ -211,13 +210,13 @@
       // Quitar markdown fuerte **texto**
       s = s.replace(/\*\*/g, "");
 
-      // Quitar numeración tipo "1. " al inicio
+      // Quitar numeración tipo "1." 
       s = s.replace(/^\s*\d+\.\s*/, "");
-
+    
       // Quitar guiones repetidos tipo "- "
       s = s.replace(/^\s*-\s*/gm, "");
 
-  // Si contiene " - Idea principal:" lo separamos
+      // Si contiene " - Idea principal:" lo separamos
       let titulo = s;
       let bullets = [];
 
