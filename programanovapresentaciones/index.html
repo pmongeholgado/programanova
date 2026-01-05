@@ -427,19 +427,9 @@ function aplicarIdiomaPortada(lang) {
 }
 
 function setLanguage(lang) {
-  const t = textosPortada[lang] || textosPortada.es;
-
-  document.querySelector(".hero-title").innerText = t.titulo;
-  document.querySelector(".hero-subtitle").innerText = t.subtitulo;
-
-  document.querySelectorAll(".badge")[0].innerText = t.badgeDemo;
-  document.querySelectorAll(".badge")[1].innerText = t.badgeChat;
-
-  document.querySelector(".hero-badges .btn").innerText = t.btnGenerador;
-
-  document.querySelector("footer span strong").innerText = t.footer;
-
   localStorage.setItem("nova_lang", lang);
+  aplicarIdiomaPortada(lang);
+  aplicarIdiomaChat(lang);
 }
 
     // ====== BACKEND OFICIAL EN PRODUCCIÓN ======
@@ -542,6 +532,7 @@ function setLanguage(lang) {
   
 </body>
 </html>
+
 
 
 
