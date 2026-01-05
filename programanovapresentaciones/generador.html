@@ -268,6 +268,69 @@ function construirEstructuraLimpia(arr) {
   return out;
 }
 
+function agruparEnSlides(items) {
+  const basura = [
+    "aquí tienes la estructura",
+    "estructura generada",
+    "presentación generada correctamente",
+    "esta estructura proporciona",
+    "flujo lógico"
+  ];
+
+  const esBasura = (t) => basura.some(b => (t || "").toLowerCase().includes(b));
+
+  const pareceTitulo = (t) => {
+    const s = (t || "").trim();
+    if (!s) return false;
+    if (esBasura(s)) return false;
+
+    // Heurística: si empieza por verbo/una frase larga, suele ser bullet
+    const long = s.length > 60;
+    const endsDot = s.endsWith(".");
+    const startsLower = /^[a-záéíóúñ]/.test(s);
+
+    // Si es muy largo, o acaba en punto, o empieza en minúscula → probablemente bullet
+    if (long || endsDot || startsLower) return false;
+
+    // Si contiene ":" suele ser título
+    if (s.includes(":")) return true;
+
+    // Si son pocas palabras → título
+    if (s.split(/\s+/).length <= 6) return true;
+
+    return true;
+  };
+
+  const slides = [];
+  let current = null;
+
+  for (const it of items) {
+    const text = (it.titulo || "").trim();
+    if (!text || esBasura(text)) continue;
+
+    if (pareceTitulo(text)) {
+      current = { titulo: text, bullets: [] };
+      slides.push(current);
+      // si el item original ya traía bullets, los añadimos
+      if (Array.isArray(it.bullets) && it.bullets.length) {
+        current.bullets.push(...it.bullets);
+      }
+    } else {
+      // bullet: si no hay título aún, creamos uno genérico
+      if (!current) {
+        current = { titulo: "Introducción", bullets: [] };
+        slides.push(current);
+      }
+      current.bullets.push(text);
+      if (Array.isArray(it.bullets) && it.bullets.length) {
+        current.bullets.push(...it.bullets);
+      }
+    }
+  }
+
+  return slides;
+}
+   
 async function generar() {
   const tituloEl = document.getElementById("titulo");
   const slidesEl = document.getElementById("slides");
@@ -307,7 +370,8 @@ async function generar() {
 
     if (Array.isArray(data.estructura)) {
       estructuraGenerada = data.estructura;
-      ultimaEstructuraLimpia = construirEstructuraLimpia(data.estructura);
+      ultimaEstructuraLimpia = agruparEnSlides(construirEstructuraLimpia(data.estructura));
+ 
 
       document.getElementById("btnPPT").disabled = false;
       document.getElementById("btnPPT2").disabled = false;
