@@ -272,8 +272,8 @@
 
     <section class="content">
       <article class="card">
-        <div class="section-label">Qué vas a ver aquí</div>
-        <h2><span class="icon">📘</span> Demo del Programa Nova Presentaciones</h2>
+        <div class="section-label" data-i18n="section_intro_label">Qué vas a ver aquí</div>
+        <h2 data-i18n="section_intro_title"><span class="icon">📘</span> Demo del Programa Nova Presentaciones</h2>
         <p>
           Esta página es la puerta de entrada a <strong>Programa Nova Presentaciones</strong>:
           desde aquí podrás probar la demo del orquestador y hablar con Nova usando tu propio
@@ -392,6 +392,8 @@
         badgeChat: "Chat con Nova en tiempo real",
         btnGenerador: "GENERADOR DE PRESENTACIONES",
         footer: "Proyecto creado en simbiosis: Nova (IA) & Pablo (humano)."
+        section_intro_label: "Qué vas a ver aquí",
+        section_intro_title: "Demo del Programa Nova Presentaciones",
       },
       en: {
         titulo: "Nova Presentation Program",
@@ -400,6 +402,8 @@
         badgeChat: "Real-time chat with Nova",
         btnGenerador: "PRESENTATION GENERATOR",
         footer: "Project created in symbiosis: Nova (AI) & Pablo (human)."
+        section_intro_label: "What you will see here",
+        section_intro_title: "Nova Presentation Program Demo",
       },
       ja: {
         titulo: "Nova プレゼンテーション プログラム",
@@ -408,9 +412,10 @@
         badgeChat: "Novaとのリアルタイムチャット",
         btnGenerador: "プレゼンテーション生成器",
         footer: "共生プロジェクト：Nova（AI）＆Pablo（人間）"
+        section_intro_label: "ここで見られる内容",
+        section_intro_title: "Novaプレゼンテーションプログラムのデモ",
       }
     };
-
 
 function setLanguage(lang) {
   const t = textosPortada[lang] || textosPortada.es;
@@ -528,6 +533,7 @@ function setLanguage(lang) {
   
 </body>
 </html>
+
 
 
 
