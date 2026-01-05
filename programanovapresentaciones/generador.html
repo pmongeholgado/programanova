@@ -310,41 +310,20 @@ async function generar() {
       document.getElementById("btnPPT2").disabled = false;
 
       // Mostrar la versión "limpia" en pantalla (más bonita)
-      const resultadoEl = document.getElementById("resultado");
+const resultadoEl = document.getElementById("resultado");
 
-      resultadoEl.innerHTML = `
-          <h3>Estructura generada</h3>
-          <ul>
-            for (let i = 0; i < ultimaEstructuraLimpia.length; i++) {
-              const actual = ultimaEstructuraLimpia[i];
-
-              // Detectamos "Título de la Diapositiva"
-              if (/^t[ií]tulo de la diapositiva/i.test(actual.titulo)) {
-                const siguiente = ultimaEstructuraLimpia[i + 1];
-
-                const slide = pptx.addSlide();
-
-                // Título real de la slide
-                const tituloSlide =
-                  siguiente?.bullets?.[0] ||
-                  siguiente?.titulo ||
-                  "Diapositiva";
-
-                slide.addText(tituloSlide, {
-                  x: 0.5,
-                  y: 0.5,
-                  w: 9,
-                  h: 0.8,
-                  fontSize: 22,
-                  bold: true,
-                });
-
-                // Contenido
-  } catch (err) {
-    estadoEl.innerText = "❌ No se pudo conectar con el servicio.";
-  }
-}
-
+resultadoEl.innerHTML = `
+  <h3>Estructura generada</h3>
+  <ul>
+    ${ultimaEstructuraLimpia.map((obj, i) => {
+      const bullets = obj.bullets.length
+        ? `<ul>${obj.bullets.map(b => `<li>${b}</li>`).join("")}</ul>`
+        : "";
+      return `<li><b>${i + 1}. ${obj.titulo}</b>${bullets}</li>`;
+    }).join("")}
+  </ul>
+`;
+        
 function exportarPPT() {
 if (siguiente?.bullets?.length) {
     slide.addText(
