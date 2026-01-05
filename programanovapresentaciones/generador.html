@@ -330,34 +330,50 @@ async function generar() {
 }    
         
 function exportarPPT() {
-if (siguiente?.bullets?.length) {
-    slide.addText(
-        siguiente.bullets.map(b => `- ${b}`).join("\n"),
-        {
-          x: 0.7,
-          y: 1.5,
-          w: 9,
-          h: 4.5,
-          fontSize: 16,
-          wrap: true,
-        }
-      );
-    }
+  // 1) Seguridad: hay estructura?
+  if (!Array.isArray(ultimaEstructuraLimpia) || ultimaEstructuraLimpia.length === 0) {
+    alert("Primero genera una presentación.");
+    return;
+  }
 
+  // 2) Seguridad: librería cargada?
+  if (typeof PptxGenJS === "undefined") {
+    console.error("PptxGenJS no está cargado.");
+    alert("No se ha cargado la librería de PowerPoint. Recarga la página e inténtalo de nuevo.");
+    return;
+  }
+
+  // 3) Nombre de archivo
   const titulo = (document.getElementById("titulo").value || "Nova_Presentacion").trim();
-  const safeTitle = titulo.replace(/[^\w\-]+/g, "_").slice(0, 40);
-  const fileName = `${safeTitle || "Nova_Presentacion"}_${new Date()
-    .toISOString()
-    .slice(0, 19)
-    .replace(/[:T]/g, "-")}.pptx`;
+  const safeTitle = titulo.replace(/[^\w\-]+/g, "_").slice(0, 40) || "Nova_Presentacion";
+  const fileName = `${safeTitle}_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.pptx`;
 
   const pptx = new PptxGenJS();
 
-  ultimaEstructuraLimpia.forEach((obj, index) => {
+  // 4) Regla: "Idea principal" NO crea slide; alimenta el título anterior
+  const esIdeaPrincipal = (t) => /^idea principal$/i.test((t || "").trim());
+  const esBasura = (t) => {
+    const s = (t || "").toLowerCase();
+    return (
+      s.includes("aquí tienes la estructura") ||
+      s.includes("estructura generada") ||
+      s.includes("presentación generada correctamente")
+    );
+  };
+
+  for (let i = 0; i < ultimaEstructuraLimpia.length; i++) {
+    const actual = ultimaEstructuraLimpia[i];
+    if (!actual || !actual.titulo) continue;
+
+    const tituloSlide = actual.titulo.trim();
+
+    // Saltar basura y saltar "Idea principal" como slide
+    if (esBasura(tituloSlide) || esIdeaPrincipal(tituloSlide)) continue;
+
     const slide = pptx.addSlide();
 
-    // Título de la diapositiva
-    slide.addText(`${index + 1}. ${obj.titulo}`, {
+    // Título
+    slide.addText(tituloSlide, {
       x: 0.5,
       y: 0.5,
       w: 9,
@@ -366,13 +382,19 @@ if (siguiente?.bullets?.length) {
       bold: true,
     });
 
-    // Bullets (si existen)
-    if (obj.bullets.length) {
-      slide.addText(obj.bullets.map(b => `• ${b}`).join("\n"), {
-        x: 0.7, y: 1.5, w: 9, h: 4.5,
-        fontSize: 16, wrap: true
-      });
-      slide.addText("• Idea principal: (sin detalle adicional)", {
+    // Contenido: si el siguiente item es "Idea principal", usar sus bullets
+    const siguiente = ultimaEstructuraLimpia[i + 1];
+    let bullets = [];
+
+    if (siguiente && esIdeaPrincipal(siguiente.titulo)) {
+      bullets = Array.isArray(siguiente.bullets) ? siguiente.bullets : [];
+      i++; // consumimos el siguiente
+    } else {
+      bullets = Array.isArray(actual.bullets) ? actual.bullets : [];
+    }
+
+    if (bullets.length) {
+      slide.addText(bullets.map(b => `- ${b}`).join("\n"), {
         x: 0.7,
         y: 1.5,
         w: 9,
@@ -381,7 +403,7 @@ if (siguiente?.bullets?.length) {
         wrap: true,
       });
     } else {
-      slide.addText("• Idea principal", {
+      slide.addText("- Idea principal", {
         x: 0.7,
         y: 1.5,
         w: 9,
@@ -390,11 +412,12 @@ if (siguiente?.bullets?.length) {
         wrap: true,
       });
     }
-  }); 
+  }
 
-  // Export correcto
+  // 5) Export
   pptx.writeFile({ fileName });
-}    
+}
+    
 </script>
 </body>
 </html>
