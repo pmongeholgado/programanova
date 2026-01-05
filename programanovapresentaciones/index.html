@@ -244,7 +244,7 @@
       <div class="brand-row">
         <div class="logo-circle">N</div>
         <div>
-          <div class="hero-title">Programa Nova Presentaciones</div
+          <div class="hero-title">Programa Nova Presentaciones</div>
                                                                 
           <div style="text-align:center; margin-top:10px; margin-bottom:14px;">
             <select id="langSelector" onchange="setLanguage(this.value)">
@@ -391,7 +391,7 @@
         badgeDemo: "Demo interactiva",
         badgeChat: "Chat con Nova en tiempo real",
         btnGenerador: "GENERADOR DE PRESENTACIONES",
-        footer: "Proyecto creado en simbiosis: Nova (IA) & Pablo (humano)."
+        footer: "Proyecto creado en simbiosis: Nova (IA) & Pablo (humano).",
         section_intro_label: "Qué vas a ver aquí",
         section_intro_title: "Demo del Programa Nova Presentaciones",
       },
@@ -401,7 +401,7 @@
         badgeDemo: "Interactive demo",
         badgeChat: "Real-time chat with Nova",
         btnGenerador: "PRESENTATION GENERATOR",
-        footer: "Project created in symbiosis: Nova (AI) & Pablo (human)."
+        footer: "Project created in symbiosis: Nova (AI) & Pablo (human).",
         section_intro_label: "What you will see here",
         section_intro_title: "Nova Presentation Program Demo",
       },
@@ -411,11 +411,20 @@
         badgeDemo: "インタラクティブデモ",
         badgeChat: "Novaとのリアルタイムチャット",
         btnGenerador: "プレゼンテーション生成器",
-        footer: "共生プロジェクト：Nova（AI）＆Pablo（人間）"
+        footer: "共生プロジェクト：Nova（AI）＆Pablo（人間）",
         section_intro_label: "ここで見られる内容",
         section_intro_title: "Novaプレゼンテーションプログラムのデモ",
       }
     };
+    
+function aplicarIdiomaPortada(lang) {
+  const t = textosPortada[lang] || textosPortada.es;
+
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if (t[key]) el.innerText = t[key];
+  });
+}
 
 function setLanguage(lang) {
   const t = textosPortada[lang] || textosPortada.es;
@@ -533,6 +542,7 @@ function setLanguage(lang) {
   
 </body>
 </html>
+
 
 
 
