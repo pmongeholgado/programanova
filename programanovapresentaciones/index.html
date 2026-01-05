@@ -387,26 +387,46 @@
     const textosPortada = {
       es: {
         titulo: "Programa Nova Presentaciones",
-        subtitulo: "Plataforma de colaboración IA–Humano"
+        subtitulo: "Proyecto conjunto Pablo & Nova — una simbiosis real entre inteligencia humana e inteligencia artificial",
+        badgeDemo: "Demo interactiva",
+        badgeChat: "Chat con Nova en tiempo real",
+        btnGenerador: "GENERADOR DE PRESENTACIONES",
+        footer: "Proyecto creado en simbiosis: Nova (IA) & Pablo (humano)."
       },
       en: {
         titulo: "Nova Presentation Program",
-        subtitulo: "Human–AI collaboration platform"
+        subtitulo: "Joint project by Pablo & Nova — a real symbiosis between human and artificial intelligence",
+        badgeDemo: "Interactive demo",
+        badgeChat: "Real-time chat with Nova",
+        btnGenerador: "PRESENTATION GENERATOR",
+        footer: "Project created in symbiosis: Nova (AI) & Pablo (human)."
       },
       ja: {
         titulo: "Nova プレゼンテーション プログラム",
-        subtitulo: "人間とAIの協働プラットフォーム"
+        subtitulo: "人間と人工知能の真の共生 — Pablo & Nova の共同プロジェクト",
+        badgeDemo: "インタラクティブデモ",
+        badgeChat: "Novaとのリアルタイムチャット",
+        btnGenerador: "プレゼンテーション生成器",
+        footer: "共生プロジェクト：Nova（AI）＆Pablo（人間）"
       }
     };
 
-    function setLanguage(lang) {
-      const t = textosPortada[lang] || textosPortada.es;
 
-      document.querySelector(".hero-title").innerText = t.titulo;
-      document.querySelector(".hero-subtitle").innerText = t.subtitulo;
+function setLanguage(lang) {
+  const t = textosPortada[lang] || textosPortada.es;
 
-      localStorage.setItem("nova_lang", lang);
-    }
+  document.querySelector(".hero-title").innerText = t.titulo;
+  document.querySelector(".hero-subtitle").innerText = t.subtitulo;
+
+  document.querySelectorAll(".badge")[0].innerText = t.badgeDemo;
+  document.querySelectorAll(".badge")[1].innerText = t.badgeChat;
+
+  document.querySelector(".hero-badges .btn").innerText = t.btnGenerador;
+
+  document.querySelector("footer span strong").innerText = t.footer;
+
+  localStorage.setItem("nova_lang", lang);
+}
 
     // ====== BACKEND OFICIAL EN PRODUCCIÓN ======
     const API_URL = "https://programanovabackend-production.up.railway.app/chat";
@@ -493,8 +513,9 @@
           const t = textosChat[lang] || textosChat.es;
 
           document.getElementById("user-input").placeholder = t.placeholder;
-          document.getElementById("sendBtn").innerText = t.boton;
+          document.getElementById("send-btn").innerText = t.boton;
           }
+    
     // ===== Inicialización final del idioma (Portada + Chat) =====
     document.addEventListener("DOMContentLoaded", () => {
       const saved = localStorage.getItem("nova_lang") || "es";
@@ -507,6 +528,7 @@
   
 </body>
 </html>
+
 
 
 
