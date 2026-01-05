@@ -244,7 +244,7 @@
       <div class="brand-row">
         <div class="logo-circle">N</div>
         <div>
-          <div class="hero-title">Programa Nova Presentaciones</div>
+          <div class="hero-title" data-i18n="titulo">Programa Nova Presentaciones</div>
                                                                 
           <div style="text-align:center; margin-top:10px; margin-bottom:14px;">
             <select id="langSelector" onchange="setLanguage(this.value)">
@@ -254,7 +254,7 @@
             </select>
           </div>
           
-          <div class="hero-subtitle">
+          <div class="hero-subtitle" data-i18n="subtitulo">
             Proyecto conjunto <strong>Pablo &amp; Nova</strong> — una simbiosis real entre inteligencia
             humana e inteligencia artificial para crear presentaciones vivas y conversaciones con IA.
           </div>
@@ -262,11 +262,11 @@
       </div>
 
       <div class="hero-badges">
-        <span class="badge">Demo interactiva</span>
-        <a href="/generador" class="btn">
+        <span class="badge" data-i18n="badgeDemo">Demo interactiva</span>
+        <a href="/generador" class="btn" data-i18n="btnGenerador">
           GENERADOR DE PRESENTACIONES
-        </a>
-        <span class="badge">Chat con Nova en tiempo real</span>
+        </a>    
+        <span class="badge" data-i18n="badgeChat">Chat con Nova en tiempo real</span>
       </div>
     </section>
 
@@ -376,9 +376,10 @@
     </section>
 
     <footer>
-      <span>
-        Proyecto creado en simbiosis: <strong>Nova (IA)</strong> &amp; <strong>Pablo (humano)</strong>.
+      <span data-i18n="footer">
+        Proyecto creado en simbiosis: Nova (IA) & Pablo (humano).
       </span>
+ 
       <span>Programa Nova Presentaciones · Cáceres · 2025</span>
     </footer>
   </main>
@@ -532,6 +533,7 @@ function setLanguage(lang) {
   
 </body>
 </html>
+
 
 
 
