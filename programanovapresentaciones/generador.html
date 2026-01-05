@@ -273,17 +273,21 @@ async function generar() {
   const slidesEl = document.getElementById("slides");
   const contenidoEl = document.getElementById("contenido");
   const estadoEl = document.getElementById("estado");
-  
+  const resultadoEl = document.getElementById("resultado");
+
+  const t = textos[currentLang] || textos.es;
+
   const titulo = (tituloEl.value || "").trim();
   const numDiapositivas = slidesEl.value;
   const contenido = (contenidoEl.value || "").trim();
 
   if (!contenido) {
-    estadoEl.innerText = "⚠️ Introduce un texto base antes de generar la presentación.";
+    estadoEl.innerText = t.errorContenido;
     return;
   }
 
-  estadoEl.innerText = "⏳ Procesando solicitud…";
+  estadoEl.innerText = t.estadoProcesando;
+  resultadoEl.innerHTML = "";
 
   try {
     const response = await fetch(`${API_BASE_URL}/generar`, {
@@ -294,35 +298,36 @@ async function generar() {
     });
 
     if (!response.ok) {
-        return;
+      estadoEl.innerText = t.errorConexion;
+      return;
     }
 
     const data = await response.json().catch(() => ({}));
-
     estadoEl.innerText = data.mensaje || "✅ Estructura generada correctamente.";
 
     if (Array.isArray(data.estructura)) {
       estructuraGenerada = data.estructura;
       ultimaEstructuraLimpia = construirEstructuraLimpia(data.estructura);
 
-      // Habilitar ambos botones de exportación
       document.getElementById("btnPPT").disabled = false;
       document.getElementById("btnPPT2").disabled = false;
 
-      // Mostrar la versión "limpia" en pantalla (más bonita)
-const resultadoEl = document.getElementById("resultado");
-
-resultadoEl.innerHTML = `
-  <h3>Estructura generada</h3>
-  <ul>
-    ${ultimaEstructuraLimpia.map((obj, i) => {
-      const bullets = obj.bullets.length
-        ? `<ul>${obj.bullets.map(b => `<li>${b}</li>`).join("")}</ul>`
-        : "";
-      return `<li><b>${i + 1}. ${obj.titulo}</b>${bullets}</li>`;
-    }).join("")}
-  </ul>
-`;
+      resultadoEl.innerHTML = `
+        <h3>Estructura generada</h3>
+        <ul>
+          ${ultimaEstructuraLimpia.map((obj, i) => {
+            const bullets = obj.bullets.length
+              ? `<ul>${obj.bullets.map(b => `<li>${b}</li>`).join("")}</ul>`
+              : "";
+            return `<li><b>${i + 1}. ${obj.titulo}</b>${bullets}</li>`;
+          }).join("")}
+        </ul>
+      `;
+    }
+  } catch (err) {
+    estadoEl.innerText = t.errorConexion;
+  }
+}    
         
 function exportarPPT() {
 if (siguiente?.bullets?.length) {
