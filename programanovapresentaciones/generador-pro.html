@@ -127,7 +127,39 @@
     
 <script>
     let estructuraGenerada = [];
-    let ultimaEstructuraLimpia = []; 
+    let ultimaEstructuraLimpia = [];
+    // ====== FASE 2 (PRO) — Esqueleto de composición (NO activa aún) ======
+    let planPro = []; 
+    // planPro será un array de slides con este formato:
+    // {
+    //   idx: 1,
+    //   title: "Título",
+    //   bullets: ["..."],
+    //   needs: { text: true, image: false, chart: false },
+    //   imagePrompt: "",
+    //   chartSpec: null,
+    //   theme: { mode: "corporate", accent: "#3b82f6" }
+    // }
+
+    function construirPlanPro(slides) {
+      return (slides || []).map((s, i) => {
+        const title = (s.titulo || "").trim();
+        const bullets = Array.isArray(s.bullets) ? s.bullets : [];
+
+        // Por defecto: todo es texto.
+        // En Fase 2, Nova decidirá cuándo activar image/chart.
+        return {
+          idx: i + 1,
+          title,
+          bullets,
+          needs: { text: true, image: false, chart: false },
+          imagePrompt: "",
+          chartSpec: null,
+          theme: { mode: "corporate", accent: "#3b82f6" }
+        };
+      });
+    }
+
     let currentLang = "es";
 
     const textos = {
@@ -371,7 +403,7 @@ async function generar() {
     if (Array.isArray(data.estructura)) {
       estructuraGenerada = data.estructura;
       ultimaEstructuraLimpia = agruparEnSlides(construirEstructuraLimpia(data.estructura));
- 
+      planPro = construirPlanPro(ultimaEstructuraLimpia);
 
       document.getElementById("btnPPT").disabled = false;
       document.getElementById("btnPPT2").disabled = false;
