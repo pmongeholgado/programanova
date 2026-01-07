@@ -141,7 +141,7 @@
     //   theme: { mode: "corporate", accent: "#3b82f6" }
     // }
 
-    function construirPlanPro(slides) {
+    function construirPlanPro(slides) { 
       return (slides || []).map((s, i) => {
         const title = (s.titulo || "").trim();
         const bullets = Array.isArray(s.bullets) ? s.bullets : [];
@@ -159,7 +159,37 @@
         };
       });
     }
+    // ====== FASE 2 — Reglas mínimas de decisión (heurísticas simples) ======
+    function aplicarReglasPro(plan) {
+      return plan.map(slide => {
+        const titulo = slide.title.toLowerCase();
+        const texto = slide.bullets.join(" ").toLowerCase();
 
+        // Regla 1: gráficos
+        if (
+          texto.includes("datos") ||
+          texto.includes("comparativa") ||
+          texto.includes("evolución") ||
+          texto.includes("porcentaje") ||
+          texto.includes("estadística")
+        ) {
+          slide.needs.chart = true;
+        }
+
+        // Regla 2: imágenes
+        if (
+          titulo.includes("introducción") ||
+          titulo.includes("contexto") ||
+          titulo.includes("visión") ||
+          titulo.includes("futuro") ||
+          titulo.includes("conclusión")
+        ) {
+          slide.needs.image = true;
+        }
+
+        return slide;
+      });
+        
     let currentLang = "es";
 
     const textos = {
@@ -404,7 +434,9 @@ async function generar() {
       estructuraGenerada = data.estructura;
       ultimaEstructuraLimpia = agruparEnSlides(construirEstructuraLimpia(data.estructura));
       planPro = construirPlanPro(ultimaEstructuraLimpia);
-
+      planPro = aplicarReglasPro(planPro);
+      console.log("PLAN PRO:", planPro);
+        
       document.getElementById("btnPPT").disabled = false;
       document.getElementById("btnPPT2").disabled = false;
 
