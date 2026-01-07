@@ -547,6 +547,65 @@ function exportarPPT() {
   // 5) Export
   pptx.writeFile({ fileName });
 }
+      
+async function generar() {
+  const tituloEl = document.getElementById("titulo");
+  const slidesEl = document.getElementById("slides");
+  const contenidoEl = document.getElementById("contenido");
+  const estadoEl = document.getElementById("estado");
+  const resultadoEl = document.getElementById("resultado");
+
+  const titulo = (tituloEl.value || "").trim();
+  const numDiapositivas = slidesEl.value;
+  const contenido = (contenidoEl.value || "").trim();
+
+  if (!contenido) {
+    estadoEl.innerText = "⚠️ Introduce un texto base antes de generar.";
+    return;
+  }
+
+  estadoEl.innerText = "⏳ Procesando solicitud…";
+  resultadoEl.innerHTML = "";
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/generar`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        titulo,
+        num_diapositivas: numDiapositivas,
+        contenido
+      }),
+      mode: "cors",
+    });
+
+    if (!response.ok) {
+      estadoEl.innerText = "❌ Error de conexión";
+      return;
+    }
+
+    const data = await response.json();
+    estadoEl.innerText = data.mensaje || "✅ Estructura generada correctamente.";
+
+    if (Array.isArray(data.estructura)) {
+      ultimaEstructuraLimpia = agruparEnSlides(
+        construirEstructuraLimpia(data.estructura)
+      );
+
+      const planPro = aplicarReglasPro(
+        construirPlanPro(ultimaEstructuraLimpia)
+      );
+
+      renderPlanPro(planPro);
+
+      document.getElementById("btnPPT").disabled = false;
+      document.getElementById("btnPPT2").disabled = false;
+    }
+  } catch (err) {
+    console.error(err);
+    estadoEl.innerText = "❌ No se pudo conectar con el servicio.";
+  }
+}
     
 </script>
 </body>
