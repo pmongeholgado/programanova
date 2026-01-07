@@ -555,6 +555,8 @@ async function generar() {
   const estadoEl = document.getElementById("estado");
   const resultadoEl = document.getElementById("resultado");
 
+  const t = textos[currentLang] || textos.es;
+    
   const titulo = (tituloEl.value || "").trim();
   const numDiapositivas = slidesEl.value;
   const contenido = (contenidoEl.value || "").trim();
@@ -588,16 +590,15 @@ async function generar() {
     estadoEl.innerText = data.mensaje || "✅ Estructura generada correctamente.";
 
     if (Array.isArray(data.estructura)) {
+      estructuraGenerada = data.estructura;
       ultimaEstructuraLimpia = agruparEnSlides(
         construirEstructuraLimpia(data.estructura)
       );
-
-      const planPro = aplicarReglasPro(
-        construirPlanPro(ultimaEstructuraLimpia)
-      );
-
+      // 🔹 FASE 2 PRO
+      let planPro = construirPlanPro(ultimaEstructuraLimpia);
+      planPro = aplicarReglasPro(planPro);
       renderPlanPro(planPro);
-
+       
       document.getElementById("btnPPT").disabled = false;
       document.getElementById("btnPPT2").disabled = false;
     }
