@@ -441,6 +441,7 @@ async function generar() {
 function renderPlanPro(plan) {
   const resultadoEl = document.getElementById("resultado");
 
+    
   resultadoEl.innerHTML += `
     <hr style="margin:24px 0; border-color:#334155;">
     <h3 style="color:#38bdf8;">🧠 Plan NOVA PRO (Fase 2)</h3>
@@ -455,10 +456,9 @@ function renderPlanPro(plan) {
       `).join("")}
     </ul>
   `;
-}
-
       document.getElementById("btnPPT").disabled = false;
-      document.getElementById("btnPPT2").disabled = false;
+      document.getElementById("btnPPT2").disabled = false;   
+}  
 
       resultadoEl.innerHTML = `
         <h3>Estructura generada</h3>
@@ -471,11 +471,7 @@ function renderPlanPro(plan) {
           }).join("")}
         </ul>
       `;
-    }
-  } catch (err) {
-    estadoEl.innerText = t.errorConexion;
-  }
-}    
+      } 
         
 function exportarPPT() {
   // 1) Seguridad: hay estructura?
