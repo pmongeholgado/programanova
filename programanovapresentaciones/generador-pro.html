@@ -392,25 +392,7 @@ function agruparEnSlides(items) {
 
   return slides;
 }
-   
-async function generar() {
-  const tituloEl = document.getElementById("titulo");
-  const slidesEl = document.getElementById("slides");
-  const contenidoEl = document.getElementById("contenido");
-  const estadoEl = document.getElementById("estado");
-  const resultadoEl = document.getElementById("resultado");
-
-  const t = textos[currentLang] || textos.es;
-
-  const titulo = (tituloEl.value || "").trim();
-  const numDiapositivas = slidesEl.value;
-  const contenido = (contenidoEl.value || "").trim();
-
-  if (!contenido) {
-    estadoEl.innerText = t.errorContenido;
-    return;
-  }
-
+         
   estadoEl.innerText = t.estadoProcesando;
   resultadoEl.innerHTML = "";
 
@@ -460,17 +442,21 @@ function renderPlanPro(plan) {
       document.getElementById("btnPPT2").disabled = false;   
 }  
 
-      resultadoEl.innerHTML = `
-        <h3>Estructura generada</h3>
-        <ul>
-          ${ultimaEstructuraLimpia.map((obj, i) => {
-            const bullets = obj.bullets.length
-              ? `<ul>${obj.bullets.map(b => `<li>${b}</li>`).join("")}</ul>`
-              : "";
-            return `<li><b>${i + 1}. ${obj.titulo}</b>${bullets}</li>`;
-          }).join("")}
-        </ul>
-      `;
+// ====== Render normal (estructura generada) ======
+const listaHTML = (ultimaEstructuraLimpia || []).map((obj, i) => {
+  const bullets = (obj.bullets && obj.bullets.length)
+    ? `<ul>${obj.bullets.map(b => `<li>${b}</li>`).join("")}</ul>`
+    : "";
+
+  return `<li><b>${i + 1}. ${obj.titulo}</b>${bullets}</li>`;
+}).join("");
+
+resultadoEl.innerHTML = `
+  <h3>Estructura generada</h3>
+  <ul>
+    ${listaHTML}
+  </ul>
+`;
       } 
         
 function exportarPPT() {
