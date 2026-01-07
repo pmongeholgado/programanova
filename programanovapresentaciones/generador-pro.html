@@ -436,7 +436,26 @@ async function generar() {
       planPro = construirPlanPro(ultimaEstructuraLimpia);
       planPro = aplicarReglasPro(planPro);
       console.log("PLAN PRO:", planPro);
-        
+    
+function renderPlanPro(plan) {
+  const resultadoEl = document.getElementById("resultado");
+
+  resultadoEl.innerHTML += `
+    <hr style="margin:24px 0; border-color:#334155;">
+    <h3 style="color:#38bdf8;">🧠 Plan NOVA PRO (Fase 2)</h3>
+    <ul>
+      ${plan.map((slide, i) => `
+        <li style="margin-bottom:12px;">
+          <b>Diapositiva ${i + 1}:</b> ${slide.title}<br>
+          🖼 Imagen: ${slide.needsImage ? "Sí" : "No"}<br>
+          📊 Gráfico: ${slide.needsChart ? "Sí" : "No"}<br>
+          🎨 Tema: ${slide.theme.mode}
+        </li>
+      `).join("")}
+    </ul>
+  `;
+}
+
       document.getElementById("btnPPT").disabled = false;
       document.getElementById("btnPPT2").disabled = false;
 
