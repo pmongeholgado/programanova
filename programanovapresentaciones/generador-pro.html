@@ -436,7 +436,8 @@ async function generar() {
       planPro = construirPlanPro(ultimaEstructuraLimpia);
       planPro = aplicarReglasPro(planPro);
       console.log("PLAN PRO:", planPro);
-    
+      renderPlanPro(planPro);
+
 function renderPlanPro(plan) {
   const resultadoEl = document.getElementById("resultado");
 
