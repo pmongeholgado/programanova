@@ -126,127 +126,133 @@
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     
 <script>
-    let estructuraGenerada = [];
-    let ultimaEstructuraLimpia = [];
-    // ====== FASE 2 (PRO) — Esqueleto de composición (NO activa aún) ======
-    let planPro = []; 
-    // planPro será un array de slides con este formato:
-    // {
-    //   idx: 1,
-    //   title: "Título",
-    //   bullets: ["..."],
-    //   needs: { text: true, image: false, chart: false },
-    //   imagePrompt: "",
-    //   chartSpec: null,
-    //   theme: { mode: "corporate", accent: "#3b82f6" }
-    // }
+  let estructuraGenerada = [];
+  let ultimaEstructuraLimpia = [];
 
-    function construirPlanPro(slides) { 
-      return (slides || []).map((s, i) => {
-        const title = (s.titulo || "").trim();
-        const bullets = Array.isArray(s.bullets) ? s.bullets : [];
+  // ====== FASE 2 (PRO) — Esqueleto de composición ======
+  let planPro = [];
 
-        // Por defecto: todo es texto.
-        // En Fase 2, Nova decidirá cuándo activar image/chart.
-        return {
-          idx: i + 1,
-          title,
-          bullets,
-          needs: { text: true, image: false, chart: false },
-          imagePrompt: "",
-          chartSpec: null,
-          theme: { mode: "corporate", accent: "#3b82f6" }
-        };
-      });
-    }
-    // ====== FASE 2 — Reglas mínimas de decisión (heurísticas simples) ======
-    function aplicarReglasPro(plan) {
-      return plan.map(slide => {
-        const titulo = slide.title.toLowerCase();
-        const texto = slide.bullets.join(" ").toLowerCase();
+  function construirPlanPro(slides) {
+    return (slides || []).map((s, i) => {
+      const title = (s.titulo || "").trim();
+      const bullets = Array.isArray(s.bullets) ? s.bullets : [];
+      return {
+        idx: i + 1,
+        title,
+        bullets,
+        needs: { text: true, image: false, chart: false },
+        imagePrompt: "",
+        chartSpec: null,
+        theme: { mode: "corporate", accent: "#3b82f6" }
+      };
+    });
+  }
 
-        // Regla 1: gráficos
-        if (
-          texto.includes("datos") ||
-          texto.includes("comparativa") ||
-          texto.includes("evolución") ||
-          texto.includes("porcentaje") ||
-          texto.includes("estadística")
-        ) {
-          slide.needs.chart = true;
-        }
+  function aplicarReglasPro(plan) {
+    return (plan || []).map(slide => {
+      const titulo = (slide.title || "").toLowerCase();
+      const texto = (slide.bullets || []).join(" ").toLowerCase();
 
-        // Regla 2: imágenes
-        if (
-          titulo.includes("introducción") ||
-          titulo.includes("contexto") ||
-          titulo.includes("visión") ||
-          titulo.includes("futuro") ||
-          titulo.includes("conclusión")
-        ) {
-          slide.needs.image = true;
-        }
-
-        return slide;
-      });
-        
-    let currentLang = "es";
-
-    const textos = {
-      es: {
-        titulo: "Generador Nova · Presentaciones",
-        labelTitulo: "Título de la presentación",
-        labelSlides: "Número de diapositivas",
-        labelContenido: "Contenido base (capítulo, texto o guion)",
-        btnGenerar: "Generar estructura de presentación",
-        btnPPT: "📤 Exportar a PPT",
-        estadoListo: "🟢 Generador listo",
-        estadoProcesando: "⏳ Procesando solicitud…",
-        errorContenido: "⚠️ Introduce un texto base antes de generar la presentación.",
-        errorConexion: "❌ No se pudo conectar con el servicio.",
-        phTitulo: "Ejemplo: Innovación y futuro de la colaboración humano-IA",
-        phContenido: "Pega aquí tu capítulo, texto o guion base…"
-      },
-
-      en: {
-        titulo: "Nova Presentation Generator",
-        labelTitulo: "Presentation title",
-        labelSlides: "Number of slides",
-        labelContenido: "Base content (chapter, text or script)",
-        btnGenerar: "Generate presentation structure",
-        btnPPT: "📤 Export to PPT",
-        estadoListo: "🟢 Generator ready",
-        estadoProcesando: "⏳ Processing request…",
-        errorContenido: "⚠️ Please enter base content before generating.",
-        errorConexion: "❌ Could not connect to the service.",
-        phTitulo: "Example: Innovation and the future of human-AI collaboration",
-        phContenido: "Paste your chapter, text, or script here…"
-      },
-
-      ja: {
-        titulo: "Nova プレゼンテーション生成器",
-        labelTitulo: "プレゼンテーションのタイトル",
-        labelSlides: "スライド数",
-        labelContenido: "ベース内容（章・テキスト・台本）",
-        btnGenerar: "プレゼンテーション構成を生成",
-        btnPPT: "📤 PPTにエクスポート",
-        estadoListo: "🟢 準備完了",
-        estadoProcesando: "⏳ 処理中…",
-        errorContenido: "⚠️ 生成する前に内容を入力してください。",
-        errorConexion: "❌ サービスに接続できませんでした。",
-        phTitulo: "例：人間とAIの協働の革新と未来",
-        phContenido: "ここに章・本文・台本を貼り付けてください…"
+      // Regla 1: gráficos
+      if (
+        texto.includes("datos") ||
+        texto.includes("comparativa") ||
+        texto.includes("evolución") ||
+        texto.includes("porcentaje") ||
+        texto.includes("estadística")
+      ) {
+        slide.needs.chart = true;
       }
-    };
-   
-function setLanguage(lang) { 
-    const t = textos[lang] || textos.es;
 
+      // Regla 2: imágenes
+      if (
+        titulo.includes("introducción") ||
+        titulo.includes("contexto") ||
+        titulo.includes("visión") ||
+        titulo.includes("futuro") ||
+        titulo.includes("conclusión")
+      ) {
+        slide.needs.image = true;
+      }
+
+      return slide;
+    });
+  }
+
+  function renderPlanPro(plan) {
+    const resultadoEl = document.getElementById("resultado");
+    if (!resultadoEl) return;
+
+    resultadoEl.innerHTML += `
+      <hr style="margin:24px 0; border-color:#334155;">
+      <h3 style="color:#38bdf8;">🧠 Plan NOVA PRO (Fase 2)</h3>
+      <ul>
+        ${(plan || []).map((slide, i) => `
+          <li style="margin-bottom:12px;">
+            <b>Diapositiva ${i + 1}:</b> ${slide.title}<br>
+            🖼 Imagen: ${slide.needs.image ? "Sí" : "No"}<br>
+            📊 Gráfico: ${slide.needs.chart ? "Sí" : "No"}<br>
+            🎨 Tema: ${slide.theme.mode}
+          </li>
+        `).join("")}
+      </ul>
+    `;
+  }
+
+  // ====== i18n ======
+  let currentLang = "es";
+
+  const textos = {
+    es: {
+      titulo: "Generador Nova · Presentaciones",
+      labelTitulo: "Título de la presentación",
+      labelSlides: "Número de diapositivas",
+      labelContenido: "Contenido base (capítulo, texto o guion)",
+      btnGenerar: "Generar estructura de presentación",
+      btnPPT: "📤 Exportar a PPT",
+      estadoListo: "🟢 Generador listo",
+      estadoProcesando: "⏳ Procesando solicitud…",
+      errorContenido: "⚠️ Introduce un texto base antes de generar la presentación.",
+      errorConexion: "❌ No se pudo conectar con el servicio.",
+      phTitulo: "Ejemplo: Innovación y futuro de la colaboración humano-IA",
+      phContenido: "Pega aquí tu capítulo, texto o guion base…"
+    },
+    en: {
+      titulo: "Nova Presentation Generator",
+      labelTitulo: "Presentation title",
+      labelSlides: "Number of slides",
+      labelContenido: "Base content (chapter, text or script)",
+      btnGenerar: "Generate presentation structure",
+      btnPPT: "📤 Export to PPT",
+      estadoListo: "🟢 Generator ready",
+      estadoProcesando: "⏳ Processing request…",
+      errorContenido: "⚠️ Please enter base content before generating.",
+      errorConexion: "❌ Could not connect to the service.",
+      phTitulo: "Example: Innovation and the future of human-AI collaboration",
+      phContenido: "Paste your chapter, text, or script here…"
+    },
+    ja: {
+      titulo: "Nova プレゼンテーション生成器",
+      labelTitulo: "プレゼンテーションのタイトル",
+      labelSlides: "スライド数",
+      labelContenido: "ベース内容（章・テキスト・台本）",
+      btnGenerar: "プレゼンテーション構成を生成",
+      btnPPT: "📤 PPTにエクスポート",
+      estadoListo: "🟢 準備完了",
+      estadoProcesando: "⏳ 処理中…",
+      errorContenido: "⚠️ 生成する前に内容を入力してください。",
+      errorConexion: "❌ サービスに接続できませんでした。",
+      phTitulo: "例：人間とAIの協働の革新と未来",
+      phContenido: "ここに章・本文・台本を貼り付けてください…"
+    }
+  };
+
+  function setLanguage(lang) {
+    const t = textos[lang] || textos.es;
     currentLang = lang;
     localStorage.setItem("nova_lang", lang);
 
-    document.querySelector("h1").innerText = t.titulo;
-
+    document.querySelector("h1").innerText = t.titulo + " PRO";
     document.querySelector("label[for='titulo']").innerText = t.labelTitulo;
     document.querySelector("label[for='slides']").innerText = t.labelSlides;
     document.querySelector("label[for='contenido']").innerText = t.labelContenido;
@@ -256,358 +262,173 @@ function setLanguage(lang) {
 
     document.querySelector("button[onclick='generar()']").innerText = t.btnGenerar;
     document.getElementById("btnPPT").innerText = t.btnPPT;
-
     document.getElementById("estado").innerText = t.estadoListo;
-    }
-    
-    const API_BASE_URL = "https://programanovabackend-production.up.railway.app";
-    // 🔹 Inicialización final del idioma (ÚNICA)
-    const savedLang = localStorage.getItem("nova_lang") || "es";
-    document.getElementById("langSelector").value = savedLang;    
-    setLanguage(savedLang);
-    /** Limpia markdown, numeración y separa título + bullets */
-      function normalizarItem(item) {
-        let s = String(item || "").trim();
-
-      // Quitar markdown fuerte **texto**
-      s = s.replace(/\*\*/g, "");
-
-      // Quitar numeración tipo "1." 
-      s = s.replace(/^\s*\d+\.\s*/, "");
-    
-      // Quitar guiones repetidos tipo "- "
-      s = s.replace(/^\s*-\s*/gm, "");
-
-      // Si contiene " - Idea principal:" lo separamos
-      let titulo = s;
-      let bullets = [];
-
-    const parts = s.split(/\s*-\s*Idea principal:\s*/i);
-      if (parts.length > 1) {
-          titulo = parts[0].trim();
-    const idea = parts.slice(1).join(" - Idea principal: ").trim();
-      if (idea) bullets.push(idea);
-      }
-
-  // Si el título aún trae ":" tipo "Portada: ..." separamos
-  const colon = titulo.split(/\s*:\s*/);
-      if (colon.length > 1) {
-          titulo = colon[0].trim();
-  const resto = colon.slice(1).join(": ").trim();
-      if (resto) bullets.push(resto);
-      }
-
-  // Si hay líneas múltiples, primera = título y el resto bullets
-  const lines = titulo.split("\n").map(l => l.trim()).filter(Boolean);
-  if (lines.length > 1) {
-    titulo = lines[0];
-    bullets = bullets.concat(lines.slice(1));
   }
 
-  // Quitar frases no deseadas si vienen mezcladas
-  const basura = [
-    "Aquí tienes la estructura de la presentación",
-    "Estructura generada",
-    "Presentación generada correctamente"
-  ];
-  if (basura.some(b => titulo.toLowerCase().includes(b.toLowerCase()))) {
-    // Si detectamos basura, intentamos quedarnos con algo útil
-    // (si no hay, devolvemos vacío)
-    titulo = titulo.replace(/Aquí tienes.*?:/i, "").trim();
-  }
+  const API_BASE_URL = "https://programanovabackend-production.up.railway.app";
 
-  return { titulo: titulo.trim(), bullets: bullets.map(b => b.trim()).filter(Boolean) };
-}
+  const savedLang = localStorage.getItem("nova_lang") || "es";
+  document.getElementById("langSelector").value = savedLang;
+  setLanguage(savedLang);
 
-/** Construye estructura limpia (array de {titulo, bullets}) */
-function construirEstructuraLimpia(arr) {
-  const out = [];
-  for (const it of (arr || [])) {
-    const obj = normalizarItem(it);
-    if (!obj.titulo) continue;
-    out.push(obj);
-  }
-  return out;
-}
+  // ====== Limpieza + agrupación ======
+  function normalizarItem(item) {
+    let s = String(item || "").trim();
+    s = s.replace(/\*\*/g, "");
+    s = s.replace(/^\s*\d+\.\s*/, "");
+    s = s.replace(/^\s*-\s*/gm, "");
 
-function agruparEnSlides(items) {
-  const basura = [
-    "aquí tienes la estructura",
-    "estructura generada",
-    "presentación generada correctamente",
-    "esta estructura proporciona",
-    "flujo lógico"
-  ];
-
-  const esBasura = (t) => basura.some(b => (t || "").toLowerCase().includes(b));
-
-  const pareceTitulo = (t) => {
-    const s = (t || "").trim();
-    if (!s) return false;
-    if (esBasura(s)) return false;
-
-    // Heurística: si empieza por verbo/una frase larga, suele ser bullet
-    const long = s.length > 60;
-    const endsDot = s.endsWith(".");
-    const startsLower = /^[a-záéíóúñ]/.test(s);
-
-    // Si es muy largo, o acaba en punto, o empieza en minúscula → probablemente bullet
-    if (long || endsDot || startsLower) return false;
-
-    // Si contiene ":" suele ser título
-    if (s.includes(":")) return true;
-
-    // Si son pocas palabras → título
-    if (s.split(/\s+/).length <= 6) return true;
-
-    return true;
-  };
-
-  const slides = [];
-  let current = null;
-
-  for (const it of items) {
-    const text = (it.titulo || "").trim();
-    if (!text || esBasura(text)) continue;
-
-    if (pareceTitulo(text)) {
-      current = { titulo: text, bullets: [] };
-      slides.push(current);
-      // si el item original ya traía bullets, los añadimos
-      if (Array.isArray(it.bullets) && it.bullets.length) {
-        current.bullets.push(...it.bullets);
-      }
-    } else {
-      // bullet: si no hay título aún, creamos uno genérico
-      if (!current) {
-        current = { titulo: "Introducción", bullets: [] };
-        slides.push(current);
-      }
-      current.bullets.push(text);
-      if (Array.isArray(it.bullets) && it.bullets.length) {
-        current.bullets.push(...it.bullets);
-      }
-    }
-  }
-
-  return slides;
-}
-         
-  estadoEl.innerText = t.estadoProcesando;
-  resultadoEl.innerHTML = "";
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/generar`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ titulo, num_diapositivas: numDiapositivas, contenido }),
-      mode: "cors",
-    });
-
-    if (!response.ok) {
-      estadoEl.innerText = t.errorConexion;
-      return;
-    }
-
-    const data = await response.json().catch(() => ({}));
-    estadoEl.innerText = data.mensaje || "✅ Estructura generada correctamente.";
-
-    if (Array.isArray(data.estructura)) {
-      estructuraGenerada = data.estructura;
-      ultimaEstructuraLimpia = agruparEnSlides(construirEstructuraLimpia(data.estructura));
-      planPro = construirPlanPro(ultimaEstructuraLimpia);
-      planPro = aplicarReglasPro(planPro);
-      console.log("PLAN PRO:", planPro);
-      renderPlanPro(planPro);
-
-function renderPlanPro(plan) {
-  const resultadoEl = document.getElementById("resultado");
-
-    
-  resultadoEl.innerHTML += `
-    <hr style="margin:24px 0; border-color:#334155;">
-    <h3 style="color:#38bdf8;">🧠 Plan NOVA PRO (Fase 2)</h3>
-    <ul>
-      ${plan.map((slide, i) => `
-        <li style="margin-bottom:12px;">
-          <b>Diapositiva ${i + 1}:</b> ${slide.title}<br>
-          🖼 Imagen: ${slide.needsImage ? "Sí" : "No"}<br>
-          📊 Gráfico: ${slide.needsChart ? "Sí" : "No"}<br>
-          🎨 Tema: ${slide.theme.mode}
-        </li>
-      `).join("")}
-    </ul>
-  `;
-      document.getElementById("btnPPT").disabled = false;
-      document.getElementById("btnPPT2").disabled = false;   
-}  
-
-// ====== Render normal (estructura generada) ======
-const listaHTML = (ultimaEstructuraLimpia || []).map((obj, i) => {
-  const bullets = (obj.bullets && obj.bullets.length)
-    ? `<ul>${obj.bullets.map(b => `<li>${b}</li>`).join("")}</ul>`
-    : "";
-
-  return `<li><b>${i + 1}. ${obj.titulo}</b>${bullets}</li>`;
-}).join("");
-
-resultadoEl.innerHTML = `
-  <h3>Estructura generada</h3>
-  <ul>
-    ${listaHTML}
-  </ul>
-`;
-      } 
-        
-function exportarPPT() {
-  // 1) Seguridad: hay estructura?
-  if (!Array.isArray(ultimaEstructuraLimpia) || ultimaEstructuraLimpia.length === 0) {
-    alert("Primero genera una presentación.");
-    return;
-  }
-
-  // 2) Seguridad: librería cargada?
-  if (typeof PptxGenJS === "undefined") {
-    console.error("PptxGenJS no está cargado.");
-    alert("No se ha cargado la librería de PowerPoint. Recarga la página e inténtalo de nuevo.");
-    return;
-  }
-
-  // 3) Nombre de archivo
-  const titulo = (document.getElementById("titulo").value || "Nova_Presentacion").trim();
-  const safeTitle = titulo.replace(/[^\w\-]+/g, "_").slice(0, 40) || "Nova_Presentacion";
-  const fileName = `${safeTitle}_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.pptx`;
-
-  const pptx = new PptxGenJS();
-
-  // 4) Regla: "Idea principal" NO crea slide; alimenta el título anterior
-  const esIdeaPrincipal = (t) => /^idea principal$/i.test((t || "").trim());
-  const esBasura = (t) => {
-    const s = (t || "").toLowerCase();
-    return (
-      s.includes("aquí tienes la estructura") ||
-      s.includes("estructura generada") ||
-      s.includes("presentación generada correctamente")
-    );
-  };
-
-  for (let i = 0; i < ultimaEstructuraLimpia.length; i++) {
-    const actual = ultimaEstructuraLimpia[i];
-    if (!actual || !actual.titulo) continue;
-
-    const tituloSlide = actual.titulo.trim();
-
-    // Saltar basura y saltar "Idea principal" como slide
-    if (esBasura(tituloSlide) || esIdeaPrincipal(tituloSlide)) continue;
-
-    const slide = pptx.addSlide();
-
-    // Título
-    slide.addText(tituloSlide, {
-      x: 0.5,
-      y: 0.5,
-      w: 9,
-      h: 0.8,
-      fontSize: 22,
-      bold: true,
-    });
-
-    // Contenido: si el siguiente item es "Idea principal", usar sus bullets
-    const siguiente = ultimaEstructuraLimpia[i + 1];
+    let titulo = s;
     let bullets = [];
 
-    if (siguiente && esIdeaPrincipal(siguiente.titulo)) {
-      bullets = Array.isArray(siguiente.bullets) ? siguiente.bullets : [];
-      i++; // consumimos el siguiente
-    } else {
-      bullets = Array.isArray(actual.bullets) ? actual.bullets : [];
+    const parts = s.split(/\s*-\s*Idea principal:\s*/i);
+    if (parts.length > 1) {
+      titulo = parts[0].trim();
+      const idea = parts.slice(1).join(" - Idea principal: ").trim();
+      if (idea) bullets.push(idea);
     }
 
-    if (bullets.length) {
-      slide.addText(bullets.map(b => `- ${b}`).join("\n"), {
-        x: 0.7,
-        y: 1.5,
-        w: 9,
-        h: 4.5,
-        fontSize: 16,
-        wrap: true,
-      });
-    } else {
-      slide.addText("- Idea principal", {
-        x: 0.7,
-        y: 1.5,
-        w: 9,
-        h: 1.0,
-        fontSize: 16,
-        wrap: true,
-      });
+    const colon = titulo.split(/\s*:\s*/);
+    if (colon.length > 1) {
+      titulo = colon[0].trim();
+      const resto = colon.slice(1).join(": ").trim();
+      if (resto) bullets.push(resto);
     }
+
+    const lines = titulo.split("\n").map(l => l.trim()).filter(Boolean);
+    if (lines.length > 1) {
+      titulo = lines[0];
+      bullets = bullets.concat(lines.slice(1));
+    }
+
+    return { titulo: titulo.trim(), bullets: bullets.map(b => b.trim()).filter(Boolean) };
   }
 
-  // 5) Export
-  pptx.writeFile({ fileName });
-}
-      
-async function generar() {
-  const tituloEl = document.getElementById("titulo");
-  const slidesEl = document.getElementById("slides");
-  const contenidoEl = document.getElementById("contenido");
-  const estadoEl = document.getElementById("estado");
-  const resultadoEl = document.getElementById("resultado");
-
-  const t = textos[currentLang] || textos.es;
-    
-  const titulo = (tituloEl.value || "").trim();
-  const numDiapositivas = slidesEl.value;
-  const contenido = (contenidoEl.value || "").trim();
-
-  if (!contenido) {
-    estadoEl.innerText = "⚠️ Introduce un texto base antes de generar.";
-    return;
+  function construirEstructuraLimpia(arr) {
+    const out = [];
+    for (const it of (arr || [])) {
+      const obj = normalizarItem(it);
+      if (!obj.titulo) continue;
+      out.push(obj);
+    }
+    return out;
   }
 
-  estadoEl.innerText = "⏳ Procesando solicitud…";
-  resultadoEl.innerHTML = "";
+  function agruparEnSlides(items) {
+    const slides = [];
+    let current = null;
 
-  try {
-    const response = await fetch(`${API_BASE_URL}/generar`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        titulo,
-        num_diapositivas: numDiapositivas,
-        contenido
-      }),
-      mode: "cors",
-    });
+    for (const it of (items || [])) {
+      const text = (it.titulo || "").trim();
+      if (!text) continue;
 
-    if (!response.ok) {
-      estadoEl.innerText = "❌ Error de conexión";
+      current = { titulo: text, bullets: Array.isArray(it.bullets) ? it.bullets : [] };
+      slides.push(current);
+    }
+    return slides;
+  }
+
+  // ====== GENERAR (ÚNICA) — aquí va el await ======
+  async function generar() {
+    const tituloEl = document.getElementById("titulo");
+    const slidesEl = document.getElementById("slides");
+    const contenidoEl = document.getElementById("contenido");
+    const estadoEl = document.getElementById("estado");
+    const resultadoEl = document.getElementById("resultado");
+
+    const t = textos[currentLang] || textos.es;
+
+    const titulo = (tituloEl.value || "").trim();
+    const numDiapositivas = slidesEl.value;
+    const contenido = (contenidoEl.value || "").trim();
+
+    if (!contenido) {
+      estadoEl.innerText = t.errorContenido;
       return;
     }
 
-    const data = await response.json();
-    estadoEl.innerText = data.mensaje || "✅ Estructura generada correctamente.";
+    estadoEl.innerText = t.estadoProcesando;
+    resultadoEl.innerHTML = "";
 
-    if (Array.isArray(data.estructura)) {
-      estructuraGenerada = data.estructura;
-      ultimaEstructuraLimpia = agruparEnSlides(
-        construirEstructuraLimpia(data.estructura)
-      );
-      // 🔹 FASE 2 PRO
-      let planPro = construirPlanPro(ultimaEstructuraLimpia);
-      planPro = aplicarReglasPro(planPro);
-      renderPlanPro(planPro);
-       
-      document.getElementById("btnPPT").disabled = false;
-      document.getElementById("btnPPT2").disabled = false;
+    try {
+      const response = await fetch(`${API_BASE_URL}/generar`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ titulo, num_diapositivas: numDiapositivas, contenido }),
+        mode: "cors",
+      });
+
+      if (!response.ok) {
+        estadoEl.innerText = t.errorConexion;
+        return;
+      }
+
+      const data = await response.json().catch(() => ({}));
+      estadoEl.innerText = data.mensaje || "✅ Estructura generada correctamente.";
+
+      if (Array.isArray(data.estructura)) {
+        estructuraGenerada = data.estructura;
+        ultimaEstructuraLimpia = agruparEnSlides(construirEstructuraLimpia(data.estructura));
+
+        // PRO
+        planPro = aplicarReglasPro(construirPlanPro(ultimaEstructuraLimpia));
+        renderPlanPro(planPro);
+
+        // Render normal
+        const listaHTML = (ultimaEstructuraLimpia || []).map((obj, i) => {
+          const bullets = (obj.bullets && obj.bullets.length)
+            ? `<ul>${obj.bullets.map(b => `<li>${b}</li>`).join("")}</ul>`
+            : "";
+          return `<li><b>${i + 1}. ${obj.titulo}</b>${bullets}</li>`;
+        }).join("");
+
+        resultadoEl.innerHTML += `
+          <h3>Estructura generada</h3>
+          <ul>${listaHTML}</ul>
+        `;
+
+        document.getElementById("btnPPT").disabled = false;
+        document.getElementById("btnPPT2").disabled = false;
+      }
+    } catch (err) {
+      console.error(err);
+      estadoEl.innerText = t.errorConexion;
     }
-  } catch (err) {
-    console.error(err);
-    estadoEl.innerText = "❌ No se pudo conectar con el servicio.";
   }
-}
-    
+
+  // ====== Export ======
+  function exportarPPT() {
+    if (!Array.isArray(ultimaEstructuraLimpia) || ultimaEstructuraLimpia.length === 0) {
+      alert("Primero genera una presentación.");
+      return;
+    }
+    if (typeof PptxGenJS === "undefined") {
+      alert("No se ha cargado la librería de PowerPoint. Recarga la página.");
+      return;
+    }
+
+    const titulo = (document.getElementById("titulo").value || "Nova_Presentacion").trim();
+    const safeTitle = titulo.replace(/[^\w\-]+/g, "_").slice(0, 40) || "Nova_Presentacion";
+    const fileName = `${safeTitle}_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.pptx`;
+
+    const pptx = new PptxGenJS();
+
+    for (let i = 0; i < ultimaEstructuraLimpia.length; i++) {
+      const actual = ultimaEstructuraLimpia[i];
+      if (!actual || !actual.titulo) continue;
+
+      const slide = pptx.addSlide();
+      slide.addText(actual.titulo.trim(), { x: 0.5, y: 0.5, w: 9, h: 0.8, fontSize: 22, bold: true });
+
+      const bullets = Array.isArray(actual.bullets) ? actual.bullets : [];
+      if (bullets.length) {
+        slide.addText(bullets.map(b => `- ${b}`).join("\n"), { x: 0.7, y: 1.5, w: 9, h: 4.5, fontSize: 16, wrap: true });
+      }
+    }
+
+    pptx.writeFile({ fileName });
+  }
 </script>
+
 </body>
 </html>
