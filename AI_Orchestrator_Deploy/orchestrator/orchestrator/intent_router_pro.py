@@ -5,6 +5,22 @@ Detector sencillo de intención para el Orquestador IA.
 Devuelve una intención en texto según patrones básicos.
 """
 
+# ======================================================
+# 🔒 ROUTER PRO ACTIVO
+# Este archivo es la versión PRO del intent router
+# ======================================================
+
+IS_PRO_ROUTER = True
+
+print("✅ Intent Router PRO cargado")
+
+def assert_pro_context():
+    """
+    Garantiza que este router solo se use en contexto PRO
+    """
+    if not IS_PRO_ROUTER:
+        raise RuntimeError("❌ Intent Router PRO usado fuera de contexto PRO")
+
 def route_intent(texto: str) -> str:
     texto_l = texto.lower()
 
