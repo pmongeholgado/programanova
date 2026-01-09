@@ -25,6 +25,17 @@ if not OPENAI_API_KEY:
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
+# ======================================================
+# 🔐 VERIFICACIÓN DE IA (MODO PRO)
+# (Solo añadimos — no se borra nada)
+# ======================================================
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+if not OPENAI_API_KEY or OPENAI_API_KEY.strip() == "":
+    raise RuntimeError("❌ Backend PRO detenido: falta OPENAI_API_KEY")
+
+print("✅ Backend PRO iniciado con IA activa")
 
 # ============================
 # APP FASTAPI
@@ -87,6 +98,16 @@ def root():
         "hora": datetime.utcnow().isoformat()
     }
 
+# ======================================================
+# 🧪 ENDPOINT DE PRUEBA PRO
+# ======================================================
+@app.get("/health-pro")
+def health_pro():
+    return {
+        "status": "ok",
+        "mode": "PRO",
+        "ia": "active"
+    }
 
 # ============================
 # CHAT CON IA (REAL)
