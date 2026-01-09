@@ -26,7 +26,7 @@ from orchestrator.intent_router_pro import route_intent, assert_pro_context
 
 # === Importamos la lógica del orquestador ===
 try:
-    from orchestrator.intent_router import route_intent as _route_intent
+    from orchestrator.intent_router_pro1 import route_intent_pro as _route_intent
 except Exception:
     _route_intent = None
 
