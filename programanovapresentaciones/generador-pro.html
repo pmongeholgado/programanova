@@ -99,8 +99,29 @@
         <option value="ja">日本語</option>
     </select>
 </div>
-    
+
+<div style="text-align:center; margin-bottom:20px;">
+  <label style="font-size:13px; color:#94a3b8; margin-right:6px;">
+    Motor IA:
+  </label>
+  <select id="engineSelector" onchange="setEngine(this.value)">
+    <option value="nova">Nova (simbiosis)</option>
+    <option value="openai">OpenAI</option>
+    <option value="claude">Claude</option>
+    <option value="gemini">Gemini</option>
+  </select>
+</div>
+
 <div class="box">
+    <label for="motorIA">Motor IA (PRO)</label>
+    <select id="motorIA" onchange="setMotorIA(this.value)">
+        <!-- opciones se cargan por JS -->
+    </select>
+
+    <div class="estado" id="estadoMotor" style="margin-top:-6px; margin-bottom:16px; color:#a5b4fc;">
+        🧠 Motor IA: NOVA (por defecto)
+    </div>
+
     <label for="titulo">Título de la presentación</label>
     <input type="text" id="titulo" placeholder="Ejemplo: Innovación y futuro de la colaboración humano-IA" />
 
@@ -136,6 +157,12 @@
     return (slides || []).map((s, i) => {
       const title = (s.titulo || "").trim();
       const bullets = Array.isArray(s.bullets) ? s.bullets : [];
+      const render = {
+          title: { x: 0.5, y: 0.4, w: 9, h: 0.8 },
+          text:  { x: 0.7, y: 1.4, w: 8.6, h: 4.2 },
+          image: null,
+          chart: null
+        };
       return {
         idx: i + 1,
         title,
@@ -144,14 +171,39 @@
         imagePrompt: "",
         chartSpec: null,
         theme: { mode: "corporate", accent: "#3b82f6" }
+        render
       };
     });
   }
 
   function aplicarReglasPro(plan) {
     return (plan || []).map(slide => {
+      // ✅ FASE 2.4.1 — Normalización PRO (evita undefined)
+      slide.needs = slide.needs || {};
+      slide.needs.text  = true;
+      slide.needs.image = !!slide.needs.image;
+      slide.needs.chart = !!slide.needs.chart;
+
+      slide.imagePrompt = slide.imagePrompt || "";
+      slide.chartSpec   = slide.chartSpec || null;
+      slide.theme       = slide.theme || { mode: "corporate", accent: "#3b82f6" };
+
       const titulo = (slide.title || "").toLowerCase();
       const texto = (slide.bullets || []).join(" ").toLowerCase();
+      // ✅ FASE 2.4.1.2 — Normalización de contenido
+      slide.title = (slide.title || "").trim();
+      slide.bullets = Array.isArray(slide.bullets)
+        ? slide.bullets.map(b => String(b).trim()).filter(Boolean)
+        : [];
+
+      // 🧠 FASE 2.4.2.1 — Intención IA por slide
+      slide.ai = {
+        text: slide.needs.text === true,
+        image: slide.needs.image === true,
+        chart: slide.needs.chart === true,
+        provider: null,   // openai | dalle | stable | midjourney | etc.
+        status: "pending" // pending | generated | error
+      };
 
       // Regla 1: gráficos
       if (
@@ -162,6 +214,14 @@
         texto.includes("estadística")
       ) {
         slide.needs.chart = true;
+
+        // 📊 Definición básica del gráfico (FASE 2)
+        slide.chartSpec = {
+          type: "bar",
+          title: "Comparativa clave",
+          labels: ["Opción A", "Opción B", "Opción C"],
+          values: [30, 50, 20]
+        };
       }
 
       // Regla 2: imágenes
@@ -175,7 +235,161 @@
         slide.needs.image = true;
       }
 
-      return slide;
+      // Regla 3: definición básica de gráficos
+      if (slide.needs.chart) {
+        slide.chartSpec = {
+          type: "bar",
+          title: slide.title,
+          labels: ["Opción A", "Opción B", "Opción C"],
+          values: [40, 35, 25]
+         };
+        }
+
+  // 🖼️ Regla imágenes (FASE 2)
+  if (
+    titulo.includes("introducción") ||
+    titulo.includes("contexto") ||
+    titulo.includes("visión") ||
+    titulo.includes("futuro") ||
+    titulo.includes("conclusión") ||
+    titulo.includes("resumen")
+  ) {
+    slide.needs.image = true;
+  }
+
+// 🧠 Prompt semántico para imagen (FASE 2)
+if (slide.needs.image) {
+  slide.imagePrompt = `Imagen conceptual profesional sobre: ${slide.title}. 
+  Estilo corporativo, limpio, moderno, sin texto, alta calidad.`;
+}
+
+// ===== Layout automático PRO =====
+if (slide.needs.image && slide.needs.chart) {
+  slide.render.image = { x: 0.5, y: 1.6, w: 4.2, h: 3.2 };
+  slide.render.chart = { x: 5.0, y: 1.6, w: 4.0, h: 3.2 };
+  slide.render.text  = { x: 0.5, y: 5.0, w: 8.6, h: 1.6 };
+}
+else if (slide.needs.image) {
+  slide.render.image = { x: 5.0, y: 1.4, w: 4.0, h: 3.6 };
+  slide.render.text  = { x: 0.7, y: 1.4, w: 4.0, h: 3.6 };
+}
+else if (slide.needs.chart) {
+  slide.render.chart = { x: 0.7, y: 1.6, w: 8.0, h: 3.6 };
+  slide.render.text  = { x: 0.7, y: 5.4, w: 8.0, h: 1.2 };
+}
+        
+// 🎯 Ajuste fino: evitar imágenes en diapositivas demasiado técnicas
+if (
+  slide.title.toLowerCase().includes("definición") ||
+  slide.title.toLowerCase().includes("tipos") ||
+  slide.title.toLowerCase().includes("modelos") ||
+  slide.title.toLowerCase().includes("comparativa")
+) {
+  slide.needs.image = false;
+  slide.imagePrompt = "";
+}
+
+// 🧠 Priorización visual (FASE 2)
+// Define el tipo de imagen que se necesitará más adelante
+if (slide.needs.image) {
+  if (slide.title.toLowerCase().includes("introducción")) {
+    slide.imagePrompt = "imagen conceptual de inicio, abstracta y profesional";
+  } else if (slide.title.toLowerCase().includes("visión") || slide.title.toLowerCase().includes("futuro")) {
+    slide.imagePrompt = "imagen inspiradora sobre futuro y colaboración humano-IA";
+  } else if (slide.title.toLowerCase().includes("conclusión") || slide.title.toLowerCase().includes("reflexión")) {
+    slide.imagePrompt = "imagen humana y reflexiva, tono ético y responsable";
+  } else {
+    slide.imagePrompt = "imagen profesional coherente con el contenido de la diapositiva";
+  }
+}
+
+// 🧠 FASE 2.4.2.2 — Coherencia final de decisiones PRO
+
+// Si hay gráfico, aseguramos texto compacto
+if (slide.needs.chart) {
+  slide.needs.text = true;
+}
+
+// Si hay imagen pero no gráfico, mantenemos equilibrio
+if (slide.needs.image && !slide.needs.chart) {
+  slide.needs.text = true;
+}
+
+// Si no hay imagen ni gráfico, forzamos texto puro
+if (!slide.needs.image && !slide.needs.chart) {
+  slide.needs.text = true;
+}
+
+// 🔒 Fallback PRO: nunca una diapositiva vacía
+if (!slide.needs.text && !slide.needs.image && !slide.needs.chart) {
+  slide.needs.text = true;
+}
+
+// 🧩 FASE 2.5.1 — Layout base automático
+
+slide.layout = "text-only";
+
+if (slide.needs.text && slide.needs.image && slide.needs.chart) {
+  slide.layout = "text-image-chart";
+} else if (slide.needs.text && slide.needs.chart) {
+  slide.layout = "text-chart";
+} else if (slide.needs.text && slide.needs.image) {
+  slide.layout = "text-image";
+} else if (slide.needs.image && !slide.needs.text) {
+  slide.layout = "image-only";
+}
+
+// 🎯 FASE 2.5.2 — Layout de cierre NOVA (identidad)
+
+if (
+  titulo.includes("conclusión") ||
+  titulo.includes("cierre") ||
+  titulo.includes("reflexión") ||
+  titulo.includes("visión final")
+) {
+  slide.layout = "closing-impact";
+  slide.needs.image = true;
+  slide.needs.chart = false;
+}
+
+// 🧩 FASE 2.6.1 — Inicialización de render PRO
+
+slide.render = {
+  title: { x: 0.5, y: 0.4, w: 9, h: 0.8 },
+  text: null,
+  image: null,
+  chart: null
+};
+
+// 🧩 FASE 2.6.2 — Cálculo de layout PRO
+
+switch (slide.layout) {
+
+  case "text-only":
+    slide.render.text = { x: 0.7, y: 1.4, w: 9, h: 4.5 };
+    break;
+
+  case "text-image":
+    slide.render.text = { x: 0.5, y: 1.4, w: 4.5, h: 4.5 };
+    slide.render.image = { x: 5.2, y: 1.4, w: 4, h: 4 };
+    break;
+
+  case "text-chart":
+    slide.render.text = { x: 0.5, y: 1.4, w: 4.5, h: 4.5 };
+    slide.render.chart = { x: 5.2, y: 1.4, w: 4, h: 4 };
+    break;
+
+  case "image-only":
+    slide.render.image = { x: 1.5, y: 1.2, w: 7, h: 4.5 };
+    break;
+
+  case "closing-impact":
+    slide.render.image = { x: 0, y: 0, w: 10, h: 5.6 };
+    slide.render.text = { x: 1, y: 4.2, w: 8, h: 1 };
+    break;
+}
+        
+    return slide;
     });
   }
 
@@ -185,7 +399,21 @@
 
     resultadoEl.innerHTML += `
       <hr style="margin:24px 0; border-color:#334155;">
-      <h3 style="color:#38bdf8;">🧠 Plan NOVA PRO (Fase 2)</h3>
+      <h3 style="color:#38bdf8;">
+        🧠 Plan NOVA PRO (Fase 2)
+      </h3>
+      <div style="text-align:center; margin-bottom:12px; font-size:14px; color:#94a3b8;">
+        Motor IA activo: <b>${currentEngine || "nova"}</b>
+      </div>
+
+// 🔹 FASE 3.1.3 — Preparado para estilos por motor IA
+const engineStyles = {
+  nova: { color: "#38bdf8" },
+  openai: { color: "#22c55e" },
+  claude: { color: "#f59e0b" },
+  gemini: { color: "#a855f7" }
+};
+      
       <ul>
         ${(plan || []).map((slide, i) => `
           <li style="margin-bottom:12px;">
@@ -201,7 +429,14 @@
 
   // ====== i18n ======
   let currentLang = "es";
+  
+  // ====== FASE 3 — Motor de IA ======
+  let currentEngine = localStorage.getItem("nova_engine") || "nova";
 
+  const textos = {
+    es: { ... }
+  };
+    
   const textos = {
     es: {
       titulo: "Generador Nova · Presentaciones",
@@ -270,6 +505,50 @@
   const savedLang = localStorage.getItem("nova_lang") || "es";
   document.getElementById("langSelector").value = savedLang;
   setLanguage(savedLang);
+
+// =========================
+// FASE 3.1 — Motor IA (selector + estado)
+// =========================
+const AI_ENGINES = [
+  { id: "nova",   name: "NOVA (Backend actual)" },
+  { id: "openai", name: "OpenAI (GPT) — Próximamente" },
+  { id: "claude", name: "Claude — Próximamente" },
+  { id: "gemini", name: "Gemini — Próximamente" },
+  { id: "mistral", name: "Mistral — Próximamente" }
+];
+
+let currentEngine = localStorage.getItem("nova_engine") || "nova";
+
+function initMotorIA() {
+  const sel = document.getElementById("motorIA");
+  const estado = document.getElementById("estadoMotor");
+  if (!sel || !estado) return;
+
+  // Rellenar opciones
+  sel.innerHTML = AI_ENGINES.map(e => `<option value="${e.id}">${e.name}</option>`).join("");
+
+  // Selección guardada
+  if (!AI_ENGINES.some(e => e.id === currentEngine)) currentEngine = "nova";
+  sel.value = currentEngine;
+
+  // Pintar estado
+  const name = (AI_ENGINES.find(e => e.id === currentEngine) || AI_ENGINES[0]).name;
+  estado.innerText = `🧠 Motor IA: ${name}`;
+}
+
+function setMotorIA(engineId) {
+  currentEngine = engineId || "nova";
+  localStorage.setItem("nova_engine", currentEngine);
+
+  const estado = document.getElementById("estadoMotor");
+  const name = (AI_ENGINES.find(e => e.id === currentEngine) || AI_ENGINES[0]).name;
+  if (estado) estado.innerText = `🧠 Motor IA: ${name}`;
+
+  console.log("MOTOR IA (PRO) =>", currentEngine);
+}
+
+// Inicializa motor IA al cargar
+initMotorIA();
 
   // ====== Limpieza + agrupación ======
   function normalizarItem(item) {
@@ -342,6 +621,11 @@
     const numDiapositivas = slidesEl.value;
     const contenido = (contenidoEl.value || "").trim();
 
+      // 🔹 FASE 3.1.2 — Motor IA seleccionado (PRO)
+      const motorIA = currentEngine || "nova";
+      console.log("Motor IA seleccionado:", motorIA);
+
+      
     if (!contenido) {
       estadoEl.innerText = t.errorContenido;
       return;
@@ -350,13 +634,24 @@
     estadoEl.innerText = t.estadoProcesando;
     resultadoEl.innerHTML = "";
 
+    // ====== FASE 3.1.4.3 — Selección de motor IA ======
+    let endpoint = "/generar";
+
+    // En el futuro aquí se podrán añadir más motores
+    switch (currentEngine) {
+      case "nova":
+      default:
+        endpoint = "/generar";
+        break;
+    }
+      
     try {
-      const response = await fetch(`${API_BASE_URL}/generar`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ titulo, num_diapositivas: numDiapositivas, contenido }),
-        mode: "cors",
-      });
+          const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ titulo, num_diapositivas: numDiapositivas, contenido, motorIA   // ← PRO: preparado para multi-IA }),
+            mode: "cors",
+          });
 
       if (!response.ok) {
         estadoEl.innerText = t.errorConexion;
@@ -413,19 +708,242 @@
 
     const pptx = new PptxGenJS();
 
-    for (let i = 0; i < ultimaEstructuraLimpia.length; i++) {
+    // ====== MODO PRO: si existe planPro, lo usamos; si no, lo construimos ======
+    let planParaExportar = Array.isArray(planPro) && planPro.length ? planPro : null;
+
+    if (!planParaExportar) {
+      // Generamos el plan PRO desde la estructura limpia
+      const tmp = construirPlanPro(ultimaEstructuraLimpia);
+      planParaExportar = aplicarReglasPro(tmp);
+    }
+
+    // 🔒 FASE 2.9 — Normalización final antes de exportar
+    const planProParaExportar = (planPro || []).filter(s =>
+      s &&
+      s.title &&
+      s.needs &&
+      s.needs.text !== false
+    );
+      
+    for (let i = 0; i < planParaExportar.length; i++) {
+      const s = planParaExportar[i];
+      if (!s || !s.title) continue;
+
+      const slide = pptx.addSlide();
+
+      // Título
+      slide.addText(s.title, {
+        x: 0.5,
+        y: 0.5,
+        w: 9,
+        h: 0.8,
+        fontSize: 22,
+        bold: true,
+      });
+
+      // 🧠 FASE 2.9.3 — Layout PRO final
+      const layout = s.render || {};
+
+      const textBox = layout.text || { x: 0.7, y: 1.5, w: 9, h: 4.5 };
+      const imageBox = layout.image || { x: 0.7, y: 1.5, w: 4.2, h: 4.0 };
+      const chartBox = layout.chart || { x: 5.2, y: 1.5, w: 4.2, h: 4.0 };
+        
+  // Texto (bullets)
+  const bullets = Array.isArray(s.bullets) ? s.bullets : [];
+  const texto = bullets.length ? bullets.map(b => `- ${b}`).join("\n") : "- Idea principal";
+
+  // Layout PRO (si existe)
+  const r = s.render || {};
+  const textBox = r.text || { x: 0.7, y: 1.5, w: 9, h: 4.5 };
+
+  // ✅ FASE 2.9.4 — Texto (bullets) respetando layout PRO
+  slide.addText(texto, {
+    x: textBox.x,
+    y: textBox.y,
+    w: textBox.w,
+    h: textBox.h,
+    fontSize: 16,
+    wrap: true,
+  });
+
+// ====== NOVA PRO — imagen placeholder (FASE 2.8.4) ======
+if (s.needs && s.needs.image) {
+  const r = s.render || {};
+  const imgBox = r.image || { x: 0.7, y: 1.6, w: 4.5, h: 3.2 };
+
+  slide.addText(
+    `🖼 Imagen PRO\n${s.imagePrompt || "Imagen conceptual alineada con la diapositiva"}`,
+    {
+      x: imgBox.x,
+      y: imgBox.y,
+      w: imgBox.w,
+      h: imgBox.h,
+      fontSize: 12,
+      color: "666666",
+      align: "center",
+      valign: "middle",
+      fill: { color: "F1F5F9" },
+      line: { color: "CBD5E1" },
+    }
+  );
+}
+        
+  // NOTA: Imagen y gráfico se insertarán en las fases siguientes (ya tienes sus módulos),
+  // aquí solo dejamos el motor listo para respetar el layout.
+}
+
       const actual = ultimaEstructuraLimpia[i];
       if (!actual || !actual.titulo) continue;
 
       const slide = pptx.addSlide();
-      slide.addText(actual.titulo.trim(), { x: 0.5, y: 0.5, w: 9, h: 0.8, fontSize: 22, bold: true });
+
+       // ====== NOVA PRO — imagen placeholder (FASE 2) ======
+      const planSlide = (planPro && planPro[i]) ? planPro[i] : null;
+      const hayImagen = planSlide && planSlide.needs && planSlide.needs.image;
+
+      if (hayImagen) {
+  // Marco de imagen reservado (lado derecho)
+        slide.addShape(pptx.ShapeType.rect, {
+          x: 5.2,
+          y: 1.45,
+          w: 4.1,
+          h: 3.6,
+          line: { color: "94a3b8", width: 1 },
+          fill: { color: "0f172a" }
+        });
+
+        slide.addText("Imagen (Fase 2)", {
+          x: 5.2,
+          y: 3.15,
+          w: 4.1,
+          h: 0.4,
+          fontSize: 12,
+          align: "center",
+          color: "94a3b8"
+        });
+      }
+        
+    // 🧠 TÍTULO — Render PRO
+    const rTitle = planPro[i]?.render?.title;
+    if (rTitle) {
+      slide.addText(tituloSlide, {
+        ...rTitle,
+        fontSize: 22,
+        bold: true
+      });
+    }
 
       const bullets = Array.isArray(actual.bullets) ? actual.bullets : [];
       if (bullets.length) {
-        slide.addText(bullets.map(b => `- ${b}`).join("\n"), { x: 0.7, y: 1.5, w: 9, h: 4.5, fontSize: 16, wrap: true });
-      }
-    }
+        const hayGrafico = planSlide && planSlide.needs.chart;
+          
+        // 🧠 TEXTO — Render PRO
+        const rText = planPro[i]?.render?.text;
+        if (rText && bullets.length) {
+          slide.addText(
+            bullets.map(b => `• ${b}`).join("\n"),
+            {
+              ...rText,
+              fontSize: 16,
+              wrap: true
+            }
+          );
+        }
 
+// 🧠 IMAGEN — Render PRO (placeholder)
+const rImage = planPro[i]?.render?.image;
+if (rImage) {
+  slide.addText("🖼 Imagen generada por NOVA", {
+    ...rImage,
+    fontSize: 14,
+    align: "center",
+    color: "666666"
+  });
+}
+
+// 🧠 GRÁFICO — Render PRO (placeholder)
+const rChart = planPro[i]?.render?.chart;
+if (rChart) {
+  slide.addText("📊 Gráfico generado por NOVA", {
+    ...rChart,
+    fontSize: 14,
+    align: "center",
+    color: "444444"
+  });
+}
+          
+// 📊 FASE 2 — Render de gráfico si aplica
+if (planPro && planPro[i] && planPro[i].needs.chart && planPro[i].chartSpec) {
+  const spec = planPro[i].chartSpec;
+
+  slide.addChart(
+    pptx.ChartType.bar,
+    [
+      {
+        name: spec.title,
+        labels: spec.labels,
+        values: spec.values
+      }
+    ],
+    {
+      x: 5.4,
+      y: 1.6,
+      w: 4.5,
+      h: 4.2,
+      title: spec.title,
+      showLegend: false
+    }
+  );
+}
+
+      }
+
+// 🖼️ FASE 2.3 — Reserva de espacio para imagen (sin generar aún)
+if (planPro && planPro[i] && planPro[i].needs.image) {
+  slide.addText("[Imagen reservada]", {
+    x: 5.6,
+    y: 1.5,
+    w: 3.5,
+    h: 3.5,
+    align: "center",
+    valign: "middle",
+    fontSize: 14,
+    color: "666666",
+    border: { pt: 1, color: "cccccc" }
+  });
+}
+        
+// ===== NOVA PRO — Gráfico automático =====
+const planSlide = planPro.find(p => p.title === tituloSlide);
+
+if (planSlide && planSlide.needs.chart && planSlide.chartSpec) {
+  const { type, labels, values, title } = planSlide.chartSpec;
+
+  slide.addChart(
+    type === "line"
+      ? pptx.ChartType.line
+      : type === "pie"
+      ? pptx.ChartType.pie
+      : pptx.ChartType.bar,
+    [
+      {
+        name: title,
+        labels: labels,
+        values: values,
+      },
+    ],
+    {
+      x: 0.7,
+      y: 3.2,
+      w: 8.5,
+      h: 3.0,
+      chartArea: { fill: { color: "F1F5F9" } },
+      title: title,
+      showLegend: true,
+    }
+  );
+}
+    
     pptx.writeFile({ fileName });
   }
 </script>
