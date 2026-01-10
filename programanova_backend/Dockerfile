@@ -8,4 +8,4 @@ RUN pip install --no-cache-dir -r requirements.txt -r requirements_pro.txt
 
 COPY . .
 
-CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "$PORT"]
+CMD ["sh", "-c", "python -m uvicorn main_pro:app --host 0.0.0.0 --port $PORT"]
