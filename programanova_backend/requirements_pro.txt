@@ -1,0 +1,6 @@
+-r requirements_pro.txt
+fastapi>=0.110.0
+uvicorn[standard]>=0.30.0
+openai>=1.0.0
+pydantic>=2.0.0
+requests>=2.32.0
