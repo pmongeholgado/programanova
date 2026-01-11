@@ -19,4 +19,4 @@ COPY . .
 EXPOSE 8000
 
 # Arranque usando shell para que $PORT se expanda
-CMD uvicorn main_pro:app --host 0.0.0.0 --port ${PORT}
+CMD ["sh", "-c", "uvicorn main_pro:app --host 0.0.0.0 --port ${PORT}"]
