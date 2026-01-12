@@ -436,38 +436,16 @@ const engineStyles = {
   
   // ====== FASE 3 — Motor de IA ======
   let currentEngine = localStorage.getItem("nova_engine") || "nova";
-
- const textos = {
+    
+  const textos = {
     es: {
       btnGenerar: "Generar estructura de presentación",
       cargando: "Generando...",
-      ok: "Estructura creada"
-    }
-  };
-
-  function generar() {
-    console.log("⏳ Click en Generar (PRO)");
-
-    const loader = document.getElementById("loader");
-    if (loader) loader.style.display = "block";
-
-    const estado = document.getElementById("estado");
-    if (estado) estado.textContent = textos.es.cargando;
-
-    setTimeout(() => {
-    if (estado) estado.textContent = textos.es.ok;
-    if (loader) loader.style.display = "none";
-    console.log("✅ Proceso PRO terminado (prueba)");
-  }, 1500);
-}
-
-  const textos = {
-    es: {
+      ok: "Estructura creada",
       titulo: "Generador Nova · Presentaciones",
       labelTitulo: "Título de la presentación",
       labelSlides: "Número de diapositivas",
       labelContenido: "Contenido base (capítulo, texto o guion)",
-      btnGenerar: "Generar estructura de presentación",
       btnPPT: "📤 Exportar a PPT",
       estadoListo: "🟢 Generador listo",
       estadoProcesando: "⏳ Procesando solicitud…",
