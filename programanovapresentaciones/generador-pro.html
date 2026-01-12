@@ -651,10 +651,15 @@ initMotorIA();
           const response = await fetch(`${API_BASE_URL}${endpoint}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ titulo, num_diapositivas: numDiapositivas, contenido, motorIA   // ← PRO: preparado para multi-IA }),
+            body: JSON.stringify({
+              titulo,
+              num_diapositivas: numDiapositivas,
+              contenido,
+              motorIA
+            }),
             mode: "cors",
-          });
 
+      // PRO: preparado para multi-IA
       if (!response.ok) {
         estadoEl.innerText = t.errorConexion;
         return;
