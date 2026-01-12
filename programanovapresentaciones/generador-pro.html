@@ -519,7 +519,7 @@ const AI_ENGINES = [
   { id: "mistral", name: "Mistral — Próximamente" }
 ];
 
-let currentEngine = localStorage.getItem("nova_engine") || "nova";
+currentEngine = localStorage.getItem("nova_engine") || "nova";
 
 function initMotorIA() {
   const sel = document.getElementById("motorIA");
