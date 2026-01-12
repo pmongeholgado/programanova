@@ -626,12 +626,11 @@ initMotorIA();
       // 🔹 FASE 3.1.2 — Motor IA seleccionado (PRO)
       const motorIA = currentEngine || "nova";
       console.log("Motor IA seleccionado:", motorIA);
-
       
-    if (!contenido) {
+      if (!contenido) {
       estadoEl.innerText = t.errorContenido;
       return;
-    }
+      }
 
     estadoEl.innerText = t.estadoProcesando;
     resultadoEl.innerHTML = "";
@@ -659,11 +658,11 @@ initMotorIA();
             }),
             mode: "cors",
 
-      // PRO: preparado para multi-IA
-      if (!response.ok) {
-        estadoEl.innerText = t.errorConexion;
-        return;
-      }
+          // PRO: preparado para multi-IA
+          if (!response.ok) {
+            estadoEl.innerText = t.errorConexion;
+            return;
+        }
 
       const data = await response.json().catch(() => ({}));
       estadoEl.innerText = data.mensaje || "✅ Estructura generada correctamente.";
