@@ -151,8 +151,21 @@ Devuelve:
             max_output_tokens=500
         )
 
-        texto = response.output_text.strip()
+        
+        texto = ""
 
+        if hasattr(response, "output_text") and response.output_text:
+            texto = response.output_text.strip()
+        elif hasattr(response, "output") and response.output:
+            try:
+                texto = response.output[0].content[0].text.strip()
+            except Exception:
+                texto = "No se pudo extraer texto de la respuesta."
+        else:
+            texto = "Respuesta vacía del modelo."
+
+        print("Respuesta IA /chat:", texto) 
+        
         return ChatResponse(
             respuesta=texto,
             emocion="neutral",
