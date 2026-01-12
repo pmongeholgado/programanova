@@ -154,17 +154,24 @@ Devuelve:
         
         texto = ""
 
-        if hasattr(response, "output_text") and response.output_text:
-            texto = response.output_text.strip()
-        elif hasattr(response, "output") and response.output:
-            try:
-                texto = response.output[0].content[0].text.strip()
-            except Exception:
-                texto = "No se pudo extraer texto de la respuesta."
-        else:
-            texto = "Respuesta vacía del modelo."
+        # Extracción robusta del texto desde OpenAI Responses
+        texto = ""
 
-        print("Respuesta IA /chat:", texto) 
+        try:
+            if hasattr(response, "output_text") and response.output_text:
+                texto = response.output_text.strip()
+            elif hasattr(response, "output") and response.output:
+                for item in response.output:
+                    if item.get("type") == "message":
+                        for content in item.get("content", []):
+                            if content.get("type") == "output_text":
+                                texto += content.get("text", "")
+                texto = texto.strip()
+        except Exception as e:
+            texto = f"Error procesando respuesta del modelo: {str(e)}"
+
+        if not texto:
+            texto = "Respuesta vacía del modelo."
         
         return ChatResponse(
             respuesta=texto,
