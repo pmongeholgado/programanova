@@ -702,7 +702,7 @@ initMotorIA();
   }
 
   // ====== Export ======
-  function exportarPPT() {
+  async function exportarPPT() {
     if (!Array.isArray(ultimaEstructuraLimpia) || ultimaEstructuraLimpia.length === 0) {
       alert("Primero genera una presentación.");
       return;
@@ -945,8 +945,8 @@ if (planSlide && planSlide.needs.chart && planSlide.chartSpec) {
     }
   );
 }
-    
-    pptx.writeFile({ fileName });
+    console.log("🟢 Exportando PPT:", fileName);
+    await pptx.writeFile({ fileName });
   }
   }
 </script>
