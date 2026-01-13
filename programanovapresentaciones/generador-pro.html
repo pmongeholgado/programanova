@@ -657,12 +657,12 @@ initMotorIA();
               motorIA
             }),
             mode: "cors",
-
+          });
           // PRO: preparado para multi-IA
           if (!response.ok) {
-            estadoEl.innerText = t.errorConexion;
-            return;
-        }
+           estadoEl.innerText = t.errorConexion;
+           return;
+          }
 
       const data = await response.json().catch(() => ({}));
       estadoEl.innerText = data.mensaje || "✅ Estructura generada correctamente.";
