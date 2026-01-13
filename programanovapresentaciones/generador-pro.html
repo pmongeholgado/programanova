@@ -758,10 +758,6 @@ initMotorIA();
   const bullets = Array.isArray(s.bullets) ? s.bullets : [];
   const texto = bullets.length ? bullets.map(b => `- ${b}`).join("\n") : "- Idea principal";
 
-  // Layout PRO (si existe)
-  const r = s.render || {};
-  const textBox = r.text || { x: 0.7, y: 1.5, w: 9, h: 4.5 };
-
   // ✅ FASE 2.9.4 — Texto (bullets) respetando layout PRO
   slide.addText(texto, {
     x: textBox.x,
