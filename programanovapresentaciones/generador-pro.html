@@ -768,10 +768,10 @@ initMotorIA();
     wrap: true,
   });
 
-// ====== NOVA PRO — imagen placeholder (FASE 2.8.4) ======
-if (s.needs && s.needs.image) {
-  const r = s.render || {};
-  const imgBox = r.image || { x: 0.7, y: 1.6, w: 4.5, h: 3.2 };
+  // ====== NOVA PRO — imagen placeholder (FASE 2.8.4) ======
+  if (s.needs && s.needs.image) {
+    const r = s.render || {};
+    const imgBox = r.image || { x: 0.7, y: 1.6, w: 4.5, h: 3.2 };
 
   slide.addText(
     `🖼 Imagen PRO\n${s.imagePrompt || "Imagen conceptual alineada con la diapositiva"}`,
@@ -792,14 +792,11 @@ if (s.needs && s.needs.image) {
         
   // NOTA: Imagen y gráfico se insertarán en las fases siguientes (ya tienes sus módulos),
   // aquí solo dejamos el motor listo para respetar el layout.
-    const actual = ultimaEstructuraLimpia[i];
-    if (!actual || !actual.titulo) continue;
-
-    const slide = pptx.addSlide();
-}
-      
+    const actual = s;
+    if (!actual || !actual.title) continue;
+     
        // ====== NOVA PRO — imagen placeholder (FASE 2) ======
-      const planSlide = (planPro && planPro[i]) ? planPro[i] : null;
+      const planSlideAuto = (planPro && planPro[i]) ? planPro[i] : null;
       const hayImagen = planSlide && planSlide.needs && planSlide.needs.image;
 
       if (hayImagen) {
