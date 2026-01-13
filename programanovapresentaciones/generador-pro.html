@@ -831,15 +831,15 @@ initMotorIA();
       });
     }
 
-      const bullets = Array.isArray(actual.bullets) ? actual.bullets : [];
-      if (bullets.length) {
+      const bulletsPro = Array.isArray(actual.bullets) ? actual.bullets : [];
+      if (bulletsPro.length) {
         const hayGrafico = planSlide && planSlide.needs.chart;
           
         // 🧠 TEXTO — Render PRO
         const rText = planPro[i]?.render?.text;
-        if (rText && bullets.length) {
+        if (rText && bulletsPro.length) {
           slide.addText(
-            bullets.map(b => `• ${b}`).join("\n"),
+            bulletsPro.map(b => `• ${b}`).join("\n"),
             {
               ...rText,
               fontSize: 16,
