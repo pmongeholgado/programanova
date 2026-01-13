@@ -792,13 +792,12 @@ if (s.needs && s.needs.image) {
         
   // NOTA: Imagen y gráfico se insertarán en las fases siguientes (ya tienes sus módulos),
   // aquí solo dejamos el motor listo para respetar el layout.
+    const actual = ultimaEstructuraLimpia[i];
+    if (!actual || !actual.titulo) continue;
+
+    const slide = pptx.addSlide();
 }
-
-      const actual = ultimaEstructuraLimpia[i];
-      if (!actual || !actual.titulo) continue;
-
-      const slide = pptx.addSlide();
-
+      
        // ====== NOVA PRO — imagen placeholder (FASE 2) ======
       const planSlide = (planPro && planPro[i]) ? planPro[i] : null;
       const hayImagen = planSlide && planSlide.needs && planSlide.needs.image;
