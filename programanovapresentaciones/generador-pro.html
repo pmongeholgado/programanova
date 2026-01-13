@@ -828,7 +828,7 @@ initMotorIA();
     // 🧠 TÍTULO — Render PRO
     const rTitle = planPro[i]?.render?.title;
     if (rTitle) {
-      slide.addText(tituloSlide, {
+      slide.addText(actual.title || "Sin título", {
         ...rTitle,
         fontSize: 22,
         bold: true
