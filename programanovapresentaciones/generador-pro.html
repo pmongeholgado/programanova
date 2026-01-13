@@ -837,7 +837,7 @@ initMotorIA();
 
       const bulletsPro = Array.isArray(actual.bullets) ? actual.bullets : [];
       if (bulletsPro.length) {
-        const hayGrafico = planSlide && planSlide.needs.chart;
+        const hayGrafico = planSlideAuto && planSlideAuto.needs && planSlideAuto.needs.chart;
           
         // 🧠 TEXTO — Render PRO
         const rText = planPro[i]?.render?.text;
@@ -916,9 +916,9 @@ if (planPro && planPro[i] && planPro[i].needs.image) {
 }
         
 // ===== NOVA PRO — Gráfico automático =====
-const planSlide = planPro.find(p => p.title === tituloSlide);
+const planSlide = planPro.find(p => p.title === (actual.title || ""));
 
-if (planSlide && planSlide.needs.chart && planSlide.chartSpec) {
+if (planSlide && planSlide.needs && planSlide.needs.chart && planSlide.chartSpec) {
   const { type, labels, values, title } = planSlide.chartSpec;
 
   slide.addChart(
