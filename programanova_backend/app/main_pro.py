@@ -7,6 +7,8 @@ import os
 from datetime import datetime
 from typing import Optional
 
+from app.ia_assets import generate_image_data_url, generate_chart_spec
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -225,13 +227,75 @@ Devuelve una lista numerada con:
             max_output_tokens=700
         )
 
-        texto = response.output_text.strip()
-        estructura = texto.split("\n")
+texto = response.output_text.strip()
+lineas = [l.strip() for l in texto.split("\n") if l.strip()]
 
-        return GenerarResponse(
-            mensaje="Presentación generada correctamente con IA real",
-            estructura=estructura
+slides = []
+current_title = None
+current_bullets = []
+
+def decide_needs(title: str):
+    t = title.lower()
+    return {
+        "image": any(k in t for k in ["imagen", "portada", "impacto", "futuro", "cierre", "demo"]),
+        "chart": any(k in t for k in ["gráfico", "grafico", "arquitectura", "compar", "roadmap"])
+    }
+
+for linea in lineas:
+    if linea[0].isdigit() and "." in linea[:4]:
+        if current_title:
+            needs = decide_needs(current_title)
+            slide = {
+                "title": current_title,
+                "bullets": current_bullets,
+                "needs": needs
+            }
+
+            if needs.get("image"):
+                slide["imageData"] = generate_image_data_url(
+                    f"Imagen profesional para diapositiva titulada '{current_title}'"
+                )
+
+            if needs.get("chart"):
+                slide["chartSpec"] = generate_chart_spec({
+                    "title": current_title,
+                    "bullets": current_bullets
+                })
+
+            slides.append(slide)
+
+        current_title = linea.split(".", 1)[1].strip()
+        current_bullets = []
+
+    else:
+        current_bullets.append(linea.lstrip("- ").strip())
+
+# Última diapositiva
+if current_title:
+    needs = decide_needs(current_title)
+    slide = {
+        "title": current_title,
+        "bullets": current_bullets,
+        "needs": needs
+    }
+
+    if needs.get("image"):
+        slide["imageData"] = generate_image_data_url(
+            f"Imagen profesional para diapositiva titulada '{current_title}'"
         )
+
+    if needs.get("chart"):
+        slide["chartSpec"] = generate_chart_spec({
+            "title": current_title,
+            "bullets": current_bullets
+        })
+
+    slides.append(slide)
+
+return GenerarResponse(
+    mensaje="Presentación generada correctamente con IA real (imagenes + graficos)",
+    estructura=slides
+)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
