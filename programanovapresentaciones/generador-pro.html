@@ -701,6 +701,72 @@ initMotorIA();
     }
   }
 
+  // ====== NOVA PRO — PUENTE IA REAL (IMAGEN + GRÁFICO) ======
+  // Si tu backend aún no tiene estos endpoints, NO rompe nada: seguirá con placeholders.
+  const IA_ENDPOINTS = {
+    imagen: "/generar-imagen",   // <- si tu backend usa otro nombre, lo cambiamos aquí
+    grafico: "/generar-grafico"  // <- idem
+  };
+
+  async function prepararAssetsIA(plan, motorIA) {
+    if (!Array.isArray(plan) || !plan.length) return plan;
+
+    for (let i = 0; i < plan.length; i++) {
+      const s = plan[i];
+      if (!s || !s.needs) continue;
+
+      // 🖼️ IMAGEN REAL
+      if (s.needs.image && !s.imageData) {
+        try {
+          const rImg = await fetch(`${API_BASE_URL}${IA_ENDPOINTS.imagen}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            mode: "cors",
+            body: JSON.stringify({
+              motorIA,
+              titulo: s.title,
+              prompt: s.imagePrompt || `Imagen conceptual para: ${s.title}`
+            })
+          });
+
+          if (rImg.ok) {
+            const img = await rImg.json().catch(() => ({}));
+            // Esperamos { dataUrl: "data:image/png;base64,...." }
+            if (img && img.dataUrl) s.imageData = img.dataUrl;
+          }
+        } catch (e) {
+          console.warn("IA imagen falló:", e);
+        }
+      }
+
+      // 📊 GRÁFICO REAL (spec)
+      if (s.needs.chart && !s.chartSpec) {
+        try {
+          const rCh = await fetch(`${API_BASE_URL}${IA_ENDPOINTS.grafico}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            mode: "cors",
+            body: JSON.stringify({
+              motorIA,
+              titulo: s.title,
+              contexto: (Array.isArray(s.bullets) ? s.bullets.join(" ") : "")
+            })
+          });
+
+          if (rCh.ok) {
+            const ch = await rCh.json().catch(() => ({}));
+            // Esperamos { type:"bar|line|pie", title, labels:[], values:[] }
+            if (ch && Array.isArray(ch.labels) && Array.isArray(ch.values)) s.chartSpec = ch;
+          }
+        } catch (e) {
+          console.warn("IA gráfico falló:", e);
+        }
+      }
+    }
+
+    return plan;
+  }
+    
   // ====== Export ======
   async function exportarPPT() {
     if (!Array.isArray(ultimaEstructuraLimpia) || ultimaEstructuraLimpia.length === 0) {
@@ -727,6 +793,10 @@ initMotorIA();
       planParaExportar = aplicarReglasPro(tmp);
     }
 
+    // ✅ IA REAL entra AQUÍ (no en "generar estructura")
+    const motorIA = currentEngine || "nova";
+    planParaExportar = await prepararAssetsIA(planParaExportar, motorIA);
+      
     // 🔒 FASE 2.9 — Normalización final antes de exportar
     const planProParaExportar = (planPro || []).filter(s =>
       s &&
@@ -757,6 +827,82 @@ initMotorIA();
       const textBox = layout.text || { x: 0.7, y: 1.5, w: 9, h: 4.5 };
       const imageBox = layout.image || { x: 0.7, y: 1.5, w: 4.2, h: 4.0 };
       const chartBox = layout.chart || { x: 5.2, y: 1.5, w: 4.2, h: 4.0 };
+
+// 🖼️ IMAGEN REAL — NOVA PRO
+if (s.needs && s.needs.image) {
+  const imgBox =
+    (s.render && s.render.image)
+      ? s.render.image
+      : { x: 5.2, y: 1.5, w: 4.2, h: 4.0 };
+
+  if (s.imageData) {
+    slide.addImage({
+      data: s.imageData,
+      x: imgBox.x,
+      y: imgBox.y,
+      w: imgBox.w,
+      h: imgBox.h
+    });
+  } else {
+    slide.addText("[Imagen no disponible]", {
+      x: imgBox.x,
+      y: imgBox.y,
+      w: imgBox.w,
+      h: imgBox.h,
+      fontSize: 12,
+      align: "center",
+      valign: "middle",
+      color: "666666"
+    });
+  }
+}
+
+// 📊 GRÁFICO REAL — NOVA PRO
+if (s.needs && s.needs.chart) {
+  const cBox =
+    (s.render && s.render.chart)
+      ? s.render.chart
+      : chartBox;
+
+  if (s.chartSpec && Array.isArray(s.chartSpec.labels) && Array.isArray(s.chartSpec.values)) {
+    const spec = s.chartSpec;
+
+    slide.addChart(
+      spec.type === "line"
+        ? pptx.ChartType.line
+        : spec.type === "pie"
+        ? pptx.ChartType.pie
+        : pptx.ChartType.bar,
+      [
+        {
+          name: spec.title || s.title,
+          labels: spec.labels,
+          values: spec.values
+        }
+      ],
+      {
+        x: cBox.x,
+        y: cBox.y,
+        w: cBox.w,
+        h: cBox.h,
+        title: spec.title || s.title,
+        showLegend: true
+      }
+    );
+  } else {
+    // Fallback limpio si no hay datos de gráfico
+    slide.addText("[Gráfico no disponible]", {
+      x: cBox.x,
+      y: cBox.y,
+      w: cBox.w,
+      h: cBox.h,
+      fontSize: 12,
+      align: "center",
+      valign: "middle",
+      color: "444444"
+    });
+  }
+} 
         
   // Texto (bullets)
   const bullets = Array.isArray(s.bullets) ? s.bullets : [];
@@ -834,24 +980,7 @@ initMotorIA();
         bold: true
       });
     }
-
-      const bulletsPro = Array.isArray(actual.bullets) ? actual.bullets : [];
-      if (bulletsPro.length) {
-        const hayGrafico = planSlideAuto && planSlideAuto.needs && planSlideAuto.needs.chart;
-          
-        // 🧠 TEXTO — Render PRO
-        const rText = planPro[i]?.render?.text;
-        if (rText && bulletsPro.length) {
-          slide.addText(
-            bulletsPro.map(b => `• ${b}`).join("\n"),
-            {
-              ...rText,
-              fontSize: 16,
-              wrap: true
-            }
-          );
-        }
-
+         
 // 🧠 IMAGEN — Render PRO (placeholder)
 const rImage = planPro[i]?.render?.image;
 if (rImage) {
@@ -872,33 +1001,7 @@ if (rChart) {
     align: "center",
     color: "444444"
   });
-}
-          
-// 📊 FASE 2 — Render de gráfico si aplica
-if (planPro && planPro[i] && planPro[i].needs.chart && planPro[i].chartSpec) {
-  const spec = planPro[i].chartSpec;
-
-  slide.addChart(
-    pptx.ChartType.bar,
-    [
-      {
-        name: spec.title,
-        labels: spec.labels,
-        values: spec.values
-      }
-    ],
-    {
-      x: 5.4,
-      y: 1.6,
-      w: 4.5,
-      h: 4.2,
-      title: spec.title,
-      showLegend: false
-    }
-  );
-}
-
-      }
+}                
 
 // 🖼️ FASE 2.3 — Reserva de espacio para imagen (sin generar aún)
 if (planPro && planPro[i] && planPro[i].needs.image) {
@@ -915,36 +1018,6 @@ if (planPro && planPro[i] && planPro[i].needs.image) {
   });
 }
         
-// ===== NOVA PRO — Gráfico automático =====
-const planSlide = planPro.find(p => p.title === (actual.title || ""));
-
-if (planSlide && planSlide.needs && planSlide.needs.chart && planSlide.chartSpec) {
-  const { type, labels, values, title } = planSlide.chartSpec;
-
-  slide.addChart(
-    type === "line"
-      ? pptx.ChartType.line
-      : type === "pie"
-      ? pptx.ChartType.pie
-      : pptx.ChartType.bar,
-    [
-      {
-        name: title,
-        labels: labels,
-        values: values,
-      },
-    ],
-    {
-      x: 0.7,
-      y: 3.2,
-      w: 8.5,
-      h: 3.0,
-      chartArea: { fill: { color: "F1F5F9" } },
-      title: title,
-      showLegend: true,
-    }
-  );
-}
     console.log("🟢 Exportando PPT:", fileName);
     await pptx.writeFile({ fileName });
   }
