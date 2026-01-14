@@ -49,6 +49,17 @@ app = FastAPI(
     description="Backend real con IA para Nova Presentaciones"
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://programanovapresentaciones.com",
+        "https://www.programanovapresentaciones.com"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 @app.get("/")
 def health():
     return {"status": "ok", "service": "programa-nova-backend-pro"}
