@@ -245,15 +245,43 @@ Devuelve una lista numerada con:
             max_output_tokens=700
         )
 
-texto = response.output_text.strip()
-lineas = [l.strip() for l in texto.split("\n") if l.strip()]
+        texto = response.output_text.strip()
+        lineas = [l.strip() for l in texto.split("\n") if l.strip()]
 
-slides = []
-current_title = None
-current_bullets = []
+        slides = []
+        current_title = None
+        current_bullets = []
 
-for linea in lineas:
-    if linea[0].isdigit() and "." in linea[:4]:
+        for linea in lineas:
+            if linea[0].isdigit() and "." in linea[:4]:
+                if current_title:
+                    needs = decide_needs(current_title)
+                    slide = {
+                        "title": current_title,
+                        "bullets": current_bullets,
+                        "needs": needs
+                    }
+
+                    if needs.get("image"):
+                        slide["imageData"] = generate_image_data_url(
+                            f"Imagen profesional para diapositiva titulada '{current_title}'"
+                        )
+
+                    if needs.get("chart"):
+                        slide["chartSpec"] = generate_chart_spec({
+                            "title": current_title,
+                            "bullets": current_bullets
+                        })
+
+                    slides.append(slide)
+
+                current_title = linea.split(".", 1)[1].strip()
+                current_bullets = []
+
+            else:
+                current_bullets.append(linea.lstrip("- ").strip())
+
+        # Última diapositiva
         if current_title:
             needs = decide_needs(current_title)
             slide = {
@@ -275,38 +303,10 @@ for linea in lineas:
 
             slides.append(slide)
 
-        current_title = linea.split(".", 1)[1].strip()
-        current_bullets = []
-
-    else:
-        current_bullets.append(linea.lstrip("- ").strip())
-
-# Última diapositiva
-if current_title:
-    needs = decide_needs(current_title)
-    slide = {
-        "title": current_title,
-        "bullets": current_bullets,
-        "needs": needs
-    }
-
-    if needs.get("image"):
-        slide["imageData"] = generate_image_data_url(
-            f"Imagen profesional para diapositiva titulada '{current_title}'"
+        return GenerarResponse(
+            mensaje="Presentación generada correctamente con IA real (imagenes + graficos)",
+            estructura=slides
         )
-
-    if needs.get("chart"):
-        slide["chartSpec"] = generate_chart_spec({
-            "title": current_title,
-            "bullets": current_bullets
-        })
-
-    slides.append(slide)
-
-return GenerarResponse(
-    mensaje="Presentación generada correctamente con IA real (imagenes + graficos)",
-    estructura=slides
-)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
