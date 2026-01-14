@@ -35,6 +35,16 @@ app = FastAPI(
     version="1.0.0",
     description="Backend real con IA para Nova Presentaciones"
 )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://programanovapresentaciones.com",
+        "https://www.programanovapresentaciones.com"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # CORS (abierto para frontend web)
 app.add_middleware(
