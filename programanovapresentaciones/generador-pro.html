@@ -810,7 +810,9 @@ initMotorIA();
       if (!s || !s.title) continue;
 
       const slide = pptx.addSlide();
-
+    
+      slide.background = { fill: "0f172a" };
+      
       // Título
       slide.addText(s.title, {
         x: 0.5,
