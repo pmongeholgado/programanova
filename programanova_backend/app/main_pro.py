@@ -202,6 +202,13 @@ Devuelve:
 # GENERADOR DE PRESENTACIONES (IA REAL)
 # ============================
 
+def decide_needs(title: str):
+    t = title.lower()
+    return {
+        "image": any(k in t for k in ["imagen", "portada", "impacto", "futuro", "cierre", "demo"]),
+        "chart": any(k in t for k in ["grafico", "gráfico", "datos", "comparativa", "roadmap"])
+    }
+
 @app.post("/generar", response_model=GenerarResponse)
 def generar_presentacion(data: GenerarRequest):
     try:
@@ -244,13 +251,6 @@ lineas = [l.strip() for l in texto.split("\n") if l.strip()]
 slides = []
 current_title = None
 current_bullets = []
-
-def decide_needs(title: str):
-    t = title.lower()
-    return {
-        "image": any(k in t for k in ["imagen", "portada", "impacto", "futuro", "cierre", "demo"]),
-        "chart": any(k in t for k in ["gráfico", "grafico", "arquitectura", "compar", "roadmap"])
-    }
 
 for linea in lineas:
     if linea[0].isdigit() and "." in linea[:4]:
