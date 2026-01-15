@@ -615,6 +615,8 @@ initMotorIA();
 
   // ====== GENERAR (ÚNICA) — aquí va el await ======
   async function generar() {
+    const endpoint = "/generar";
+      
     const tituloEl = document.getElementById("titulo");
     const slidesEl = document.getElementById("slides");
     const contenidoEl = document.getElementById("contenido");
@@ -651,7 +653,7 @@ initMotorIA();
     }
       
     try {
-          const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+          const response = await fetch(endpoint, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
