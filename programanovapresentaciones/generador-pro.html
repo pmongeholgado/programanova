@@ -154,6 +154,7 @@
 <script>
   let estructuraGenerada = [];
   let ultimaEstructuraLimpia = [];
+  let PRESENTACION_PRO = null;
 
   // ====== FASE 2 (PRO) — Esqueleto de composición ======
   let planPro = [];
@@ -671,6 +672,8 @@ initMotorIA();
           }
 
       const data = await response.json().catch(() => ({}));
+      PRESENTACION_PRO = data;
+      console.log("✅ PRESENTACION_PRO guardada:", PRESENTACION_PRO);
       estadoEl.innerText = data.mensaje || "✅ Estructura generada correctamente.";
 
       if (Array.isArray(data.estructura)) {
@@ -771,6 +774,13 @@ initMotorIA();
     
   // ====== Export ======
   async function exportarPPT() {
+    if (!PRESENTACION_PRO) {
+      alert("❌ Primero genera la presentación con IA.");
+      return;
+    }
+
+    const plan = PRESENTACION_PRO;
+      
     if (!Array.isArray(ultimaEstructuraLimpia) || ultimaEstructuraLimpia.length === 0) {
       alert("Primero genera una presentación.");
       return;
@@ -788,7 +798,21 @@ initMotorIA();
 
     // ====== MODO PRO: si existe planPro, lo usamos; si no, lo construimos ======
     let planParaExportar = Array.isArray(planPro) && planPro.length ? planPro : null;
+    // ===== PASO 4 PRO — Orquestación FINAL antes de exportar =====
+    if (!planParaExportar) {
+      // Construimos el plan PRO desde la última estructura generada
+      planParaExportar = aplicarReglasPro(
+        construirPlanPro(ultimaEstructuraLimpia)
+      );
+    }
 
+// Seguridad extra
+if (!Array.isArray(planParaExportar) || planParaExportar.length === 0) {
+  alert("❌ No se pudo construir el plan PRO para exportar.");
+  return;
+}
+
+      
     if (!planParaExportar) {
       // Generamos el plan PRO desde la estructura limpia
       const tmp = construirPlanPro(ultimaEstructuraLimpia);
