@@ -835,8 +835,9 @@ if (!Array.isArray(planParaExportar) || planParaExportar.length === 0) {
       if (!s || !s.title) continue;
 
       const slide = pptx.addSlide();
-    
-      slide.background = { fill: "0f172a" };
+
+      // ✅ Fondo corporativo (aplicado a TODAS las slides)
+      slide.background = { color: "0b1220" };  
       
       // Título
       slide.addText(s.title, {
