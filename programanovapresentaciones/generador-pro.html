@@ -616,7 +616,7 @@ initMotorIA();
 
   // ====== GENERAR (ÚNICA) — aquí va el await ======
   async function generar() {
-    const endpoint = "/generar";
+    let endpoint = "/generar";
       
     const tituloEl = document.getElementById("titulo");
     const slidesEl = document.getElementById("slides");
