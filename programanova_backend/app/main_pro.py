@@ -307,7 +307,7 @@ Devuelve una lista numerada con:
             estructura=slides
         )
 
-    except Exception as e:
+except Exception as e:
     print("🔥 ERROR en /generar PRO:", str(e))
     print(traceback.format_exc())
 
@@ -320,6 +320,7 @@ Devuelve una lista numerada con:
             "trace": traceback.format_exc()
         }
     )
+ 
 
 
 
