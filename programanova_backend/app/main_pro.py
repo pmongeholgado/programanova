@@ -308,7 +308,19 @@ Devuelve una lista numerada con:
         )
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    print("🔥 ERROR en /generar PRO:", str(e))
+    print(traceback.format_exc())
+
+    return JSONResponse(
+        status_code=500,
+        content={
+            "status": "error",
+            "where": "/generar",
+            "message": str(e),
+            "trace": traceback.format_exc()
+        }
+    )
+
 
 
    
