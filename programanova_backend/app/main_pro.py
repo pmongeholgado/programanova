@@ -15,6 +15,8 @@ from pydantic import BaseModel
 
 from openai import OpenAI
 
+from fastapi.responses import JSONResponse
+import traceback
 
 # ============================
 # CONFIGURACIÓN OPENAI
@@ -53,7 +55,11 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://programanovapresentaciones.com",
-        "https://www.programanovapresentaciones.com"
+        "https://www.programanovapresentaciones.com",
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
     ],
     allow_credentials=True,
     allow_methods=["*"],
