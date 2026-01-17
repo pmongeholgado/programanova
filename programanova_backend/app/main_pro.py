@@ -7,7 +7,7 @@ import os
 from datetime import datetime
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -39,6 +39,7 @@ app = FastAPI(
     version="1.0.0",
     description="Backend real con IA para Nova Presentaciones"
 )
+api = APIRouter(prefix="/api")
 
 # ============================
 # CORS (UNO SOLO, sin duplicados)
@@ -46,7 +47,10 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://programanovapresentaciones.com",
+        "https://www.programanovapresentaciones.com",
+    ],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -177,9 +181,8 @@ def decide_needs(title: str):
         "chart": any(k in t for k in ["grafico", "gráfico", "datos", "comparativa", "roadmap"])
     }
 
-
 @app.post("/generar", response_model=GenerarResponse)
-def generar_presentacion(data: GenerarRequest):
+async def generar_presentacion(data: GenerarRequest):
     try:
         prompt = f"""
 Eres un experto creador de presentaciones profesionales.
@@ -245,7 +248,6 @@ Devuelve una lista numerada con:
             else:
                 current_bullets.append(linea.lstrip("- ").strip())
 
-        # Última diapositiva
         if current_title:
             needs = decide_needs(current_title)
             slide = {
@@ -284,3 +286,5 @@ Devuelve una lista numerada con:
                 "trace": traceback.format_exc()
             }
         )
+        
+    app.include_router(api)
