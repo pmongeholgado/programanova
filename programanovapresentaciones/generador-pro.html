@@ -161,7 +161,7 @@
 
   function construirPlanPro(slides) {
     return (slides || []).map((s, i) => {
-      const title = (s.titulo || "").trim();
+      const title = String(s.title || s.titulo || "").trim();
       const bullets = Array.isArray(s.bullets) ? s.bullets : [];
       const render = {
           title: { x: 0.5, y: 0.4, w: 9, h: 0.8 },
@@ -594,7 +594,7 @@ initMotorIA();
     const out = [];
     for (const it of (arr || [])) {
       const obj = normalizarItem(it);
-      if (!obj.titulo) continue;
+      if (!(obj.title || obj.titulo)) continue;
       out.push(obj);
     }
     return out;
@@ -676,19 +676,22 @@ initMotorIA();
       estadoEl.innerText = data.mensaje || "✅ Estructura generada correctamente.";
 
       if (Array.isArray(data.estructura)) {
-        estructuraGenerada = data.estructura;
-        ultimaEstructuraLimpia = agruparEnSlides(construirEstructuraLimpia(data.estructura));
 
-        // PRO
-        planPro = aplicarReglasPro(construirPlanPro(ultimaEstructuraLimpia));
-        renderPlanPro(planPro);
+      estructuraGenerada = data.estructura;
+
+      // ✅ Ya viene listo desde backend
+      ultimaEstructuraLimpia = Array.isArray(data.estructura) ? data.estructura : [];
+
+      // ✅ PRO: construir plan y aplicar reglas (sobre estructura limpia)
+      planPro = aplicarReglasPro(construirPlanPro(ultimaEstructuraLimpia));
+      renderPlanPro(planPro);
 
         // Render normal
         const listaHTML = (ultimaEstructuraLimpia || []).map((obj, i) => {
           const bullets = (obj.bullets && obj.bullets.length)
             ? `<ul>${obj.bullets.map(b => `<li>${b}</li>`).join("")}</ul>`
             : "";
-          return `<li><b>${i + 1}. ${obj.titulo}</b>${bullets}</li>`;
+          return `<li><b>${i + 1}. ${obj.title}</b>${bullets}</li>`;
         }).join("");
 
         resultadoEl.innerHTML += `
@@ -945,106 +948,6 @@ if (s.needs && s.needs.chart) {
     fontSize: 16,
     wrap: true,
   });
-
-  // ====== NOVA PRO — imagen placeholder (FASE 2.8.4) ======
-  if (s.needs && s.needs.image) {
-    const r = s.render || {};
-    const imgBox = r.image || { x: 0.7, y: 1.6, w: 4.5, h: 3.2 };
-
-  slide.addText(
-    `🖼 Imagen PRO\n${s.imagePrompt || "Imagen conceptual alineada con la diapositiva"}`,
-    {
-      x: imgBox.x,
-      y: imgBox.y,
-      w: imgBox.w,
-      h: imgBox.h,
-      fontSize: 12,
-      color: "666666",
-      align: "center",
-      valign: "middle",
-      fill: { color: "F1F5F9" },
-      line: { color: "CBD5E1" },
-    }
-  );
-}
-        
-  // NOTA: Imagen y gráfico se insertarán en las fases siguientes (ya tienes sus módulos),
-  // aquí solo dejamos el motor listo para respetar el layout.
-    const actual = s;
-    if (!actual || !actual.title) continue;
-     
-       // ====== NOVA PRO — imagen placeholder (FASE 2) ======
-      const planSlideAuto = (planPro && planPro[i]) ? planPro[i] : null;
-      const hayImagen = planSlideAuto && planSlideAuto.needs && planSlideAuto.needs.image;
-
-      if (hayImagen) {
-  // Marco de imagen reservado (lado derecho)
-        slide.addShape(pptx.ShapeType.rect, {
-          x: 5.2,
-          y: 1.45,
-          w: 4.1,
-          h: 3.6,
-          line: { color: "94a3b8", width: 1 },
-          fill: { color: "0f172a" }
-        });
-
-        slide.addText("Imagen (Fase 2)", {
-          x: 5.2,
-          y: 3.15,
-          w: 4.1,
-          h: 0.4,
-          fontSize: 12,
-          align: "center",
-          color: "94a3b8"
-        });
-      }
-        
-    // 🧠 TÍTULO — Render PRO
-    const rTitle = planPro[i]?.render?.title;
-    if (rTitle) {
-      slide.addText(actual.title || "Sin título", {
-        ...rTitle,
-        fontSize: 22,
-        bold: true
-      });
-    }
-         
-// 🧠 IMAGEN — Render PRO (placeholder)
-const rImage = planPro[i]?.render?.image;
-if (rImage) {
-  slide.addText("🖼 Imagen generada por NOVA", {
-    ...rImage,
-    fontSize: 14,
-    align: "center",
-    color: "666666"
-  });
-}
-
-// 🧠 GRÁFICO — Render PRO (placeholder)
-const rChart = planPro[i]?.render?.chart;
-if (rChart) {
-  slide.addText("📊 Gráfico generado por NOVA", {
-    ...rChart,
-    fontSize: 14,
-    align: "center",
-    color: "444444"
-  });
-}                
-
-// 🖼️ FASE 2.3 — Reserva de espacio para imagen (sin generar aún)
-if (planPro && planPro[i] && planPro[i].needs.image) {
-  slide.addText("[Imagen reservada]", {
-    x: 5.6,
-    y: 1.5,
-    w: 3.5,
-    h: 3.5,
-    align: "center",
-    valign: "middle",
-    fontSize: 14,
-    color: "666666",
-    border: { pt: 1, color: "cccccc" }
-  });
-}
         
     console.log("🟢 Exportando PPT:", fileName);
     await pptx.writeFile({ fileName });
