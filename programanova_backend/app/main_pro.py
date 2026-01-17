@@ -1,21 +1,21 @@
 # ============================
-# Programa Nova - Backend REAL
-# main.py (FINAL)
+# Programa Nova - Backend REAL (PRO)
+# main_pro.py (FINAL)
 # ============================
 
 import os
 from datetime import datetime
 from typing import Optional
 
-from app.ia_assets import generate_image_data_url, generate_chart_spec
-
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from openai import OpenAI
 
-from fastapi.responses import JSONResponse
+from app.ia_assets import generate_image_data_url, generate_chart_spec
+
 import traceback
 
 # ============================
@@ -24,21 +24,10 @@ import traceback
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-if not OPENAI_API_KEY:
-    raise RuntimeError("❌ OPENAI_API_KEY no está definida en las variables de entorno")
-
-client = OpenAI(api_key=OPENAI_API_KEY)
-
-# ======================================================
-# 🔐 VERIFICACIÓN DE IA (MODO PRO)
-# (Solo añadimos — no se borra nada)
-# ======================================================
-
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-
 if not OPENAI_API_KEY or OPENAI_API_KEY.strip() == "":
     raise RuntimeError("❌ Backend PRO detenido: falta OPENAI_API_KEY")
 
+client = OpenAI(api_key=OPENAI_API_KEY)
 print("✅ Backend PRO iniciado con IA activa")
 
 # ============================
@@ -51,28 +40,26 @@ app = FastAPI(
     description="Backend real con IA para Nova Presentaciones"
 )
 
+# ============================
+# CORS (UNO SOLO, sin duplicados)
+# ============================
+
+ALLOWED_ORIGINS = [
+    "https://programanovapresentaciones.com",
+    "https://www.programanovapresentaciones.com",
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.get("/")
-def health():
-    return {"status": "ok", "service": "programa-nova-backend-pro"}
-
-# CORS (abierto para frontend web)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["https://programanovapresentaciones.com",
-                    "https://www.programanovapresentaciones.com"],
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["*"],
-)
-
 
 # ============================
 # MODELOS
@@ -103,20 +90,21 @@ class GenerarResponse(BaseModel):
 
 
 # ============================
-# ENDPOINT RAÍZ
+# ENDPOINT RAÍZ (UNO SOLO)
 # ============================
 
 @app.get("/")
 def root():
     return {
         "status": "ok",
-        "mensaje": "Programa Nova Backend operativo",
+        "mensaje": "Programa Nova Backend PRO operativo",
         "hora": datetime.utcnow().isoformat()
     }
 
 # ======================================================
 # 🧪 ENDPOINT DE PRUEBA PRO
 # ======================================================
+
 @app.get("/health-pro")
 def health_pro():
     return {
@@ -150,25 +138,14 @@ Devuelve:
         response = client.responses.create(
             model="gpt-4o-mini",
             input=[
-                {
-                    "role": "system",
-                    "content": "Eres Nova, IA colaborativa del proyecto Programa Nova."
-                },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
+                {"role": "system", "content": "Eres Nova, IA colaborativa del proyecto Programa Nova."},
+                {"role": "user", "content": prompt}
             ],
             temperature=0.6,
             max_output_tokens=500
         )
 
-        
         texto = ""
-
-        # Extracción robusta del texto desde OpenAI Responses
-        texto = ""
-
         try:
             if hasattr(response, "output_text") and response.output_text:
                 texto = response.output_text.strip()
@@ -184,7 +161,7 @@ Devuelve:
 
         if not texto:
             texto = "Respuesta vacía del modelo."
-        
+
         return ChatResponse(
             respuesta=texto,
             emocion="neutral",
@@ -197,6 +174,7 @@ Devuelve:
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 # ============================
 # GENERADOR DE PRESENTACIONES (IA REAL)
 # ============================
@@ -207,6 +185,7 @@ def decide_needs(title: str):
         "image": any(k in t for k in ["imagen", "portada", "impacto", "futuro", "cierre", "demo"]),
         "chart": any(k in t for k in ["grafico", "gráfico", "datos", "comparativa", "roadmap"])
     }
+
 
 @app.post("/generar", response_model=GenerarResponse)
 def generar_presentacion(data: GenerarRequest):
@@ -231,20 +210,16 @@ Devuelve una lista numerada con:
         response = client.responses.create(
             model="gpt-4o-mini",
             input=[
-                {
-                    "role": "system",
-                    "content": "Eres un generador profesional de presentaciones."
-                },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
+                {"role": "system", "content": "Eres un generador profesional de presentaciones."},
+                {"role": "user", "content": prompt}
             ],
             temperature=0.5,
             max_output_tokens=700
         )
 
-        texto = response.output_text.strip()
+        texto = getattr(response, "output_text", "") or ""
+        texto = texto.strip()
+
         lineas = [l.strip() for l in texto.split("\n") if l.strip()]
 
         slides = []
@@ -276,7 +251,6 @@ Devuelve una lista numerada con:
 
                 current_title = linea.split(".", 1)[1].strip()
                 current_bullets = []
-
             else:
                 current_bullets.append(linea.lstrip("- ").strip())
 
@@ -307,21 +281,15 @@ Devuelve una lista numerada con:
             estructura=slides
         )
 
-except Exception as e:
-    print("🔥 ERROR en /generar PRO:", str(e))
-    print(traceback.format_exc())
-
-    return JSONResponse(
-        status_code=500,
-        content={
-            "status": "error",
-            "where": "/generar",
-            "message": str(e),
-            "trace": traceback.format_exc()
-        }
-    )
- 
-
-
-
-   
+    except Exception as e:
+        print("🔥 ERROR en /generar PRO:", str(e))
+        print(traceback.format_exc())
+        return JSONResponse(
+            status_code=500,
+            content={
+                "status": "error",
+                "where": "/generar",
+                "message": str(e),
+                "trace": traceback.format_exc()
+            }
+        )
