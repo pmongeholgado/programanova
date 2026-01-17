@@ -286,5 +286,45 @@ Devuelve una lista numerada con:
                 "trace": traceback.format_exc()
             }
         )
-        
-    app.include_router(api)
+
+# ============================
+# IA ASSETS (IMAGEN + GRÁFICO)
+# ============================
+
+class ImagenRequest(BaseModel):
+    titulo: str = ""
+    prompt: str = ""
+
+
+class ImagenResponse(BaseModel):
+    dataUrl: str
+
+
+class GraficoRequest(BaseModel):
+    titulo: str = ""
+    contexto: str = ""
+
+
+class GraficoResponse(BaseModel):
+    type: str
+    title: str
+    labels: list
+    values: list
+
+
+@app.post("/generar-imagen", response_model=ImagenResponse)
+def generar_imagen(data: ImagenRequest):
+    prompt = data.prompt or f"Imagen profesional para: {data.titulo}"
+    data_url = generate_image_data_url(prompt)
+    return {"dataUrl": data_url}
+
+
+@app.post("/generar-grafico", response_model=GraficoResponse)
+def generar_grafico(data: GraficoRequest):
+    spec = generate_chart_spec({
+        "title": data.titulo,
+        "contexto": data.contexto
+    })
+    return spec
+    
+app.include_router(api)
