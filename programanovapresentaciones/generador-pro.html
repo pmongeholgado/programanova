@@ -853,7 +853,18 @@ if (!Array.isArray(planParaExportar) || planParaExportar.length === 0) {
       const slide = pptx.addSlide();
 
       // ✅ Fondo corporativo (aplicado a TODAS las slides)
-      slide.background = { color: "0b1220" };  
+      // ✅ Fondo blanco (limpio)
+      slide.background = { color: "FFFFFF" };
+
+      // ✅ Reborde azul claro (fino)
+      slide.addShape(pptx.ShapeType.rect, {
+        x: 0.15,
+        y: 0.15,
+        w: 9.7,
+        h: 5.3,
+        fill: { color: "FFFFFF", transparency: 100 }, // sin relleno real
+        line: { color: "60A5FA", width: 2 }
+      });
       
       // Título
       slide.addText(s.title, {
