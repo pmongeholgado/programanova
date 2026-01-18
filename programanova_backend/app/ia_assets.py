@@ -22,8 +22,8 @@ def _fallback_png_base64(text: str = "NOVA PRO") -> str:
         b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
         return b64
     except Exception:
-        # Si Pillow no está instalado, devolvemos vacío
-        return ""
+        # Si Pillow no está instalado, devolvemos un PNG mínimo (1x1) para que NUNCA sea vacío
+        return "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/6X8Z6QAAAAASUVORK5CYII="
 
 def _data_url_from_b64png(b64_png: str) -> str:
     if not b64_png:
