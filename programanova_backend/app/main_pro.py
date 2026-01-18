@@ -230,17 +230,6 @@ Devuelve una lista numerada con:
                         "needs": needs
                     }
 
-                    if needs.get("image"):
-                        slide["imageData"] = generate_image_data_url(
-                            f"Imagen profesional para diapositiva titulada '{current_title}'"
-                        )
-
-                    if needs.get("chart"):
-                        slide["chartSpec"] = generate_chart_spec({
-                            "title": current_title,
-                            "bullets": current_bullets
-                        })
-
                     slides.append(slide)
 
                 current_title = linea.split(".", 1)[1].strip()
@@ -255,17 +244,6 @@ Devuelve una lista numerada con:
                 "bullets": current_bullets,
                 "needs": needs
             }
-
-            if needs.get("image"):
-                slide["imageData"] = generate_image_data_url(
-                    f"Imagen profesional para diapositiva titulada '{current_title}'"
-                )
-
-            if needs.get("chart"):
-                slide["chartSpec"] = generate_chart_spec({
-                    "title": current_title,
-                    "bullets": current_bullets
-                })
 
             slides.append(slide)
 
