@@ -507,7 +507,7 @@ const engineStyles = {
     document.getElementById("estado").innerText = t.estadoListo;
   }
 
-  const API_BASE_URL = "https://programanovabackend-production.up.railway.app";
+  const API_BASE_URL = "https://programanovabackend-production-a426.up.railway.app";
 
   const savedLang = localStorage.getItem("nova_lang") || "es";
   document.getElementById("langSelector").value = savedLang;
@@ -616,7 +616,7 @@ initMotorIA();
 
   // ====== GENERAR (ÚNICA) — aquí va el await ======
   async function generar() {
-    let endpoint = "https://programanovabackend-production.up.railway.app/generar";
+    let endpoint = `${API_BASE_URL}/generar`;
       
     const tituloEl = document.getElementById("titulo");
     const slidesEl = document.getElementById("slides");
@@ -648,7 +648,7 @@ initMotorIA();
     switch (currentEngine) {
       case "nova":
       default:
-        endpoint = "https://programanovabackend-production.up.railway.app/generar";
+        endpoint = `${API_BASE_URL}/generar`;
         break;
     }
       
