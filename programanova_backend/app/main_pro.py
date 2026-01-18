@@ -315,7 +315,7 @@ class GraficoResponse(BaseModel):
 @app.post("/generar-imagen", response_model=ImagenResponse)
 async def generar_imagen(data: ImagenRequest):
     prompt = data.prompt or f"Imagen profesional para: {data.titulo}"
-    data_url = await generate_image_data_url(prompt)
+    data_url = generate_image_data_url(prompt)
     return {"dataUrl": data_url}
 
 
