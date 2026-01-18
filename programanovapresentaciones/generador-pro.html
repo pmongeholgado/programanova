@@ -155,6 +155,7 @@
   let estructuraGenerada = [];
   let ultimaEstructuraLimpia = [];
   let PRESENTACION_PRO = null;
+  let EXPORTANDO_PPT = false;
 
   // ====== FASE 2 (PRO) — Esqueleto de composición ======
   let planPro = [];
@@ -776,6 +777,18 @@ initMotorIA();
     
   // ====== Export ======
   async function exportarPPT() {
+      if (EXPORTANDO_PPT) {
+        console.warn("⛔ Exportación ya en curso, ignorando segundo click...");
+        return;
+      }
+      EXPORTANDO_PPT = true;
+
+      // Desactivar botones mientras exporta
+      const b1 = document.getElementById("btnPPT");
+      const b2 = document.getElementById("btnPPT2");
+      if (b1) b1.disabled = true;
+      if (b2) b2.disabled = true;
+
     if (!PRESENTACION_PRO) {
       alert("❌ Primero genera la presentación con IA.");
       return;
@@ -953,6 +966,12 @@ if (s.needs && s.needs.chart) {
       
 console.log("🟢 Exportando PPT:", fileName);
 await pptx.writeFile({ fileName });
+
+  EXPORTANDO_PPT = false;
+  const b1f = document.getElementById("btnPPT");
+  const b2f = document.getElementById("btnPPT2");
+  if (b1f) b1f.disabled = false;
+  if (b2f) b2f.disabled = false;
       
 }
     
