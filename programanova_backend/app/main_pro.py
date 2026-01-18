@@ -216,36 +216,58 @@ Devuelve una lista numerada con:
 
         lineas = [l.strip() for l in texto.split("\n") if l.strip()]
 
+        import re
+
         slides = []
         current_title = None
         current_bullets = []
 
         for linea in lineas:
-            if linea[0].isdigit() and "." in linea[:4]:
+            clean = (linea or "").replace("**", "").strip()
+            if not clean:
+                continue
+
+            # 1) Formato: "1. Título"
+            m1 = re.match(r"^(\d+)\.\s+(.*)$", clean)
+
+            # 2) Formato: "Diapositiva 1: Título"
+            m2 = re.match(r"^Diapositiva\s+(\d+)\s*:\s*(.*)$", clean, flags=re.IGNORECASE)
+
+            if m1 or m2:
+                # Cierra la slide anterior
                 if current_title:
-                    needs = decide_needs(current_title)
-                    slide = {
-                        "title": current_title,
-                        "bullets": current_bullets,
-                        "needs": needs
-                    }
+                    slides.append({
+                        "title": current_title.strip(),
+                        "bullets": [b for b in current_bullets if b],
+                    })
 
-                    slides.append(slide)
-
-                current_title = linea.split(".", 1)[1].strip()
+                # Abre nueva slide
+                current_title = (m1.group(2) if m1 else m2.group(2)).strip()
                 current_bullets = []
-            else:
-                current_bullets.append(linea.lstrip("- ").strip())
+                continue
 
+            # Bullet / idea
+            clean_bullet = clean.lstrip("-• ").strip()
+            if clean_bullet:
+                current_bullets.append(clean_bullet)
+
+        # Cierra última slide
         if current_title:
-            needs = decide_needs(current_title)
-            slide = {
-                "title": current_title,
-                "bullets": current_bullets,
-                "needs": needs
-            }
+            slides.append({
+                "title": current_title.strip(),
+                "bullets": [b for b in current_bullets if b],
+            })
 
-            slides.append(slide)
+        # 🔒 BLINDAJE FINAL: si por lo que sea no parsea nada, NO devolvemos vacío
+        target_n = int(data.num_diapositivas or 10)
+
+        if not slides:
+            slides = [{"title": f"Diapositiva {i+1}", "bullets": ["Idea principal"]} for i in range(target_n)]
+        else:
+            # Ajusta a EXACTAMENTE num_diapositivas (ni más ni menos)
+            slides = slides[:target_n]
+            while len(slides) < target_n:
+                slides.append({"title": f"Diapositiva {len(slides)+1}", "bullets": ["Idea principal"]})
 
         return GenerarResponse(
             mensaje="Presentación generada correctamente con IA real (imagenes + graficos)",
