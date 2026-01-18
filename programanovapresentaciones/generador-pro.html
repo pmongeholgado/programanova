@@ -949,10 +949,13 @@ if (s.needs && s.needs.chart) {
     wrap: true,
   });
         
-    console.log("🟢 Exportando PPT:", fileName);
-    await pptx.writeFile({ fileName });
-  }
-  }
+}
+      
+console.log("🟢 Exportando PPT:", fileName);
+await pptx.writeFile({ fileName });
+      
+}
+    
 </script>
 </body>
 </html>
