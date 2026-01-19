@@ -873,7 +873,7 @@ if (!Array.isArray(planParaExportar) || planParaExportar.length === 0) {
         idx: s.idx,
         title: s.title,
         needsImage: !!s?.needs?.image,
-        hasImageData: !!s.imageData,
+        imgLen: (s.imageData ? s.imageData.length : 0),
         needsChart: !!s?.needs?.chart,
         hasChartSpec: !!s.chartSpec
       }))
