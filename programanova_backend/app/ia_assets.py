@@ -68,13 +68,35 @@ def generate_image_data_url(
         )
 
         b64_png = ""
-        # SDK style
-        if hasattr(resp, "data") and resp.data and hasattr(resp.data[0], "b64_json"):
-            b64_png = resp.data[0].b64_json or ""
-        # dict style
-        elif isinstance(resp, dict):
-            b64_png = (resp.get("data") or [{}])[0].get("b64_json", "") or ""
+        img_url = ""
 
+        # Caso SDK objeto
+        if hasattr(resp, "data") and resp.data:
+            d0 = resp.data[0]
+            # b64 directo
+            if hasattr(d0, "b64_json") and d0.b64_json:
+                b64_png = d0.b64_json
+            # o URL
+            elif hasattr(d0, "url") and d0.url:
+                img_url = d0.url
+
+        # Caso dict
+        elif isinstance(resp, dict):
+            d0 = (resp.get("data") or [{}])[0] or {}
+            b64_png = d0.get("b64_json", "") or ""
+            img_url = d0.get("url", "") or ""
+
+        # ✅ Si vino URL, la descargamos y la convertimos a base64
+        if (not b64_png) and img_url:
+            try:
+                import requests
+                r = requests.get(img_url, timeout=25)
+                if r.ok and r.content:
+                    b64_png = base64.b64encode(r.content).decode("utf-8")
+            except Exception:
+                pass
+
+        # ✅ Fallback si no se pudo
         if not b64_png:
             b64_png = _fallback_png_base64(prompt)
 
