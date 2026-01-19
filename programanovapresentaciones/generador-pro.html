@@ -933,7 +933,9 @@ if (s.needs && s.needs.image) {
 
   if (s.imageData) {
     slide.addImage({
-      data: s.imageData,
+    data: (String(s.imageData).startsWith("data:image/") 
+      ? String(s.imageData).split(",")[1] 
+      : s.imageData),
       x: imgBox.x,
       y: imgBox.y,
       w: imgBox.w,
