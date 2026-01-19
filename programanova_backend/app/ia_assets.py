@@ -11,7 +11,7 @@ from typing import Any, Dict, Union
 def _fallback_png_base64(text: str = "NOVA PRO") -> str:
     try:
         from PIL import Image, ImageDraw  # pillow
-        img = Image.new("RGB", (1024, 1024), color=(15, 23, 42))  # fondo oscuro
+        img = Image.new("RGB", (1024, 1024), color=(255, 255, 255))  # fondo blanco
         draw = ImageDraw.Draw(img)
         msg = (text or "NOVA PRO")[:60]
         draw.text((60, 80), "Imagen PRO (fallback)", fill=(203, 213, 225))
@@ -65,6 +65,7 @@ def generate_image_data_url(
             model=model,
             prompt=prompt,
             size=size,
+            response_format="b64_json"
         )
 
         b64_png = ""
