@@ -875,6 +875,7 @@ if (!Array.isArray(planParaExportar) || planParaExportar.length === 0) {
         needsImage: !!s?.needs?.image,
         imgLen: (s.imageData ? s.imageData.length : 0),
         imgHead: (s.imageData ? String(s.imageData).slice(0, 30) : ""),
+        hasHeader: (s.imageData ? String(s.imageData).startsWith("data:image/") : false),
         needsChart: !!s?.needs?.chart,
         hasChartSpec: !!s.chartSpec
       }))
@@ -938,7 +939,7 @@ if (s.needs && s.needs.image) {
       : String(s.imageData);
 
   slide.addImage({
-    data: `data:image/png;base64,${rawB64}`,
+      data: rawB64,
       x: imgBox.x,
       y: imgBox.y,
       w: imgBox.w,
