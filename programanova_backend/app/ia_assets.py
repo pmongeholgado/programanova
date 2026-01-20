@@ -70,7 +70,8 @@ def generate_image_data_url(
 
         b64_png = ""
         img_url = ""
-
+        used_fallback = False
+        
         # Caso SDK objeto
         if hasattr(resp, "data") and resp.data:
             d0 = resp.data[0]
@@ -96,15 +97,21 @@ def generate_image_data_url(
                     b64_png = base64.b64encode(r.content).decode("utf-8")
             except Exception:
                 pass
-
+        
+        return _data_url_from_b64png(b64_png)
         # ✅ Fallback si no se pudo
         if not b64_png:
+            used_fallback = True
             b64_png = _fallback_png_base64(prompt)
 
-        return _data_url_from_b64png(b64_png)
+        if used_fallback:
+            print("⚠️ FALLBACK ACTIVADO -> usando PNG fallback len =", len(b64_png))
+        else:
+            print("✅ IMAGEN REAL OK -> b64 recibido len =", len(b64_png))
 
     except Exception:
         b64 = _fallback_png_base64(prompt)
+        print("❌ EXCEPTION -> usando fallback len =", len(b64))
         return _data_url_from_b64png(b64)
 
 # ============================
