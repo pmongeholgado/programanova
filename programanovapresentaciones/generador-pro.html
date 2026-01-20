@@ -806,6 +806,35 @@ initMotorIA();
     return plan;
   }
     
+  function toPptxDataUrl(input) {
+    if (!input) return "";
+
+    const s = String(input).trim();
+
+    // Ya viene perfecto
+    if (s.startsWith("data:image/")) return s;
+
+    // Viene como "image/png;base64,...." (le falta "data:")
+    if (s.startsWith("image/")) return "data:" + s;
+
+    // Viene como "data:image/png;base64,AAA..." pero alguien lo recortó raro
+    if (s.includes("base64,") && !s.startsWith("data:")) return "data:" + s;
+
+    // Viene como "AAA..." (base64 puro)
+    if (!s.includes(",")) return "data:image/png;base64," + s;
+
+    // Viene con coma (dataUrl o pseudo-dataUrl)
+    const parts = s.split(",");
+    const head = parts[0] || "";
+    const b64 = parts[1] || "";
+
+    if (head.startsWith("data:image/")) return s;
+    if (head.startsWith("image/")) return "data:" + head + "," + b64;
+
+    // Cualquier otra cosa → nos quedamos con el b64
+    return "data:image/png;base64," + b64;
+  }
+    
   // ====== Export ======
   async function exportarPPT() {
       if (EXPORTANDO_PPT) {
@@ -934,20 +963,14 @@ if (s.needs && s.needs.image) {
       : { x: 5.2, y: 1.5, w: 4.2, h: 4.0 };
 
   if (s.imageData) {
-    const rawB64 = String(s.imageData).includes(",")
-      ? String(s.imageData).split(",")[1]
-      : String(s.imageData);
-
-  slide.addImage({
-      data: rawB64,
+    slide.addImage({
+      data: toPptxDataUrl(s.imageData),
       x: imgBox.x,
       y: imgBox.y,
       w: imgBox.w,
       h: imgBox.h
     });
-  }
-  
-  else {
+  } else {
     slide.addText("[Imagen no disponible]", {
       x: imgBox.x,
       y: imgBox.y,
@@ -959,7 +982,6 @@ if (s.needs && s.needs.image) {
       color: "666666"
     });
   }
-}
 
 // 📊 GRÁFICO REAL — NOVA PRO
 if (s.needs && s.needs.chart) {
