@@ -15,6 +15,8 @@ from pydantic import BaseModel
 from openai import OpenAI
 
 from app.ia_assets import generate_image_data_url, generate_chart_spec
+from fastapi.responses import Response
+from app.pptx_generator_pro import crear_pptx_con_imagenes
 
 import traceback
 
