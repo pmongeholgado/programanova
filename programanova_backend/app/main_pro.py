@@ -329,4 +329,117 @@ def generar_grafico(data: GraficoRequest):
     })
     return spec
     
+@app.post("/generar-ppt")
+async def generar_ppt(data: GenerarRequest):
+    """
+    Devuelve el PPTX real con imágenes IA incrustadas en slides 1, 6, 9 y 10
+    """
+    try:
+        # 1) Generar estructura (igual que /generar)
+        prompt = f"""
+Eres un experto creador de presentaciones profesionales.
+
+Genera una estructura clara de {data.num_diapositivas} diapositivas
+para una presentación titulada:
+
+\"{data.titulo}\"
+
+Basándote en el siguiente contenido:
+
+\"\"\"{data.contenido}\"\"\"
+
+Devuelve una lista numerada con:
+- Título de la diapositiva
+- Idea principal
+"""
+
+        response = client.responses.create(
+            model="gpt-4o-mini",
+            input=[
+                {"role": "system", "content": "Eres un generador profesional de presentaciones."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.5,
+            max_output_tokens=700
+        )
+
+        texto = getattr(response, "output_text", "") or ""
+        texto = texto.strip()
+        lineas = [l.strip() for l in texto.split("\n") if l.strip()]
+
+        import re
+
+        slides = []
+        current_title = None
+        current_bullets = []
+
+        for linea in lineas:
+            clean = (linea or "").replace("**", "").strip()
+            if not clean:
+                continue
+
+            m1 = re.match(r"^(\d+)\.\s+(.*)$", clean)
+            m2 = re.match(r"^Diapositiva\s+(\d+)\s*:\s*(.*)$", clean, flags=re.IGNORECASE)
+
+            if m1 or m2:
+                if current_title:
+                    slides.append({
+                        "title": current_title.strip(),
+                        "bullets": [b for b in current_bullets if b],
+                    })
+
+                current_title = (m1.group(2) if m1 else m2.group(2)).strip()
+                current_bullets = []
+                continue
+
+            clean_bullet = clean.lstrip("-• ").strip()
+            if clean_bullet:
+                current_bullets.append(clean_bullet)
+
+        if current_title:
+            slides.append({
+                "title": current_title.strip(),
+                "bullets": [b for b in current_bullets if b],
+            })
+
+        # Blindaje: EXACTAMENTE num_diapositivas
+        target_n = int(data.num_diapositivas or 10)
+        if not slides:
+            slides = [{"title": f"Diapositiva {i+1}", "bullets": ["Idea principal"]} for i in range(target_n)]
+        else:
+            slides = slides[:target_n]
+            while len(slides) < target_n:
+                slides.append({"title": f"Diapositiva {len(slides)+1}", "bullets": ["Idea principal"]})
+
+        # 2) Generar imágenes IA SOLO para 1,6,9,10 (dataUrl)
+        image_prompts = {
+            1: f"Portada profesional moderna 16:9 para la presentación '{data.titulo}', estilo corporativo elegante",
+            6: f"Imagen profesional relacionada con '{slides[5]['title']}', estilo corporativo moderno 16:9",
+            9: f"Imagen profesional relacionada con '{slides[8]['title']}', estilo corporativo moderno 16:9",
+            10: f"Imagen de cierre profesional relacionada con '{slides[9]['title']}', estilo corporativo elegante 16:9",
+        }
+
+        images = {}
+        for slide_num, img_prompt in image_prompts.items():
+            images[slide_num] = generate_image_data_url(img_prompt)
+
+        # 3) Crear PPTX real con imágenes incrustadas
+        pptx_bytes = crear_pptx_con_imagenes(data.titulo, slides, images)
+
+        filename = "presentacion_nova_pro.pptx"
+
+        return Response(
+            content=pptx_bytes,
+            media_type="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            headers={"Content-Disposition": f'attachment; filename="{filename}"'}
+        )
+
+    except Exception as e:
+        print("🔥 ERROR en /generar-ppt:", str(e))
+        print(traceback.format_exc())
+        return JSONResponse(
+            status_code=500,
+            content={"status": "error", "where": "/generar-ppt", "message": str(e)}
+        )
+    
 app.include_router(api)
