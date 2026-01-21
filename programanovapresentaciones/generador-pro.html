@@ -424,39 +424,29 @@ switch (slide.layout) {
   }
 
   function renderPlanPro(plan) {
-    const resultadoEl = document.getElementById("resultado");
-    if (!resultadoEl) return;
+      const resultadoEl = document.getElementById("resultado");
+      if (!resultadoEl) return;
 
-    resultadoEl.innerHTML += `
-      <hr style="margin:24px 0; border-color:#334155;">
-      <h3 style="color:#38bdf8;">
-        🧠 Plan NOVA PRO (Fase 2)
-      </h3>
-      <div style="text-align:center; margin-bottom:12px; font-size:14px; color:#94a3b8;">
-        Motor IA activo: <b>${currentEngine || "nova"}</b>
-      </div>
+      resultadoEl.innerHTML += `
+        <hr style="margin:24px 0; border-color:#334155;">
+        <h3 style="color:#38bdf8;">🧠 Plan NOVA PRO (Fase 2)</h3>
+        <div style="text-align:center; margin-bottom:12px; font-size:14px; color:#94a3b8;">
+          Motor IA activo: <b>${currentEngine || "nova"}</b>
+        </div>
 
-// 🔹 FASE 3.1.3 — Preparado para estilos por motor IA
-const engineStyles = {
-  nova: { color: "#38bdf8" },
-  openai: { color: "#22c55e" },
-  claude: { color: "#f59e0b" },
-  gemini: { color: "#a855f7" }
-};
-      
-      <ul>
-        ${(plan || []).map((slide, i) => `
-          <li style="margin-bottom:12px;">
-            <b>Diapositiva ${i + 1}:</b> ${slide.title}<br>
-            🖼 Imagen: ${slide.needs.image ? "Sí" : "No"}<br>
-            📊 Gráfico: ${slide.needs.chart ? "Sí" : "No"}<br>
-            🎨 Tema: ${slide.theme.mode}
-          </li>
-        `).join("")}
-      </ul>
-    `;
-  }
-
+        <ul>
+          ${(plan || []).map((slide, i) => `
+            <li style="margin-bottom:12px;">
+              <b>Diapositiva ${i + 1}:</b> ${slide.title}<br>
+              🖼 Imagen: ${slide.needs?.image ? "Sí" : "No"}<br>
+              📊 Gráfico: ${slide.needs?.chart ? "Sí" : "No"}<br>
+              🎨 Tema: ${slide.theme?.mode || "corporate"}
+            </li>
+          `).join("")}
+        </ul>
+      `;
+    }
+    
   // ====== i18n ======
   let currentLang = "es";
   
