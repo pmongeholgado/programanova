@@ -856,56 +856,7 @@ initMotorIA();
       return;
     }
       
-try {
-  // ✅ Mostrar "reloj" o estado (si tienes un loader, aquí se activa)
-  console.log("⏳ Exportando PPTX con imágenes IA...");
-
-  const payload = {
-    titulo: (document.getElementById("titulo")?.value || "Presentación Nova"),
-    num_diapositivas: 10,
-    contenido: (document.getElementById("contenido")?.value || "")
-  };
-
-  const res = await fetch("https://programanovabackend-production-a426.up.railway.app/generar-ppt", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  });
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error("Error backend /generar-ppt: " + text);
-  }
-
-  const blob = await res.blob();
-  const url = window.URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "presentacion_nova_pro.pptx";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-
-  window.URL.revokeObjectURL(url);
-
-  console.log("✅ PPTX descargado correctamente");
-  return;
-    
-} catch (err) {
-  console.error("🔥 Fallo exportando PPT:", err);
-  alert("❌ Error exportando PPT. Mira consola (F12).");
-} finally {
-  // ✅ Reactivar botones pase lo que pase
-  EXPORTANDO_PPT = false;
-  const loader = document.getElementById("loader");
-  
-  const b1f = document.getElementById("btnPPT");
-  const b2f = document.getElementById("btnPPT2");
-  if (b1f) b1f.disabled = false;
-  if (b2f) b2f.disabled = false;
-  if (loader) loader.style.display = "none";
-}
+  // ✅ Pase lo que pase: liberar estado + reactivar botones + apagar loader
 
     const plan = PRESENTACION_PRO;
       
@@ -1102,12 +1053,7 @@ if (s.needs && s.needs.chart) {
       
 console.log("🟢 Exportando PPT:", fileName);
 await pptx.writeFile({ fileName });
-
-  EXPORTANDO_PPT = false;
-  const b1f = document.getElementById("btnPPT");
-  const b2f = document.getElementById("btnPPT2");
-  if (b1f) b1f.disabled = false;
-  if (b2f) b2f.disabled = false;
+console.log("✅ PPTX exportado correctamente");
       
 }
     
