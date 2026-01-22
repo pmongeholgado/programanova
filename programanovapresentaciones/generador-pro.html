@@ -826,88 +826,62 @@ initMotorIA();
   }
     
   // ====== Export ======
-  async function exportarPPT() {
-      if (EXPORTANDO_PPT) {
-        console.warn("⛔ Exportación ya en curso, ignorando segundo click...");
-        return;
-      }
-      EXPORTANDO_PPT = true;
-      const loader = document.getElementById("loader");
-      if (loader) loader.style.display = "block";
+async function exportarPPT() {
+  if (EXPORTANDO_PPT) {
+    console.warn("⛔ Exportación ya en curso, ignorando segundo click...");
+    return;
+  }
 
-      // Desactivar botones mientras exporta
-      const b1 = document.getElementById("btnPPT");
-      const b2 = document.getElementById("btnPPT2");
-      if (b1) b1.disabled = true;
-      if (b2) b2.disabled = true;
+  EXPORTANDO_PPT = true;
 
+  const loader = document.getElementById("loader");
+  const b1 = document.getElementById("btnPPT");
+  const b2 = document.getElementById("btnPPT2");
+
+  // Encender loader y bloquear botones
+  if (loader) loader.style.display = "block";
+  if (b1) b1.disabled = true;
+  if (b2) b2.disabled = true;
+
+  try {
+    // ✅ Validaciones
     if (!PRESENTACION_PRO) {
       alert("❌ Primero genera la presentación con IA.");
-
-      EXPORTANDO_PPT = false;
-      const b1f = document.getElementById("btnPPT");
-      const b2f = document.getElementById("btnPPT2");
-      if (b1f) b1f.disabled = false;
-      if (b2f) b2f.disabled = false;
-
-      const loader = document.getElementById("loader");
-      if (loader) loader.style.display = "none";
-
       return;
     }
-      
-  // ✅ Pase lo que pase: liberar estado + reactivar botones + apagar loader
-
-    const plan = PRESENTACION_PRO;
-      
     if (!Array.isArray(ultimaEstructuraLimpia) || ultimaEstructuraLimpia.length === 0) {
-      alert("Primero genera una presentación.");
+      alert("❌ Primero genera una presentación.");
       return;
     }
     if (typeof PptxGenJS === "undefined") {
-      alert("No se ha cargado la librería de PowerPoint. Recarga la página.");
+      alert("❌ No se ha cargado la librería de PowerPoint. Recarga la página.");
       return;
     }
 
-    const titulo = (document.getElementById("titulo").value || "Nova_Presentacion").trim();
+    // ✅ Nombre de archivo
+    const titulo = (document.getElementById("titulo")?.value || "Nova_Presentacion").trim();
     const safeTitle = titulo.replace(/[^\w\-]+/g, "_").slice(0, 40) || "Nova_Presentacion";
     const fileName = `${safeTitle}_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.pptx`;
 
+    console.log("⏳ Exportando PPTX con imágenes IA...");
+
     const pptx = new PptxGenJS();
 
-    // ====== MODO PRO: si existe planPro, lo usamos; si no, lo construimos ======
-    let planParaExportar = Array.isArray(planPro) && planPro.length ? planPro : null;
-    // ===== PASO 4 PRO — Orquestación FINAL antes de exportar =====
-    if (!planParaExportar) {
-      // Construimos el plan PRO desde la última estructura generada
-      planParaExportar = aplicarReglasPro(
-        construirPlanPro(ultimaEstructuraLimpia)
-      );
+    // ✅ Construir plan PRO FINAL
+    let planParaExportar = (Array.isArray(planPro) && planPro.length)
+      ? planPro
+      : aplicarReglasPro(construirPlanPro(ultimaEstructuraLimpia));
+
+    if (!Array.isArray(planParaExportar) || planParaExportar.length === 0) {
+      alert("❌ No se pudo construir el plan PRO para exportar.");
+      return;
     }
 
-// Seguridad extra
-if (!Array.isArray(planParaExportar) || planParaExportar.length === 0) {
-  alert("❌ No se pudo construir el plan PRO para exportar.");
-  return;
-}
-
-      
-    if (!planParaExportar) {
-      // Generamos el plan PRO desde la estructura limpia
-      const tmp = construirPlanPro(ultimaEstructuraLimpia);
-      planParaExportar = aplicarReglasPro(tmp);
-    }
-
-    // ✅ IA REAL entra AQUÍ (no en "generar estructura")
+    // ✅ IA REAL entra aquí
     const motorIA = currentEngine || "nova";
     planParaExportar = await prepararAssetsIA(planParaExportar, motorIA);
-    console.log("🧪 CHECK IMÁGENES:", planParaExportar.map(s => ({
-      idx: s.idx,
-      title: s.title,
-      needsImage: !!(s?.needs?.image),
-      imgOk: !!(s.imageData && String(s.imageData).startsWith("data:image/")),
-      imgLen: s.imageData ? String(s.imageData).length : 0
-    })));
+
+    // ✅ DEBUG (como ya tienes en consola)
     console.log("🧠 PLAN FINAL PARA EXPORTAR (DEBUG):",
       planParaExportar.map(s => ({
         idx: s.idx,
@@ -915,154 +889,146 @@ if (!Array.isArray(planParaExportar) || planParaExportar.length === 0) {
         needsImage: !!s?.needs?.image,
         imgLen: (s.imageData ? s.imageData.length : 0),
         imgHead: (s.imageData ? String(s.imageData).slice(0, 30) : ""),
-        hasHeader: (s.imageData ? String(s.imageData).startsWith("data:image/") : false),
         needsChart: !!s?.needs?.chart,
         hasChartSpec: !!s.chartSpec
       }))
     );
-  
-    // 🔒 FASE 2.9 — Normalización final antes de exportar
-    const planProParaExportar = (planPro || []).filter(s =>
-      s &&
-      s.title &&
-      s.needs &&
-      s.needs.text !== false
-    );
-      
+
+    // ✅ Slides
     for (let i = 0; i < planParaExportar.length; i++) {
       const s = planParaExportar[i];
       if (!s || !s.title) continue;
 
       const slide = pptx.addSlide();
 
-      // ✅ Fondo corporativo (aplicado a TODAS las slides)
-      // ✅ Fondo blanco (limpio)
+      // Fondo blanco
       slide.background = { color: "FFFFFF" };
 
-      // ✅ Reborde azul claro (fino)
+      // ✅ Reborde azul en TODAS
       slide.addShape(pptx.ShapeType.rect, {
         x: 0.15,
         y: 0.15,
         w: 9.7,
         h: 5.3,
-        fill: { color: "FFFFFF", transparency: 100 }, // sin relleno real
+        fill: { color: "FFFFFF", transparency: 100 },
         line: { color: "60A5FA", width: 2 }
       });
-      
-      // Título
+
+      // Título (siempre visible)
       slide.addText(s.title, {
-        x: 0.5,
-        y: 0.5,
+        x: 0.6,
+        y: 0.45,
         w: 9,
-        h: 0.8,
-        fontSize: 22,
+        h: 0.6,
+        fontSize: 26,
         bold: true,
+        color: "111111"
       });
 
-      // 🧠 FASE 2.9.3 — Layout PRO final
-      const layout = s.render || {};
+      // Layout seguro
+      const textBox = (s.render && s.render.text) || { x: 0.7, y: 1.6, w: 4.4, h: 3.7 };
+      const imgBox  = (s.render && s.render.image) || { x: 5.3, y: 1.6, w: 4.1, h: 3.7 };
+      const chartBox = (s.render && s.render.chart) || { x: 5.3, y: 1.6, w: 4.1, h: 3.7 };
 
-      const textBox = layout.text || { x: 0.7, y: 1.5, w: 9, h: 4.5 };
-      const imageBox = layout.image || { x: 0.7, y: 1.5, w: 4.2, h: 4.0 };
-      const chartBox = layout.chart || { x: 5.2, y: 1.5, w: 4.2, h: 4.0 };
+      // ✅ TEXTO (SIEMPRE)
+      const bullets = Array.isArray(s.bullets) ? s.bullets : [];
+      const texto = bullets.length ? bullets.map(b => `- ${b}`).join("\n") : "- Idea principal";
 
-// 🖼️ IMAGEN REAL — NOVA PRO
-if (s.needs && s.needs.image) {
-  const imgBox =
-    (s.render && s.render.image)
-      ? s.render.image
-      : { x: 5.2, y: 1.5, w: 4.2, h: 4.0 };
+      slide.addText(texto, {
+        x: textBox.x,
+        y: textBox.y,
+        w: textBox.w,
+        h: textBox.h,
+        fontSize: 16,
+        wrap: true,
+        color: "111111"
+      });
 
-  if (s.imageData) {
-    slide.addImage({
-      data: toPptxDataUrl(s.imageData),
-      x: imgBox.x,
-      y: imgBox.y,
-      w: imgBox.w,
-      h: imgBox.h
-    });
-  } else {
-    slide.addText("[Imagen no disponible]", {
-      x: imgBox.x,
-      y: imgBox.y,
-      w: imgBox.w,
-      h: imgBox.h,
-      fontSize: 12,
-      align: "center",
-      valign: "middle",
-      color: "666666"
-    });
-  }
-
-// 📊 GRÁFICO REAL — NOVA PRO
-if (s.needs && s.needs.chart) {
-  const cBox =
-    (s.render && s.render.chart)
-      ? s.render.chart
-      : chartBox;
-
-  if (s.chartSpec && Array.isArray(s.chartSpec.labels) && Array.isArray(s.chartSpec.values)) {
-    const spec = s.chartSpec;
-
-    slide.addChart(
-      spec.type === "line"
-        ? pptx.ChartType.line
-        : spec.type === "pie"
-        ? pptx.ChartType.pie
-        : pptx.ChartType.bar,
-      [
-        {
-          name: spec.title || s.title,
-          labels: spec.labels,
-          values: spec.values
+      // ✅ IMAGEN (si toca)
+      if (s.needs?.image) {
+        if (s.imageData && String(s.imageData).startsWith("data:image/")) {
+          slide.addImage({
+            data: toPptxDataUrl(s.imageData),
+            x: imgBox.x,
+            y: imgBox.y,
+            w: imgBox.w,
+            h: imgBox.h
+          });
+        } else {
+          slide.addText("[Imagen no disponible]", {
+            x: imgBox.x,
+            y: imgBox.y,
+            w: imgBox.w,
+            h: imgBox.h,
+            fontSize: 12,
+            align: "center",
+            valign: "middle",
+            color: "666666"
+          });
         }
-      ],
-      {
-        x: cBox.x,
-        y: cBox.y,
-        w: cBox.w,
-        h: cBox.h,
-        title: spec.title || s.title,
-        showLegend: true
       }
-    );
-  } else {
-    // Fallback limpio si no hay datos de gráfico
-    slide.addText("[Gráfico no disponible]", {
-      x: cBox.x,
-      y: cBox.y,
-      w: cBox.w,
-      h: cBox.h,
-      fontSize: 12,
-      align: "center",
-      valign: "middle",
-      color: "444444"
-    });
-  }
-} 
-} // ✅ CIERRE if (s.needs && s.needs.image)
-        
-  // Texto (bullets)
-  const bullets = Array.isArray(s.bullets) ? s.bullets : [];
-  const texto = bullets.length ? bullets.map(b => `- ${b}`).join("\n") : "- Idea principal";
 
-  // ✅ FASE 2.9.4 — Texto (bullets) respetando layout PRO
-  slide.addText(texto, {
-    x: textBox.x,
-    y: textBox.y,
-    w: textBox.w,
-    h: textBox.h,
-    fontSize: 16,
-    wrap: true,
-  });
-        
-}
-      
-console.log("🟢 Exportando PPT:", fileName);
-await pptx.writeFile({ fileName });
-console.log("✅ PPTX exportado correctamente");
-      
-}
+      // ✅ GRÁFICO (si toca)
+      if (s.needs?.chart) {
+        if (s.chartSpec && Array.isArray(s.chartSpec.labels) && Array.isArray(s.chartSpec.values)) {
+          const spec = s.chartSpec;
+
+          slide.addChart(
+            spec.type === "line"
+              ? pptx.ChartType.line
+              : spec.type === "pie"
+              ? pptx.ChartType.pie
+              : pptx.ChartType.bar,
+            [{
+              name: spec.title || s.title,
+              labels: spec.labels,
+              values: spec.values
+            }],
+            {
+              x: chartBox.x,
+              y: chartBox.y,
+              w: chartBox.w,
+              h: chartBox.h,
+              title: spec.title || s.title,
+              showLegend: true
+            }
+          );
+        } else {
+          slide.addText("[Gráfico no disponible]", {
+            x: chartBox.x,
+            y: chartBox.y,
+            w: chartBox.w,
+            h: chartBox.h,
+            fontSize: 12,
+            align: "center",
+            valign: "middle",
+            color: "444444"
+          });
+        }
+      }
+    }
+
+    // ✅ Export real
+    console.log("🟢 Exportando PPT:", fileName);
+    await pptx.writeFile({ fileName });
+    console.log("✅ PPTX exportado correctamente");
+
+  } catch (err) {
+    console.error("🔥 Fallo exportando PPT:", err);
+    alert("❌ Error exportando PPT. Mira consola (F12).");
+  } finally {
+    // ✅ ÚNICO sitio de desbloqueo (no duplicar nunca)
+    EXPORTANDO_PPT = false;
+
+    const loader = document.getElementById("loader");
+    const b1f = document.getElementById("btnPPT");
+    const b2f = document.getElementById("btnPPT2");
+
+    if (b1f) b1f.disabled = false;
+    if (b2f) b2f.disabled = false;
+    if (loader) loader.style.display = "none";
+  }
+}       
     
 </script>
 </body>
