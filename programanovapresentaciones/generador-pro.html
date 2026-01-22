@@ -901,6 +901,13 @@ if (!Array.isArray(planParaExportar) || planParaExportar.length === 0) {
     // ✅ IA REAL entra AQUÍ (no en "generar estructura")
     const motorIA = currentEngine || "nova";
     planParaExportar = await prepararAssetsIA(planParaExportar, motorIA);
+    console.log("🧪 CHECK IMÁGENES:", planParaExportar.map(s => ({
+      idx: s.idx,
+      title: s.title,
+      needsImage: !!(s?.needs?.image),
+      imgOk: !!(s.imageData && String(s.imageData).startsWith("data:image/")),
+      imgLen: s.imageData ? String(s.imageData).length : 0
+    })));
     console.log("🧠 PLAN FINAL PARA EXPORTAR (DEBUG):",
       planParaExportar.map(s => ({
         idx: s.idx,
