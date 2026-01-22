@@ -944,21 +944,9 @@ async function exportarPPT() {
         color: "111111"
       });
 
-      // ✅ IMAGEN (si toca)
-      if (s.needs?.image) {
-        if (s.imageData && String(s.imageData).startsWith("data:image/")) {
-            const idx = s.idx || (i + 1);
+// ✅ Garantía PRO: 2 gráficos sí o sí en slides 5 y 7 (SIEMPRE)
+const idx = s.idx || (i + 1);
 
-            let imgBox = { x: 5.0, y: 1.4, w: 4.3, h: 3.7 }; // default visible
-            let textBox = { x: 0.7, y: 1.6, w: 4.0, h: 3.6 }; // texto a la izquierda
-
-            // 🔥 Slides clave: imagen grande sí o sí
-            if (idx === 1 || idx === 6 || idx === 10) {
-            imgBox = { x: 4.8, y: 1.2, w: 4.7, h: 4.0 };
-            textBox = { x: 0.7, y: 1.8, w: 3.8, h: 3.2 };
-           }
-
-            // ✅ Garantía PRO: 2 gráficos sí o sí en slides 5 y 7
 if (idx === 5) {
   s.needs = s.needs || {};
   s.needs.chart = true;
@@ -980,6 +968,39 @@ if (idx === 7) {
     values: [20, 45, 70]
   };
 }
+
+      // ✅ IMAGEN (si toca)
+      if (s.needs?.image) {
+        const idx = s.idx || (i + 1);
+
+        let imgBox = { x: 5.0, y: 1.4, w: 4.3, h: 3.7 }; // default visible
+
+        // 🔥 Slides clave: imagen grande sí o sí
+        if (idx === 1 || idx === 6 || idx === 10) {
+          imgBox = { x: 4.8, y: 1.2, w: 4.7, h: 4.0 };
+        }
+
+        if (s.imageData && String(s.imageData).startsWith("data:image/")) {
+          slide.addImage({
+            data: toPptxDataUrl(s.imageData),
+            x: imgBox.x,
+            y: imgBox.y,
+            w: imgBox.w,
+            h: imgBox.h
+          });
+        } else {
+          slide.addText("[Imagen no disponible]", {
+            x: imgBox.x,
+            y: imgBox.y,
+            w: imgBox.w,
+            h: imgBox.h,
+            fontSize: 12,
+            align: "center",
+            valign: "middle",
+            color: "666666"
+          });
+        }
+      }       
             
     slide.addImage({
             data: toPptxDataUrl(s.imageData),
