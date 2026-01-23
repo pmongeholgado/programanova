@@ -896,7 +896,7 @@ async function exportarPPT() {
 
     // ✅ Slides
     for (let i = 0; i < planParaExportar.length; i++) {
-      const s = planParaExportar[i];
+        let s = planParaExportar[i];
       if (!s || !s.title) continue;
 
       const slide = pptx.addSlide();
@@ -981,8 +981,10 @@ if (idx === 7) {
         }
 
         if (s.imageData && String(s.imageData).startsWith("data:image/")) {
+          const imgData = toPptxDataUrl(s.imageData);
+          if (!imgData || !String(imgData).startsWith("data:image/")) throw new Error("IMG_DATA_INVALID");
           slide.addImage({
-            data: toPptxDataUrl(s.imageData),
+            data: imgData,
             x: imgBox.x,
             y: imgBox.y,
             w: imgBox.w,
