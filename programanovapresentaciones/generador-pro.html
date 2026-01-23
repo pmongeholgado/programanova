@@ -898,7 +898,8 @@ async function exportarPPT() {
     for (let i = 0; i < planParaExportar.length; i++) {
         let s = planParaExportar[i];
       if (!s || !s.title) continue;
-
+        
+      const idx = s.idx || (i + 1);
       const slide = pptx.addSlide();
 
       // Fondo blanco
@@ -945,7 +946,6 @@ async function exportarPPT() {
       });
 
 // ✅ Garantía PRO: 2 gráficos sí o sí en slides 5 y 7 (SIEMPRE)
-const idx = s.idx || (i + 1);
 
 if (idx === 5) {
   s.needs = s.needs || {};
@@ -971,7 +971,6 @@ if (idx === 7) {
 
       // ✅ IMAGEN (si toca)
       if (s.needs?.image) {
-        const idx = s.idx || (i + 1);
 
         let imgBox = { x: 5.0, y: 1.4, w: 4.3, h: 3.7 }; // default visible
 
@@ -1003,27 +1002,7 @@ if (idx === 7) {
           });
         }
       }       
-            
-    slide.addImage({
-            data: toPptxDataUrl(s.imageData),
-            x: imgBox.x,
-            y: imgBox.y,
-            w: imgBox.w,
-            h: imgBox.h
-          });
-            
-            slide.addText("[Imagen no disponible]", {
-              x: imgBox.x,
-              y: imgBox.y,
-              w: imgBox.w,
-              h: imgBox.h,
-              fontSize: 12,
-              align: "center",
-              valign: "middle",
-              color: "666666"
-            });
-            }
-          
+               
       // ✅ GRÁFICO (si toca)
       if (s.needs?.chart) {
         if (s.chartSpec && Array.isArray(s.chartSpec.labels) && Array.isArray(s.chartSpec.values)) {
