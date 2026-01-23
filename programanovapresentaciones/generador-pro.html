@@ -1009,19 +1009,19 @@ if (idx === 7) {
             w: imgBox.w,
             h: imgBox.h
           });
-        } else {
-          slide.addText("[Imagen no disponible]", {
-            x: imgBox.x,
-            y: imgBox.y,
-            w: imgBox.w,
-            h: imgBox.h,
-            fontSize: 12,
-            align: "center",
-            valign: "middle",
-            color: "666666"
-          });
-        }
-      }
+            
+            slide.addText("[Imagen no disponible]", {
+              x: imgBox.x,
+              y: imgBox.y,
+              w: imgBox.w,
+              h: imgBox.h,
+              fontSize: 12,
+              align: "center",
+              valign: "middle",
+              color: "666666"
+            });
+            }
+          }
 
       // ✅ GRÁFICO (si toca)
       if (s.needs?.chart) {
