@@ -439,6 +439,17 @@
     async function prepararAssetsIA(plan) {
       if (!Array.isArray(plan) || !plan.length) return plan;
 
+      // ✅ FIX FINAL: asegurar imageData usando imgHead si existe
+      for (let k = 0; k < planParaExportar.length; k++) {
+        const s = planParaExportar[k];
+        if (!s) continue;
+
+        // Si no hay imageData pero sí hay imgHead → lo copiamos
+        if (!s.imageData && s.imgHead && String(s.imgHead).startsWith("data:image/")) {
+          s.imageData = s.imgHead;
+        }
+      }
+
       for (let i = 0; i < plan.length; i++) {
         const s = plan[i];
         if (!s || !s.needs) continue;
