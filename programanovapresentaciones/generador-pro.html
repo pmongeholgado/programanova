@@ -1,91 +1,71 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <title>Generador de Presentaciones · Nova</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <title>Generador de Presentaciones · Nova</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <style>
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #0c0f17;
-                color: #e5e7eb;
-                margin: 0;
-                padding: 24px;
-            }
-
-            h1 {
-                text-align: center;
-                color: #5ddcff;
-            }
-
-            .box {
-                max-width: 640px;
-                margin: auto;
-                background: rgba(255,255,255,0.04);
-                border: 1px solid rgba(255,255,255,0.1);
-                padding: 24px;
-                border-radius: 12px;
-            }
-
-            label {
-                font-weight: bold;
-            }
-
-            input, textarea, select {
-                width: 100%;
-                padding: 12px;
-                margin-top: 8px;
-                margin-bottom: 16px;
-                border-radius: 8px;
-                border: none;
-            }
-
-            button {
-                width: 100%;
-                padding: 14px;
-                background: linear-gradient(90deg, #1e90ff, #00c2ff);
-                border: none;
-                border-radius: 8px;
-                color: white;
-                font-size: 18px;
-                cursor: pointer;
-            }
-
-            button:hover {
-                background: linear-gradient(90deg, #00c2ff, #1e90ff);
-            }
-
-            .estado {
-                text-align: center;
-                margin-top: 20px;
-                color: #7dd3fc;
-                font-weight: bold;
-            }
-
-        #resultado {
-            margin-top: 24px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.12);
-            padding: 16px;
-            border-radius: 10px;
-        }
-
-        #resultado h3 {
-            color: #5ddcff;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-
-        #resultado ul {
-            padding-left: 20px;
-        }
-
-        #resultado li {
-            margin-bottom: 8px;
-            line-height: 1.4;
-        }
-    </style>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0c0f17;
+      color: #e5e7eb;
+      margin: 0;
+      padding: 24px;
+    }
+    h1 { text-align: center; color: #5ddcff; }
+    .box {
+      max-width: 640px;
+      margin: auto;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 24px;
+      border-radius: 12px;
+    }
+    label { font-weight: bold; }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      margin-bottom: 16px;
+      border-radius: 8px;
+      border: none;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(90deg, #1e90ff, #00c2ff);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: linear-gradient(90deg, #00c2ff, #1e90ff);
+    }
+    .estado {
+      text-align: center;
+      margin-top: 14px;
+      color: #7dd3fc;
+      font-weight: bold;
+    }
+    #resultado {
+      margin-top: 24px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 16px;
+      border-radius: 10px;
+    }
+    #resultado h3 {
+      color: #5ddcff;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    #resultado ul { padding-left: 20px; }
+    #resultado li { margin-bottom: 8px; line-height: 1.4; }
+  </style>
 </head>
 
 <body>
@@ -93,375 +73,71 @@
 <h1>Generador Nova · Presentaciones <span style="font-size:14px; color:#7dd3fc;">PRO</span></h1>
 
 <div style="text-align:center; margin-bottom:16px;">
-    <select id="langSelector" onchange="setLanguage(this.value)">
-        <option value="es">Español</option>
-        <option value="en">English</option>
-        <option value="ja">日本語</option>
-    </select>
-</div>
-
-<div style="text-align:center; margin-bottom:20px;">
-  <label style="font-size:13px; color:#94a3b8; margin-right:6px;">
-    Motor IA:
-  </label>
-  <select id="engineSelector">
-    <option value="nova">Nova (simbiosis)</option>
-    <option value="openai">OpenAI</option>
-    <option value="claude">Claude</option>
-    <option value="gemini">Gemini</option>
+  <select id="langSelector" onchange="setLanguage(this.value)">
+    <option value="es">Español</option>
+    <option value="en">English</option>
+    <option value="ja">日本語</option>
   </select>
 </div>
 
 <div class="box">
-    <label for="motorIA">Motor IA (PRO)</label>
-    <select id="motorIA" onchange="setMotorIA(this.value)">
-        <!-- opciones se cargan por JS -->
-    </select>
+  <label for="motorIA">Motor IA (PRO)</label>
+  <select id="motorIA" onchange="setMotorIA(this.value)"></select>
 
-    <div class="estado" id="estadoMotor" style="margin-top:-6px; margin-bottom:16px; color:#a5b4fc;">
-        🧠 Motor IA: NOVA (por defecto)
-    </div>
+  <div class="estado" id="estadoMotor" style="margin-top:-6px; margin-bottom:16px; color:#a5b4fc;">
+    🧠 Motor IA: NOVA (por defecto)
+  </div>
 
-    <label for="titulo">Título de la presentación</label>
-    <input type="text" id="titulo" placeholder="Ejemplo: Innovación y futuro de la colaboración humano-IA" />
+  <label for="titulo">Título de la presentación</label>
+  <input type="text" id="titulo" placeholder="Ejemplo: Innovación y futuro de la colaboración humano-IA" />
 
-    <label for="slides">Número de diapositivas</label>
-    <select id="slides">
-        <option value="10">10 diapositivas</option>
-        <option value="12">12 diapositivas</option>
-        <option value="15">15 diapositivas</option>
-        <option value="20">20 diapositivas</option>
-    </select>
+  <label for="slides">Número de diapositivas</label>
+  <select id="slides">
+    <option value="10">10 diapositivas</option>
+    <option value="12">12 diapositivas</option>
+    <option value="15">15 diapositivas</option>
+    <option value="20">20 diapositivas</option>
+  </select>
 
-    <label for="contenido">Contenido base (capítulo, texto o guion)</label>
-    <textarea id="contenido" rows="6" placeholder="Pega aquí tu capítulo, texto o guion base…"></textarea>
+  <label for="contenido">Contenido base (capítulo, texto o guion)</label>
+  <textarea id="contenido" rows="6" placeholder="Pega aquí tu capítulo, texto o guion base…"></textarea>
 
-    <button onclick="generar()">Generar estructura de presentación</button>
-    <div id="loader" style="display:none; margin-top:10px; font-weight:bold;">
-      ⏳ Generando...
-    </div>
-    <div id="estado" style="margin-top:10px;"></div>
+  <button id="btnGenerar" onclick="generar()">Generar estructura de presentación</button>
 
-    <button id="btnPPT" onclick="exportarPPT()">📤 Exportar a PPT</button>
-    <button id="btnPPT2" onclick="exportarPPT()">📊 Exportar a PowerPoint</button>
-    
-    <div class="estado" id="estado">🟢 Generador listo</div>
-    <div id="resultado" style="margin-top:20px;"></div>
+  <div id="loader" style="display:none; margin-top:10px; font-weight:bold;">
+    ⏳ Procesando...
+  </div>
+
+  <div class="estado" id="estado">🟢 Generador listo</div>
+
+  <button id="btnPPT" onclick="exportarPPT()" disabled>📤 Exportar a PPT</button>
+  <button id="btnPPT2" onclick="exportarPPT()" disabled>📊 Exportar a PowerPoint</button>
+
+  <div id="resultado"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
-    
+
 <script>
+  // ======================
+  // VARIABLES GLOBALES
+  // ======================
   let estructuraGenerada = [];
   let ultimaEstructuraLimpia = [];
   let PRESENTACION_PRO = null;
   let EXPORTANDO_PPT = false;
-
-  // ====== FASE 2 (PRO) — Esqueleto de composición ======
   let planPro = [];
 
-  function construirPlanPro(slides) {
-    return (slides || []).map((s, i) => {
-      const title = String(s.title || s.titulo || "").trim();
-      const bullets = Array.isArray(s.bullets) ? s.bullets : [];
-      const render = {
-          title: { x: 0.5, y: 0.4, w: 9, h: 0.8 },
-          text:  { x: 0.7, y: 1.4, w: 8.6, h: 4.2 },
-          image: null,
-          chart: null
-        };
-      return {
-        idx: i + 1,
-        title,
-        bullets,
-        needs: { text: true, image: false, chart: false },
-        imagePrompt: "",
-        chartSpec: null,
-        theme: { mode: "corporate", accent: "#3b82f6" }
-      };
-    });
-  }
+  const API_BASE_URL = "https://programanovabackend-production-a426.up.railway.app";
 
-  function aplicarReglasPro(plan) {
-    return (plan || []).map((slide, i) => {
-       if (!slide) return slide;
-       slide.needs = slide.needs || {};
-       slide.render = slide.render || {};
-
-    // ✅ GARANTÍA PRO — mínimo visual siempre (sin depender de keywords)
-    const idx = slide.idx || slide.index || slide.numero || (i + 1);
-
-    // Mínimo 3 imágenes (1, 6, 10)
-    if (idx === 1 || idx === 6 || idx === 10) {
-      slide.needs.image = true;
-    }
-
-    // Mínimo 2 gráficos (5, 7)
-    if (idx === 5 || idx === 7) {
-      slide.needs.chart = true;
-
-      slide.chartSpec = slide.chartSpec || {
-        type: "bar",
-        title: slide.title || "Comparativa",
-        labels: ["A", "B", "C"],
-        values: [40, 35, 25]
-      };
-    }
-        
-      // ✅ FASE 2.4.1 — Normalización PRO (evita undefined)
-      slide.needs = slide.needs || {};
-      slide.needs.text  = true;
-      slide.needs.image = !!slide.needs.image;
-      slide.needs.chart = !!slide.needs.chart;
-
-      slide.imagePrompt = slide.imagePrompt || "";
-      slide.chartSpec   = slide.chartSpec || null;
-      slide.theme       = slide.theme || { mode: "corporate", accent: "#3b82f6" };
-
-      const titulo = (slide.title || "").toLowerCase();
-      const texto = (slide.bullets || []).join(" ").toLowerCase();
-      // ✅ FASE 2.4.1.2 — Normalización de contenido
-      slide.title = (slide.title || "").trim();
-      slide.bullets = Array.isArray(slide.bullets)
-        ? slide.bullets.map(b => String(b).trim()).filter(Boolean)
-        : [];
-
-      // 🧠 FASE 2.4.2.1 — Intención IA por slide
-      slide.ai = {
-        text: slide.needs.text === true,
-        image: slide.needs.image === true,
-        chart: slide.needs.chart === true,
-        provider: null,   // openai | dalle | stable | midjourney | etc.
-        status: "pending" // pending | generated | error
-      };
-
-      // Regla 1: gráficos
-      if (
-        texto.includes("datos") ||
-        texto.includes("comparativa") ||
-        texto.includes("evolución") ||
-        texto.includes("porcentaje") ||
-        texto.includes("estadística")
-      ) {
-        slide.needs.chart = true;
-
-        // 📊 Definición básica del gráfico (FASE 2)
-        slide.chartSpec = {
-          type: "bar",
-          title: "Comparativa clave",
-          labels: ["Opción A", "Opción B", "Opción C"],
-          values: [30, 50, 20]
-        };
-      }
-
-      // Regla 2: imágenes
-      if (
-        titulo.includes("introducción") ||
-        titulo.includes("contexto") ||
-        titulo.includes("visión") ||
-        titulo.includes("futuro") ||
-        titulo.includes("conclusión")
-      ) {
-        slide.needs.image = true;
-      }
-
-      // Regla 3: definición básica de gráficos
-      if (slide.needs.chart) {
-        slide.chartSpec = {
-          type: "bar",
-          title: slide.title,
-          labels: ["Opción A", "Opción B", "Opción C"],
-          values: [40, 35, 25]
-         };
-        }
-
-  // 🖼️ Regla imágenes (FASE 2)
-  if (
-    titulo.includes("introducción") ||
-    titulo.includes("contexto") ||
-    titulo.includes("visión") ||
-    titulo.includes("futuro") ||
-    titulo.includes("conclusión") ||
-    titulo.includes("resumen")
-  ) {
-    slide.needs.image = true;
-  }
-
-// 🧠 Prompt semántico para imagen (FASE 2)
-if (slide.needs.image) {
-  slide.imagePrompt = `Imagen conceptual profesional sobre: ${slide.title}. 
-  Estilo corporativo, limpio, moderno, sin texto, alta calidad.`;
-}
-
-// ===== Layout automático PRO =====
-if (slide.needs?.image && slide.needs.chart) {
-  slide.render.image = { x: 0.5, y: 1.6, w: 4.2, h: 3.2 };
-  slide.render.chart = { x: 5.0, y: 1.6, w: 4.0, h: 3.2 };
-  slide.render.text  = { x: 0.5, y: 5.0, w: 8.6, h: 1.6 };
-}
-else if (slide.needs.image) {
-  slide.render.image = { x: 5.0, y: 1.4, w: 4.0, h: 3.6 };
-  slide.render.text  = { x: 0.7, y: 1.4, w: 4.0, h: 3.6 };
-}
-else if (slide.needs.chart) {
-  slide.render.chart = { x: 0.7, y: 1.6, w: 8.0, h: 3.6 };
-  slide.render.text  = { x: 0.7, y: 5.4, w: 8.0, h: 1.2 };
-}
-        
-// 🎯 Ajuste fino: evitar imágenes en diapositivas demasiado técnicas
-if (
-  slide.title.toLowerCase().includes("definición") ||
-  slide.title.toLowerCase().includes("tipos") ||
-  slide.title.toLowerCase().includes("modelos") ||
-  slide.title.toLowerCase().includes("comparativa")
-) {
-  slide.needs.image = false;
-  slide.imagePrompt = "";
-}
-
-// 🧠 Priorización visual (FASE 2)
-// Define el tipo de imagen que se necesitará más adelante
-if (slide.needs.image) {
-  if (slide.title.toLowerCase().includes("introducción")) {
-    slide.imagePrompt = "imagen conceptual de inicio, abstracta y profesional";
-  } else if (slide.title.toLowerCase().includes("visión") || slide.title.toLowerCase().includes("futuro")) {
-    slide.imagePrompt = "imagen inspiradora sobre futuro y colaboración humano-IA";
-  } else if (slide.title.toLowerCase().includes("conclusión") || slide.title.toLowerCase().includes("reflexión")) {
-    slide.imagePrompt = "imagen humana y reflexiva, tono ético y responsable";
-  } else {
-    slide.imagePrompt = "imagen profesional coherente con el contenido de la diapositiva";
-  }
-}
-
-// 🧠 FASE 2.4.2.2 — Coherencia final de decisiones PRO
-
-// Si hay gráfico, aseguramos texto compacto
-if (slide.needs.chart) {
-  slide.needs.text = true;
-}
-
-// Si hay imagen pero no gráfico, mantenemos equilibrio
-if (slide.needs.image && !slide.needs.chart) {
-  slide.needs.text = true;
-}
-
-// Si no hay imagen ni gráfico, forzamos texto puro
-if (!slide.needs.image && !slide.needs.chart) {
-  slide.needs.text = true;
-}
-
-// 🔒 Fallback PRO: nunca una diapositiva vacía
-if (!slide.needs.text && !slide.needs.image && !slide.needs.chart) {
-  slide.needs.text = true;
-}
-
-// 🧩 FASE 2.5.1 — Layout base automático
-
-slide.layout = "text-only";
-
-if (slide.needs.text && slide.needs.image && slide.needs.chart) {
-  slide.layout = "text-image-chart";
-} else if (slide.needs.text && slide.needs.chart) {
-  slide.layout = "text-chart";
-} else if (slide.needs.text && slide.needs.image) {
-  slide.layout = "text-image";
-} else if (slide.needs.image && !slide.needs.text) {
-  slide.layout = "image-only";
-}
-
-// 🎯 FASE 2.5.2 — Layout de cierre NOVA (identidad)
-
-if (
-  titulo.includes("conclusión") ||
-  titulo.includes("cierre") ||
-  titulo.includes("reflexión") ||
-  titulo.includes("visión final")
-) {
-  slide.layout = "closing-impact";
-  slide.needs.image = true;
-  slide.needs.chart = false;
-}
-
-// 🧩 FASE 2.6.1 — Inicialización de render PRO
-
-slide.render = {
-  title: { x: 0.5, y: 0.4, w: 9, h: 0.8 },
-  text: null,
-  image: null,
-  chart: null
-};
-
-// 🧩 FASE 2.6.2 — Cálculo de layout PRO
-
-switch (slide.layout) {
-
-  case "text-only":
-    slide.render.text = { x: 0.7, y: 1.4, w: 9, h: 4.5 };
-    break;
-
-  case "text-image":
-    slide.render.text = { x: 0.5, y: 1.4, w: 4.5, h: 4.5 };
-    slide.render.image = { x: 5.2, y: 1.4, w: 4, h: 4 };
-    break;
-
-  case "text-chart":
-    slide.render.text = { x: 0.5, y: 1.4, w: 4.5, h: 4.5 };
-    slide.render.chart = { x: 5.2, y: 1.4, w: 4, h: 4 };
-    break;
-
-  case "image-only":
-    slide.render.image = { x: 1.5, y: 1.2, w: 7, h: 4.5 };
-    break;
-
-  case "closing-impact":
-    slide.render.image = { x: 0, y: 0, w: 10, h: 5.6 };
-    slide.render.text = { x: 1, y: 4.2, w: 8, h: 1 };
-    break;
-}
-        
-    return slide;
-    });
-  }
-
-  function renderPlanPro(plan) {
-      const resultadoEl = document.getElementById("resultado");
-      if (!resultadoEl) return;
-
-      resultadoEl.innerHTML += `
-        <hr style="margin:24px 0; border-color:#334155;">
-        <h3 style="color:#38bdf8;">🧠 Plan NOVA PRO (Fase 2)</h3>
-        <div style="text-align:center; margin-bottom:12px; font-size:14px; color:#94a3b8;">
-          Motor IA activo: <b>${currentEngine || "nova"}</b>
-        </div>
-
-        <ul>
-          ${(plan || []).map((slide, i) => `
-            <li style="margin-bottom:12px;">
-              <b>Diapositiva ${i + 1}:</b> ${slide.title}<br>
-              🖼 Imagen: ${slide.needs?.image ? "Sí" : "No"}<br>
-              📊 Gráfico: ${slide.needs?.chart ? "Sí" : "No"}<br>
-              🎨 Tema: ${slide.theme?.mode || "corporate"}
-            </li>
-          `).join("")}
-        </ul>
-      `;
-    }
-    
-  // ====== i18n ======
-  let currentLang = "es";
-  
-  // ====== FASE 3 — Motor de IA ======
-  let currentEngine = localStorage.getItem("nova_engine") || "nova";
-    
+  // ======================
+  // i18n
+  // ======================
+  let currentLang = localStorage.getItem("nova_lang") || "es";
   const textos = {
     es: {
-      btnGenerar: "Generar estructura de presentación",
-      cargando: "Generando...",
-      ok: "Estructura creada",
       titulo: "Generador Nova · Presentaciones",
-      labelTitulo: "Título de la presentación",
-      labelSlides: "Número de diapositivas",
-      labelContenido: "Contenido base (capítulo, texto o guion)",
+      btnGenerar: "Generar estructura de presentación",
       btnPPT: "📤 Exportar a PPT",
       estadoListo: "🟢 Generador listo",
       estadoProcesando: "⏳ Procesando solicitud…",
@@ -472,9 +148,6 @@ switch (slide.layout) {
     },
     en: {
       titulo: "Nova Presentation Generator",
-      labelTitulo: "Presentation title",
-      labelSlides: "Number of slides",
-      labelContenido: "Base content (chapter, text or script)",
       btnGenerar: "Generate presentation structure",
       btnPPT: "📤 Export to PPT",
       estadoListo: "🟢 Generator ready",
@@ -486,9 +159,6 @@ switch (slide.layout) {
     },
     ja: {
       titulo: "Nova プレゼンテーション生成器",
-      labelTitulo: "プレゼンテーションのタイトル",
-      labelSlides: "スライド数",
-      labelContenido: "ベース内容（章・テキスト・台本）",
       btnGenerar: "プレゼンテーション構成を生成",
       btnPPT: "📤 PPTにエクスポート",
       estadoListo: "🟢 準備完了",
@@ -501,201 +171,233 @@ switch (slide.layout) {
   };
 
   function setLanguage(lang) {
-    const t = textos[lang] || textos.es;
-    currentLang = lang;
-    localStorage.setItem("nova_lang", lang);
+    currentLang = lang || "es";
+    localStorage.setItem("nova_lang", currentLang);
+
+    const t = textos[currentLang] || textos.es;
 
     document.querySelector("h1").innerText = t.titulo + " PRO";
-    document.querySelector("label[for='titulo']").innerText = t.labelTitulo;
-    document.querySelector("label[for='slides']").innerText = t.labelSlides;
-    document.querySelector("label[for='contenido']").innerText = t.labelContenido;
+    document.querySelector("label[for='titulo']").innerText = (currentLang === "es") ? "Título de la presentación" : (currentLang === "en") ? "Presentation title" : "プレゼンテーションのタイトル";
+    document.querySelector("label[for='slides']").innerText = (currentLang === "es") ? "Número de diapositivas" : (currentLang === "en") ? "Number of slides" : "スライド数";
+    document.querySelector("label[for='contenido']").innerText = (currentLang === "es") ? "Contenido base (capítulo, texto o guion)" : (currentLang === "en") ? "Base content (chapter, text or script)" : "ベース内容（章・テキスト・台本）";
 
     document.getElementById("titulo").placeholder = t.phTitulo;
     document.getElementById("contenido").placeholder = t.phContenido;
 
-    document.querySelector("button[onclick='generar()']").innerText = t.btnGenerar;
+    document.getElementById("btnGenerar").innerText = t.btnGenerar;
     document.getElementById("btnPPT").innerText = t.btnPPT;
     document.getElementById("estado").innerText = t.estadoListo;
   }
 
-  const API_BASE_URL = "https://programanovabackend-production-a426.up.railway.app";
+  // ======================
+  // Motor IA (selector)
+  // ======================
+  const AI_ENGINES = [
+    { id: "nova",   name: "NOVA (Backend actual)" },
+    { id: "openai", name: "OpenAI (GPT) — Próximamente" },
+    { id: "claude", name: "Claude — Próximamente" },
+    { id: "gemini", name: "Gemini — Próximamente" }
+  ];
 
-  const savedLang = localStorage.getItem("nova_lang") || "es";
-  document.getElementById("langSelector").value = savedLang;
-  setLanguage(savedLang);
+  let currentEngine = localStorage.getItem("nova_engine") || "nova";
 
-// =========================
-// FASE 3.1 — Motor IA (selector + estado)
-// =========================
-const AI_ENGINES = [
-  { id: "nova",   name: "NOVA (Backend actual)" },
-  { id: "openai", name: "OpenAI (GPT) — Próximamente" },
-  { id: "claude", name: "Claude — Próximamente" },
-  { id: "gemini", name: "Gemini — Próximamente" },
-  { id: "mistral", name: "Mistral — Próximamente" }
-];
+  function initMotorIA() {
+    const sel = document.getElementById("motorIA");
+    const estado = document.getElementById("estadoMotor");
+    if (!sel || !estado) return;
 
-currentEngine = localStorage.getItem("nova_engine") || "nova";
+    sel.innerHTML = AI_ENGINES.map(e => `<option value="${e.id}">${e.name}</option>`).join("");
 
-function initMotorIA() {
-  const sel = document.getElementById("motorIA");
-  const estado = document.getElementById("estadoMotor");
-  if (!sel || !estado) return;
+    if (!AI_ENGINES.some(e => e.id === currentEngine)) currentEngine = "nova";
+    sel.value = currentEngine;
 
-  // Rellenar opciones
-  sel.innerHTML = AI_ENGINES.map(e => `<option value="${e.id}">${e.name}</option>`).join("");
-
-  // Selección guardada
-  if (!AI_ENGINES.some(e => e.id === currentEngine)) currentEngine = "nova";
-  sel.value = currentEngine;
-
-  // Pintar estado
-  const name = (AI_ENGINES.find(e => e.id === currentEngine) || AI_ENGINES[0]).name;
-  estado.innerText = `🧠 Motor IA: ${name}`;
-}
-
-function setMotorIA(engineId) {
-  currentEngine = engineId || "nova";
-  localStorage.setItem("nova_engine", currentEngine);
-
-  const estado = document.getElementById("estadoMotor");
-  const name = (AI_ENGINES.find(e => e.id === currentEngine) || AI_ENGINES[0]).name;
-  if (estado) estado.innerText = `🧠 Motor IA: ${name}`;
-
-  console.log("MOTOR IA (PRO) =>", currentEngine);
-}
-
-// Inicializa motor IA al cargar
-initMotorIA();
-
-  // ====== Limpieza + agrupación ======
-  function normalizarItem(item) {
-    let s = String(item || "").trim();
-    s = s.replace(/\*\*/g, "");
-    s = s.replace(/^\s*\d+\.\s*/, "");
-    s = s.replace(/^\s*-\s*/gm, "");
-
-    let titulo = s;
-    let bullets = [];
-
-    const parts = s.split(/\s*-\s*Idea principal:\s*/i);
-    if (parts.length > 1) {
-      titulo = parts[0].trim();
-      const idea = parts.slice(1).join(" - Idea principal: ").trim();
-      if (idea) bullets.push(idea);
-    }
-
-    const colon = titulo.split(/\s*:\s*/);
-    if (colon.length > 1) {
-      titulo = colon[0].trim();
-      const resto = colon.slice(1).join(": ").trim();
-      if (resto) bullets.push(resto);
-    }
-
-    const lines = titulo.split("\n").map(l => l.trim()).filter(Boolean);
-    if (lines.length > 1) {
-      titulo = lines[0];
-      bullets = bullets.concat(lines.slice(1));
-    }
-
-    return { titulo: titulo.trim(), bullets: bullets.map(b => b.trim()).filter(Boolean) };
+    const name = (AI_ENGINES.find(e => e.id === currentEngine) || AI_ENGINES[0]).name;
+    estado.innerText = `🧠 Motor IA: ${name}`;
   }
 
-  function construirEstructuraLimpia(arr) {
-    const out = [];
-    for (const it of (arr || [])) {
-      const obj = normalizarItem(it);
-      if (!(obj.title || obj.titulo)) continue;
-      out.push(obj);
-    }
-    return out;
+  function setMotorIA(engineId) {
+    currentEngine = engineId || "nova";
+    localStorage.setItem("nova_engine", currentEngine);
+
+    const estado = document.getElementById("estadoMotor");
+    const name = (AI_ENGINES.find(e => e.id === currentEngine) || AI_ENGINES[0]).name;
+    if (estado) estado.innerText = `🧠 Motor IA: ${name}`;
+
+    console.log("MOTOR IA (PRO) =>", currentEngine);
   }
 
-  function agruparEnSlides(items) {
-    const slides = [];
-    let current = null;
-
-    for (const it of (items || [])) {
-      const text = (it.titulo || "").trim();
-      if (!text) continue;
-
-      current = { titulo: text, bullets: Array.isArray(it.bullets) ? it.bullets : [] };
-      slides.push(current);
-    }
-    return slides;
+  // ======================
+  // PLAN PRO
+  // ======================
+  function construirPlanPro(slides) {
+    return (slides || []).map((s, i) => {
+      const title = String(s.title || s.titulo || "").trim();
+      const bullets = Array.isArray(s.bullets) ? s.bullets : [];
+      return {
+        idx: i + 1,
+        title,
+        bullets,
+        needs: { text: true, image: false, chart: false },
+        imagePrompt: "",
+        chartSpec: null,
+        render: { text: null, image: null, chart: null }
+      };
+    });
   }
 
-  // ====== GENERAR (ÚNICA) — aquí va el await ======
-  async function generar() {
-    let endpoint = `${API_BASE_URL}/generar`;
-      
-    const tituloEl = document.getElementById("titulo");
-    const slidesEl = document.getElementById("slides");
-    const contenidoEl = document.getElementById("contenido");
-    const estadoEl = document.getElementById("estado");
+  function aplicarReglasPro(plan) {
+    return (plan || []).map((slide, i) => {
+      if (!slide) return slide;
+
+      const idx = slide.idx || (i + 1);
+
+      slide.needs = slide.needs || { text: true, image: false, chart: false };
+      slide.needs.text = true;
+
+      // Garantías
+      if (idx === 1 || idx === 6 || idx === 9 || idx === 10) slide.needs.image = true;
+      if (idx === 5 || idx === 7) slide.needs.chart = true;
+
+      // Prompt imagen
+      if (slide.needs.image) {
+        slide.imagePrompt = slide.imagePrompt || `Imagen conceptual profesional sobre: ${slide.title}. Estilo corporativo, moderno, sin texto.`;
+      }
+
+      // Spec gráfico por defecto
+      if (slide.needs.chart && !slide.chartSpec) {
+        slide.chartSpec = (idx === 7)
+          ? { type:"line", title:"Evolución", labels:["2022","2023","2024"], values:[20,45,70] }
+          : { type:"bar", title:"Comparativa", labels:["A","B","C"], values:[40,35,25] };
+      }
+
+      return slide;
+    });
+  }
+
+  function renderPlanPro(plan) {
     const resultadoEl = document.getElementById("resultado");
+    if (!resultadoEl) return;
 
+    resultadoEl.innerHTML += `
+      <hr style="margin:24px 0; border-color:#334155;">
+      <h3 style="color:#38bdf8;">🧠 Plan NOVA PRO</h3>
+      <div style="text-align:center; margin-bottom:12px; font-size:14px; color:#94a3b8;">
+        Motor IA activo: <b>${currentEngine || "nova"}</b>
+      </div>
+      <ul>
+        ${(plan || []).map((s, i) => `
+          <li style="margin-bottom:12px;">
+            <b>Diapositiva ${i + 1}:</b> ${s.title}<br>
+            🖼 Imagen: ${s.needs?.image ? "Sí" : "No"}<br>
+            📊 Gráfico: ${s.needs?.chart ? "Sí" : "No"}
+          </li>
+        `).join("")}
+      </ul>
+    `;
+  }
+
+  // ======================
+  // IA ASSETS
+  // ======================
+  const IA_ENDPOINTS = {
+    imagen: "/generar-imagen"
+  };
+
+  function toPptxDataUrl(input) {
+    if (!input) return "";
+    const s = String(input).trim();
+    if (s.startsWith("data:image/")) return s;
+    if (s.startsWith("image/")) return "data:" + s;
+    if (s.includes("base64,") && !s.startsWith("data:")) return "data:" + s;
+    if (!s.includes(",")) return "data:image/png;base64," + s;
+    return s;
+  }
+
+  async function prepararAssetsIA(plan) {
+    if (!Array.isArray(plan) || !plan.length) return plan;
+
+    for (let i = 0; i < plan.length; i++) {
+      const s = plan[i];
+      if (!s || !s.needs) continue;
+
+      if (s.needs.image && !s.imageData) {
+        try {
+          const rImg = await fetch(`${API_BASE_URL}${IA_ENDPOINTS.imagen}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            mode: "cors",
+            body: JSON.stringify({
+              titulo: s.title,
+              prompt: s.imagePrompt || `Imagen conceptual para: ${s.title}`
+            })
+          });
+
+          if (rImg.ok) {
+            const img = await rImg.json().catch(() => ({}));
+            const dataUrl = img.dataUrl || img.dataURL || img.data_url || "";
+            if (dataUrl && String(dataUrl).startsWith("data:image/")) {
+              s.imageData = dataUrl;
+            }
+          }
+        } catch (e) {
+          console.warn("IA imagen falló:", e);
+        }
+      }
+    }
+    return plan;
+  }
+
+  // ======================
+  // GENERAR
+  // ======================
+  async function generar() {
     const t = textos[currentLang] || textos.es;
 
-    const titulo = (tituloEl.value || "").trim();
-    const numDiapositivas = slidesEl.value;
-    const contenido = (contenidoEl.value || "").trim();
+    const titulo = (document.getElementById("titulo").value || "").trim();
+    const numDiapositivas = document.getElementById("slides").value;
+    const contenido = (document.getElementById("contenido").value || "").trim();
 
-      // 🔹 FASE 3.1.2 — Motor IA seleccionado (PRO)
-      const motorIA = currentEngine || "nova";
-      console.log("Motor IA seleccionado:", motorIA);
-      
-      if (!contenido) {
+    const estadoEl = document.getElementById("estado");
+    const resultadoEl = document.getElementById("resultado");
+    const loader = document.getElementById("loader");
+
+    if (!contenido) {
       estadoEl.innerText = t.errorContenido;
       return;
-      }
+    }
 
     estadoEl.innerText = t.estadoProcesando;
     resultadoEl.innerHTML = "";
+    if (loader) loader.style.display = "block";
 
-    // ====== FASE 3.1.4.3 — Selección de motor IA ======
-    
-    // En el futuro aquí se podrán añadir más motores
-    switch (currentEngine) {
-      case "nova":
-      default:
-        endpoint = `${API_BASE_URL}/generar`;
-        break;
-    }
-      
     try {
-          const response = await fetch(endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              titulo,
-              num_diapositivas: numDiapositivas,
-              contenido,
-              motorIA
-            }),
-            mode: "cors",
-          });
-          // PRO: preparado para multi-IA
-          if (!response.ok) {
-           estadoEl.innerText = t.errorConexion;
-           return;
-          }
+      const response = await fetch(`${API_BASE_URL}/generar`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        mode: "cors",
+        body: JSON.stringify({
+          titulo,
+          num_diapositivas: numDiapositivas,
+          contenido,
+          motorIA: (currentEngine || "nova")
+        })
+      });
+
+      if (!response.ok) {
+        estadoEl.innerText = t.errorConexion;
+        return;
+      }
 
       const data = await response.json().catch(() => ({}));
       PRESENTACION_PRO = data;
-      console.log("✅ PRESENTACION_PRO guardada:", PRESENTACION_PRO);
+
       estadoEl.innerText = data.mensaje || "✅ Estructura generada correctamente.";
 
       if (Array.isArray(data.estructura)) {
+        ultimaEstructuraLimpia = data.estructura;
 
-      estructuraGenerada = data.estructura;
-
-      // ✅ Ya viene listo desde backend
-      ultimaEstructuraLimpia = Array.isArray(data.estructura) ? data.estructura : [];
-
-      // ✅ PRO: construir plan y aplicar reglas (sobre estructura limpia)
-      planPro = aplicarReglasPro(construirPlanPro(ultimaEstructuraLimpia));
-      renderPlanPro(planPro);
+        planPro = aplicarReglasPro(construirPlanPro(ultimaEstructuraLimpia));
+        renderPlanPro(planPro);
 
         // Render normal
         const listaHTML = (ultimaEstructuraLimpia || []).map((obj, i) => {
@@ -716,131 +418,153 @@ initMotorIA();
     } catch (err) {
       console.error(err);
       estadoEl.innerText = t.errorConexion;
+    } finally {
+      if (loader) loader.style.display = "none";
     }
   }
 
-  // ====== NOVA PRO — PUENTE IA REAL (IMAGEN + GRÁFICO) ======
-  // Si tu backend aún no tiene estos endpoints, NO rompe nada: seguirá con placeholders.
-  const IA_ENDPOINTS = {
-    imagen: "/generar-imagen",   // <- si tu backend usa otro nombre, lo cambiamos aquí
-    grafico: "/generar-grafico"  // <- idem
-  };
+  // ======================
+  // EXPORTAR PPTX
+  // ======================
+  async function exportarPPT() {
+    if (EXPORTANDO_PPT) return;
 
-  async function prepararAssetsIA(plan, motorIA) {
-    if (!Array.isArray(plan) || !plan.length) return plan;
+    EXPORTANDO_PPT = true;
 
-    for (let i = 0; i < plan.length; i++) {
-      const s = plan[i];
-      if (!s || !s.needs) continue;
+    const loader = document.getElementById("loader");
+    const b1 = document.getElementById("btnPPT");
+    const b2 = document.getElementById("btnPPT2");
 
-      // 🖼️ IMAGEN REAL
-      if (s.needs.image && !s.imageData) {
-        try {
-          const rImg = await fetch(`${API_BASE_URL}${IA_ENDPOINTS.imagen}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            mode: "cors",
-            body: JSON.stringify({
-              titulo: s.title,
-              prompt: s.imagePrompt || `Imagen conceptual para: ${s.title}`
-            })
-          });
+    if (loader) loader.style.display = "block";
+    if (b1) b1.disabled = true;
+    if (b2) b2.disabled = true;
 
-          if (rImg.ok) {
-            const img = await rImg.json().catch(() => ({}));
-            // Esperamos { dataUrl: "data:image/png;base64,...." }
-            if (img) {
-              const dataUrl = img.dataUrl || img.dataURL || img.data_url || "";
-              if (dataUrl && String(dataUrl).startsWith("data:image/")) {
-                s.imageData = dataUrl;
-              }
-            }
+    try {
+      if (!Array.isArray(planPro) || planPro.length === 0) {
+        alert("❌ Primero genera la presentación.");
+        return;
+      }
+      if (typeof PptxGenJS === "undefined") {
+        alert("❌ No se cargó PptxGenJS. Recarga la página.");
+        return;
+      }
 
+      const titulo = (document.getElementById("titulo").value || "Nova_Presentacion").trim();
+      const safeTitle = titulo.replace(/[^\w\-]+/g, "_").slice(0, 40) || "Nova_Presentacion";
+      const fileName = `${safeTitle}_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.pptx`;
+
+      const pptx = new PptxGenJS();
+
+      // 🔥 preparar imágenes IA reales
+      let planParaExportar = JSON.parse(JSON.stringify(planPro));
+      planParaExportar = await prepararAssetsIA(planParaExportar);
+
+      console.log("🧠 PLAN FINAL PARA EXPORTAR (DEBUG):",
+        planParaExportar.map(s => ({
+          idx: s.idx,
+          title: s.title,
+          needsImage: !!s?.needs?.image,
+          imgLen: (s.imageData ? s.imageData.length : 0),
+          imgHead: (s.imageData ? String(s.imageData).slice(0, 30) : "")
+        }))
+      );
+
+      for (let i = 0; i < planParaExportar.length; i++) {
+        const s = planParaExportar[i];
+        if (!s || !s.title) continue;
+
+        const idx = s.idx || (i + 1);
+        const slide = pptx.addSlide();
+
+        slide.background = { color: "FFFFFF" };
+
+        // ✅ Reborde azul siempre
+        slide.addShape(pptx.ShapeType.rect, {
+          x: 0.15, y: 0.15, w: 9.7, h: 5.3,
+          fill: { color: "FFFFFF", transparency: 100 },
+          line: { color: "60A5FA", width: 2 }
+        });
+
+        slide.addText(s.title, {
+          x: 0.6, y: 0.45, w: 9, h: 0.6,
+          fontSize: 26, bold: true, color: "111111"
+        });
+
+        // Texto
+        const bullets = Array.isArray(s.bullets) ? s.bullets : [];
+        const texto = bullets.length ? bullets.map(b => `- ${b}`).join("\n") : "- Idea principal";
+
+        slide.addText(texto, {
+          x: 0.7, y: 1.6, w: 4.0, h: 3.7,
+          fontSize: 16, wrap: true, color: "111111"
+        });
+
+        // Imagen
+        if (s.needs?.image) {
+          let imgBox = { x: 5.0, y: 1.4, w: 4.3, h: 3.7 };
+
+          if (idx === 1 || idx === 6 || idx === 9 || idx === 10) {
+            imgBox = { x: 4.8, y: 1.2, w: 4.7, h: 4.0 };
           }
-        } catch (e) {
-          console.warn("IA imagen falló:", e);
+
+          const imgData = toPptxDataUrl(s.imageData);
+
+          if (imgData && String(imgData).startsWith("data:image/")) {
+            slide.addImage({
+              data: imgData,
+              x: imgBox.x,
+              y: imgBox.y,
+              w: imgBox.w,
+              h: imgBox.h
+            });
+          } else {
+            slide.addText("[Imagen no disponible]", {
+              x: imgBox.x, y: imgBox.y, w: imgBox.w, h: imgBox.h,
+              fontSize: 12, align: "center", valign: "middle", color: "666666"
+            });
+          }
+        }
+
+        // Gráfico
+        if (s.needs?.chart && s.chartSpec) {
+          const spec = s.chartSpec;
+          slide.addChart(
+            spec.type === "line" ? pptx.ChartType.line : pptx.ChartType.bar,
+            [{
+              name: spec.title || s.title,
+              labels: spec.labels,
+              values: spec.values
+            }],
+            { x: 5.0, y: 1.4, w: 4.3, h: 3.7, title: spec.title || s.title, showLegend: true }
+          );
         }
       }
 
-      // 📊 GRÁFICO REAL (spec)
-      if (s.needs.chart && !s.chartSpec) {
-        try {
-          const rCh = await fetch(`${API_BASE_URL}${IA_ENDPOINTS.grafico}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            mode: "cors",
-            body: JSON.stringify({
-              titulo: s.title,
-              contexto: (Array.isArray(s.bullets) ? s.bullets.join(" ") : "")
-            })
-          });
+      console.log("🟢 Exportando PPT:", fileName);
+      await pptx.writeFile({ fileName });
+      console.log("✅ PPTX exportado correctamente");
 
-          if (rCh.ok) {
-            const ch = await rCh.json().catch(() => ({}));
-            // Esperamos { type:"bar|line|pie", title, labels:[], values:[] }
-            if (ch) {
-              const labels = ch.labels || [];
-              const values = ch.values || [];
-              if (Array.isArray(labels) && Array.isArray(values) && labels.length >= 3 && labels.length === values.length) {
-                s.chartSpec = ch;
-            }
-          }
-
-          }
-        } catch (e) {
-          console.warn("IA gráfico falló:", e);
-        }
-      }
+    } catch (err) {
+      console.error("🔥 Fallo exportando PPT:", err);
+      alert("❌ Error exportando PPT. Mira consola (F12).");
+    } finally {
+      EXPORTANDO_PPT = false;
+      const loader2 = document.getElementById("loader");
+      const b1f = document.getElementById("btnPPT");
+      const b2f = document.getElementById("btnPPT2");
+      if (b1f) b1f.disabled = false;
+      if (b2f) b2f.disabled = false;
+      if (loader2) loader2.style.display = "none";
     }
-
-    return plan;
-  }
-    
-  function toPptxDataUrl(input) {
-    if (!input) return "";
-
-    const s = String(input).trim();
-
-    // Ya viene perfecto
-    if (s.startsWith("data:image/")) return s;
-
-    // Viene como "image/png;base64,...." (le falta "data:")
-    if (s.startsWith("image/")) return "data:" + s;
-
-    // Viene como "data:image/png;base64,AAA..." pero alguien lo recortó raro
-    if (s.includes("base64,") && !s.startsWith("data:")) return "data:" + s;
-
-    // Viene como "AAA..." (base64 puro)
-    if (!s.includes(",")) return "data:image/png;base64," + s;
-
-    // Viene con coma (dataUrl o pseudo-dataUrl)
-    const parts = s.split(",");
-    const head = parts[0] || "";
-    const b64 = parts[1] || "";
-
-    if (head.startsWith("data:image/")) return s;
-    if (head.startsWith("image/")) return "data:" + head + "," + b64;
-
-    // Cualquier otra cosa → nos quedamos con el b64
-    return "data:image/png;base64," + b64;
-  }
-    
-  // ====== Export ======
-async function exportarPPT() {
-  if (EXPORTANDO_PPT) {
-    console.warn("⛔ Exportación ya en curso, ignorando segundo click...");
-    return;
   }
 
-  EXPORTANDO_PPT = true;
+  // ======================
+  // INIT
+  // ======================
+  document.getElementById("langSelector").value = currentLang;
+  setLanguage(currentLang);
+  initMotorIA();
+</script>
 
-  const loader = document.getElementById("loader");
-  const b1 = document.getElementById("btnPPT");
-  const b2 = document.getElementById("btnPPT2");
-
-  // Encender loader y bloquear botones
-  if (loader) loader.style.display = "block";
-  if (b1) b1.disabled = true;
-  if (b2) b2.disabled = true;
-
-Uncaught SyntaxError: Unexpected token 'catch'
+</body>
+</html>
