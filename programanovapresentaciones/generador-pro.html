@@ -440,8 +440,8 @@
       if (!Array.isArray(plan) || !plan.length) return plan;
 
       // ✅ FIX FINAL: asegurar imageData usando imgHead si existe
-      for (let k = 0; k < planParaExportar.length; k++) {
-        const s = planParaExportar[k];
+      for (let k = 0; k < plan.length; k++) {
+        const s = plan[k];
         if (!s) continue;
 
         // Si no hay imageData pero sí hay imgHead → lo copiamos
@@ -572,6 +572,9 @@
     // EXPORTAR PPTX
     // =========================
     async function exportarPPT() {
+
+      const planParaExportar = planPro;
+      
       if (EXPORTANDO_PPT) {
         console.warn("⛔ Exportación ya en curso, ignorando segundo click...");
         return;
