@@ -13,558 +13,751 @@
       margin: 0;
       padding: 24px;
     }
-    h1 { text-align: center; color: #5ddcff; }
+
+    h1 {
+      text-align: center;
+      color: #5ddcff;
+      margin-bottom: 22px;
+      letter-spacing: 0.4px;
+    }
+
     .box {
-      max-width: 640px;
+      max-width: 820px;
       margin: auto;
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.1);
       padding: 24px;
-      border-radius: 12px;
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
     }
-    label { font-weight: bold; }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 6px;
+      color: #cbd5e1;
+    }
+
     input, textarea, select {
       width: 100%;
       padding: 12px;
-      margin-top: 8px;
+      margin-top: 4px;
       margin-bottom: 16px;
-      border-radius: 8px;
+      border-radius: 10px;
       border: none;
+      outline: none;
+      background: rgba(255,255,255,0.08);
+      color: #e5e7eb;
+      font-size: 15px;
     }
+
+    textarea {
+      resize: vertical;
+      min-height: 140px;
+    }
+
     button {
       width: 100%;
       padding: 14px;
       background: linear-gradient(90deg, #1e90ff, #00c2ff);
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       color: white;
       font-size: 18px;
       cursor: pointer;
-      margin-top: 10px;
-    }
-    button:hover {
-      background: linear-gradient(90deg, #00c2ff, #1e90ff);
-    }
-    .estado {
-      text-align: center;
-      margin-top: 14px;
-      color: #7dd3fc;
+      margin-bottom: 10px;
       font-weight: bold;
     }
+
+    button:hover {
+      opacity: 0.95;
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .estado {
+      text-align: center;
+      margin-top: 12px;
+      color: #7dd3fc;
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    .mini {
+      text-align: center;
+      font-size: 13px;
+      color: #94a3b8;
+      margin-top: -6px;
+      margin-bottom: 12px;
+    }
+
     #resultado {
-      margin-top: 24px;
+      margin-top: 18px;
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.12);
       padding: 16px;
-      border-radius: 10px;
+      border-radius: 12px;
     }
+
     #resultado h3 {
       color: #5ddcff;
       margin-bottom: 12px;
       text-align: center;
     }
-    #resultado ul { padding-left: 20px; }
-    #resultado li { margin-bottom: 8px; line-height: 1.4; }
+
+    #resultado ul {
+      padding-left: 22px;
+    }
+
+    #resultado li {
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .row { grid-template-columns: 1fr; }
+    }
+
+    #loader {
+      display: none;
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+      color: #a5b4fc;
+    }
+
+    hr {
+      border: none;
+      height: 1px;
+      background: rgba(148,163,184,0.22);
+      margin: 18px 0;
+    }
   </style>
 </head>
 
 <body>
+  <h1>Generador Nova · Presentaciones <span style="font-size:14px; color:#7dd3fc;">PRO</span></h1>
 
-<h1>Generador Nova · Presentaciones <span style="font-size:14px; color:#7dd3fc;">PRO</span></h1>
+  <div class="box">
 
-<div style="text-align:center; margin-bottom:16px;">
-  <select id="langSelector" onchange="setLanguage(this.value)">
-    <option value="es">Español</option>
-    <option value="en">English</option>
-    <option value="ja">日本語</option>
-  </select>
-</div>
-
-<div class="box">
-  <label for="motorIA">Motor IA (PRO)</label>
-  <select id="motorIA" onchange="setMotorIA(this.value)"></select>
-
-  <div class="estado" id="estadoMotor" style="margin-top:-6px; margin-bottom:16px; color:#a5b4fc;">
-    🧠 Motor IA: NOVA (por defecto)
-  </div>
-
-  <label for="titulo">Título de la presentación</label>
-  <input type="text" id="titulo" placeholder="Ejemplo: Innovación y futuro de la colaboración humano-IA" />
-
-  <label for="slides">Número de diapositivas</label>
-  <select id="slides">
-    <option value="10">10 diapositivas</option>
-    <option value="12">12 diapositivas</option>
-    <option value="15">15 diapositivas</option>
-    <option value="20">20 diapositivas</option>
-  </select>
-
-  <label for="contenido">Contenido base (capítulo, texto o guion)</label>
-  <textarea id="contenido" rows="6" placeholder="Pega aquí tu capítulo, texto o guion base…"></textarea>
-
-  <button id="btnGenerar" onclick="generar()">Generar estructura de presentación</button>
-
-  <div id="loader" style="display:none; margin-top:10px; font-weight:bold;">
-    ⏳ Procesando...
-  </div>
-
-  <div class="estado" id="estado">🟢 Generador listo</div>
-
-  <button id="btnPPT" onclick="exportarPPT()" disabled>📤 Exportar a PPT</button>
-  <button id="btnPPT2" onclick="exportarPPT()" disabled>📊 Exportar a PowerPoint</button>
-
-  <div id="resultado"></div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
-
-<script>
-  // ======================
-  // VARIABLES GLOBALES
-  // ======================
-  let estructuraGenerada = [];
-  let ultimaEstructuraLimpia = [];
-  let PRESENTACION_PRO = null;
-  let EXPORTANDO_PPT = false;
-  let planPro = [];
-
-  const API_BASE_URL = "https://programanovabackend-production-a426.up.railway.app";
-
-  // ======================
-  // i18n
-  // ======================
-  let currentLang = localStorage.getItem("nova_lang") || "es";
-  const textos = {
-    es: {
-      titulo: "Generador Nova · Presentaciones",
-      btnGenerar: "Generar estructura de presentación",
-      btnPPT: "📤 Exportar a PPT",
-      estadoListo: "🟢 Generador listo",
-      estadoProcesando: "⏳ Procesando solicitud…",
-      errorContenido: "⚠️ Introduce un texto base antes de generar la presentación.",
-      errorConexion: "❌ No se pudo conectar con el servicio.",
-      phTitulo: "Ejemplo: Innovación y futuro de la colaboración humano-IA",
-      phContenido: "Pega aquí tu capítulo, texto o guion base…"
-    },
-    en: {
-      titulo: "Nova Presentation Generator",
-      btnGenerar: "Generate presentation structure",
-      btnPPT: "📤 Export to PPT",
-      estadoListo: "🟢 Generator ready",
-      estadoProcesando: "⏳ Processing request…",
-      errorContenido: "⚠️ Please enter base content before generating.",
-      errorConexion: "❌ Could not connect to the service.",
-      phTitulo: "Example: Innovation and the future of human-AI collaboration",
-      phContenido: "Paste your chapter, text, or script here…"
-    },
-    ja: {
-      titulo: "Nova プレゼンテーション生成器",
-      btnGenerar: "プレゼンテーション構成を生成",
-      btnPPT: "📤 PPTにエクスポート",
-      estadoListo: "🟢 準備完了",
-      estadoProcesando: "⏳ 処理中…",
-      errorContenido: "⚠️ 生成する前に内容を入力してください。",
-      errorConexion: "❌ サービスに接続できませんでした。",
-      phTitulo: "例：人間とAIの協働の革新と未来",
-      phContenido: "ここに章・本文・台本を貼り付けてください…"
-    }
-  };
-
-  function setLanguage(lang) {
-    currentLang = lang || "es";
-    localStorage.setItem("nova_lang", currentLang);
-
-    const t = textos[currentLang] || textos.es;
-
-    document.querySelector("h1").innerText = t.titulo + " PRO";
-    document.querySelector("label[for='titulo']").innerText = (currentLang === "es") ? "Título de la presentación" : (currentLang === "en") ? "Presentation title" : "プレゼンテーションのタイトル";
-    document.querySelector("label[for='slides']").innerText = (currentLang === "es") ? "Número de diapositivas" : (currentLang === "en") ? "Number of slides" : "スライド数";
-    document.querySelector("label[for='contenido']").innerText = (currentLang === "es") ? "Contenido base (capítulo, texto o guion)" : (currentLang === "en") ? "Base content (chapter, text or script)" : "ベース内容（章・テキスト・台本）";
-
-    document.getElementById("titulo").placeholder = t.phTitulo;
-    document.getElementById("contenido").placeholder = t.phContenido;
-
-    document.getElementById("btnGenerar").innerText = t.btnGenerar;
-    document.getElementById("btnPPT").innerText = t.btnPPT;
-    document.getElementById("estado").innerText = t.estadoListo;
-  }
-
-  // ======================
-  // Motor IA (selector)
-  // ======================
-  const AI_ENGINES = [
-    { id: "nova",   name: "NOVA (Backend actual)" },
-    { id: "openai", name: "OpenAI (GPT) — Próximamente" },
-    { id: "claude", name: "Claude — Próximamente" },
-    { id: "gemini", name: "Gemini — Próximamente" }
-  ];
-
-  let currentEngine = localStorage.getItem("nova_engine") || "nova";
-
-  function initMotorIA() {
-    const sel = document.getElementById("motorIA");
-    const estado = document.getElementById("estadoMotor");
-    if (!sel || !estado) return;
-
-    sel.innerHTML = AI_ENGINES.map(e => `<option value="${e.id}">${e.name}</option>`).join("");
-
-    if (!AI_ENGINES.some(e => e.id === currentEngine)) currentEngine = "nova";
-    sel.value = currentEngine;
-
-    const name = (AI_ENGINES.find(e => e.id === currentEngine) || AI_ENGINES[0]).name;
-    estado.innerText = `🧠 Motor IA: ${name}`;
-  }
-
-  function setMotorIA(engineId) {
-    currentEngine = engineId || "nova";
-    localStorage.setItem("nova_engine", currentEngine);
-
-    const estado = document.getElementById("estadoMotor");
-    const name = (AI_ENGINES.find(e => e.id === currentEngine) || AI_ENGINES[0]).name;
-    if (estado) estado.innerText = `🧠 Motor IA: ${name}`;
-
-    console.log("MOTOR IA (PRO) =>", currentEngine);
-  }
-
-  // ======================
-  // PLAN PRO
-  // ======================
-  function construirPlanPro(slides) {
-    return (slides || []).map((s, i) => {
-      const title = String(s.title || s.titulo || "").trim();
-      const bullets = Array.isArray(s.bullets) ? s.bullets : [];
-      return {
-        idx: i + 1,
-        title,
-        bullets,
-        needs: { text: true, image: false, chart: false },
-        imagePrompt: "",
-        chartSpec: null,
-        render: { text: null, image: null, chart: null }
-      };
-    });
-  }
-
-  function aplicarReglasPro(plan) {
-    return (plan || []).map((slide, i) => {
-      if (!slide) return slide;
-
-      const idx = slide.idx || (i + 1);
-
-      slide.needs = slide.needs || { text: true, image: false, chart: false };
-      slide.needs.text = true;
-
-      // Garantías
-      if (idx === 1 || idx === 6 || idx === 9 || idx === 10) slide.needs.image = true;
-      if (idx === 5 || idx === 7) slide.needs.chart = true;
-
-      // Prompt imagen
-      if (slide.needs.image) {
-        slide.imagePrompt = slide.imagePrompt || `Imagen conceptual profesional sobre: ${slide.title}. Estilo corporativo, moderno, sin texto.`;
-      }
-
-      // Spec gráfico por defecto
-      if (slide.needs.chart && !slide.chartSpec) {
-        slide.chartSpec = (idx === 7)
-          ? { type:"line", title:"Evolución", labels:["2022","2023","2024"], values:[20,45,70] }
-          : { type:"bar", title:"Comparativa", labels:["A","B","C"], values:[40,35,25] };
-      }
-
-      return slide;
-    });
-  }
-
-  function renderPlanPro(plan) {
-    const resultadoEl = document.getElementById("resultado");
-    if (!resultadoEl) return;
-
-    resultadoEl.innerHTML += `
-      <hr style="margin:24px 0; border-color:#334155;">
-      <h3 style="color:#38bdf8;">🧠 Plan NOVA PRO</h3>
-      <div style="text-align:center; margin-bottom:12px; font-size:14px; color:#94a3b8;">
-        Motor IA activo: <b>${currentEngine || "nova"}</b>
+    <div class="row">
+      <div>
+        <label for="langSelector">Idioma</label>
+        <select id="langSelector" onchange="setLanguage(this.value)">
+          <option value="es">Español</option>
+          <option value="en">English</option>
+          <option value="ja">日本語</option>
+        </select>
       </div>
-      <ul>
-        ${(plan || []).map((s, i) => `
-          <li style="margin-bottom:12px;">
-            <b>Diapositiva ${i + 1}:</b> ${s.title}<br>
-            🖼 Imagen: ${s.needs?.image ? "Sí" : "No"}<br>
-            📊 Gráfico: ${s.needs?.chart ? "Sí" : "No"}
-          </li>
-        `).join("")}
-      </ul>
-    `;
-  }
 
-  // ======================
-  // IA ASSETS
-  // ======================
-  const IA_ENDPOINTS = {
-    imagen: "/generar-imagen"
-  };
+      <div>
+        <label for="motorIA">Motor IA (PRO)</label>
+        <select id="motorIA" onchange="setMotorIA(this.value)">
+          <!-- opciones por JS -->
+        </select>
+        <div class="mini" id="estadoMotor">🧠 Motor IA: NOVA (Backend actual)</div>
+      </div>
+    </div>
 
-  function toPptxDataUrl(input) {
-    if (!input) return "";
-    const s = String(input).trim();
-    if (s.startsWith("data:image/")) return s;
-    if (s.startsWith("image/")) return "data:" + s;
-    if (s.includes("base64,") && !s.startsWith("data:")) return "data:" + s;
-    if (!s.includes(",")) return "data:image/png;base64," + s;
-    return s;
-  }
+    <label for="titulo">Título de la presentación</label>
+    <input type="text" id="titulo" placeholder="Ejemplo: Innovación y futuro de la colaboración humano-IA" />
 
-  async function prepararAssetsIA(plan) {
-    if (!Array.isArray(plan) || !plan.length) return plan;
+    <label for="slides">Número de diapositivas</label>
+    <select id="slides">
+      <option value="10">10 diapositivas</option>
+      <option value="12">12 diapositivas</option>
+      <option value="15">15 diapositivas</option>
+      <option value="20">20 diapositivas</option>
+    </select>
 
-    for (let i = 0; i < plan.length; i++) {
-      const s = plan[i];
-      if (!s || !s.needs) continue;
+    <label for="contenido">Contenido base (capítulo, texto o guion)</label>
+    <textarea id="contenido" rows="6" placeholder="Pega aquí tu capítulo, texto o guion base…"></textarea>
 
-      if (s.needs.image && !s.imageData) {
-        try {
-          const rImg = await fetch(`${API_BASE_URL}${IA_ENDPOINTS.imagen}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            mode: "cors",
-            body: JSON.stringify({
-              titulo: s.title,
-              prompt: s.imagePrompt || `Imagen conceptual para: ${s.title}`
-            })
-          });
+    <button id="btnGenerar" onclick="generar()">Generar estructura de presentación</button>
 
-          if (rImg.ok) {
-            const img = await rImg.json().catch(() => ({}));
-            const dataUrl = img.dataUrl || img.dataURL || img.data_url || "";
-            if (dataUrl && String(dataUrl).startsWith("data:image/")) {
-              s.imageData = dataUrl;
+    <div id="loader">⏳ Procesando…</div>
+    <div class="estado" id="estado">🟢 Generador listo</div>
+
+    <hr />
+
+    <button id="btnPPT" onclick="exportarPPT()" disabled>📤 Exportar a PPT</button>
+    <button id="btnPPT2" onclick="exportarPPT()" disabled>📊 Exportar a PowerPoint</button>
+
+    <div id="resultado"></div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+
+  <script>
+    // =========================
+    // VARIABLES GLOBALES
+    // =========================
+    let estructuraGenerada = [];
+    let ultimaEstructuraLimpia = [];
+    let PRESENTACION_PRO = null;
+    let EXPORTANDO_PPT = false;
+
+    // FASE 2 PRO
+    let planPro = [];
+
+    // =========================
+    // CONFIG BACKEND
+    // =========================
+    const API_BASE_URL = "https://programanovabackend-production-a426.up.railway.app";
+
+    // Endpoints IA real
+    const IA_ENDPOINTS = {
+      imagen: "/generar-imagen"
+      // grafico: "/generar-grafico"  // opcional (si tu backend lo tuviera)
+    };
+
+    // =========================
+    // I18N
+    // =========================
+    let currentLang = "es";
+
+    const textos = {
+      es: {
+        titulo: "Generador Nova · Presentaciones",
+        labelTitulo: "Título de la presentación",
+        labelSlides: "Número de diapositivas",
+        labelContenido: "Contenido base (capítulo, texto o guion)",
+        btnGenerar: "Generar estructura de presentación",
+        btnPPT: "📤 Exportar a PPT",
+        estadoListo: "🟢 Generador listo",
+        estadoProcesando: "⏳ Procesando solicitud…",
+        errorContenido: "⚠️ Introduce un texto base antes de generar la presentación.",
+        errorConexion: "❌ No se pudo conectar con el servicio.",
+        ok: "✅ Estructura generada correctamente."
+      },
+      en: {
+        titulo: "Nova Presentation Generator",
+        labelTitulo: "Presentation title",
+        labelSlides: "Number of slides",
+        labelContenido: "Base content (chapter, text or script)",
+        btnGenerar: "Generate presentation structure",
+        btnPPT: "📤 Export to PPT",
+        estadoListo: "🟢 Generator ready",
+        estadoProcesando: "⏳ Processing request…",
+        errorContenido: "⚠️ Please enter base content before generating.",
+        errorConexion: "❌ Could not connect to the service.",
+        ok: "✅ Structure generated."
+      },
+      ja: {
+        titulo: "Nova プレゼンテーション生成器",
+        labelTitulo: "プレゼンテーションのタイトル",
+        labelSlides: "スライド数",
+        labelContenido: "ベース内容（章・テキスト・台本）",
+        btnGenerar: "プレゼンテーション構成を生成",
+        btnPPT: "📤 PPTにエクスポート",
+        estadoListo: "🟢 準備完了",
+        estadoProcesando: "⏳ 処理中…",
+        errorContenido: "⚠️ 生成する前に内容を入力してください。",
+        errorConexion: "❌ サービスに接続できませんでした。",
+        ok: "✅ 生成完了"
+      }
+    };
+
+    function setLanguage(lang) {
+      currentLang = lang || "es";
+      localStorage.setItem("nova_lang", currentLang);
+
+      const t = textos[currentLang] || textos.es;
+
+      document.querySelector("h1").innerText = t.titulo + " PRO";
+      document.querySelector("label[for='titulo']").innerText = t.labelTitulo;
+      document.querySelector("label[for='slides']").innerText = t.labelSlides;
+      document.querySelector("label[for='contenido']").innerText = t.labelContenido;
+
+      document.getElementById("btnGenerar").innerText = t.btnGenerar;
+      document.getElementById("btnPPT").innerText = t.btnPPT;
+
+      document.getElementById("estado").innerText = t.estadoListo;
+    }
+
+    // Inicializa idioma guardado
+    const savedLang = localStorage.getItem("nova_lang") || "es";
+    document.getElementById("langSelector").value = savedLang;
+    setLanguage(savedLang);
+
+    // =========================
+    // MOTOR IA (Selector PRO)
+    // =========================
+    const AI_ENGINES = [
+      { id: "nova", name: "NOVA (Backend actual)" }
+    ];
+
+    let currentEngine = localStorage.getItem("nova_engine") || "nova";
+
+    function initMotorIA() {
+      const sel = document.getElementById("motorIA");
+      const estado = document.getElementById("estadoMotor");
+      if (!sel || !estado) return;
+
+      sel.innerHTML = AI_ENGINES.map(e => `<option value="${e.id}">${e.name}</option>`).join("");
+      sel.value = "nova";
+      currentEngine = "nova";
+      localStorage.setItem("nova_engine", currentEngine);
+      estado.innerText = `🧠 Motor IA: ${AI_ENGINES[0].name}`;
+    }
+
+    function setMotorIA(engineId) {
+      currentEngine = engineId || "nova";
+      localStorage.setItem("nova_engine", currentEngine);
+
+      const estado = document.getElementById("estadoMotor");
+      const name = (AI_ENGINES.find(e => e.id === currentEngine) || AI_ENGINES[0]).name;
+      if (estado) estado.innerText = `🧠 Motor IA: ${name}`;
+
+      console.log("Motor IA seleccionado:", currentEngine);
+    }
+
+    initMotorIA();
+
+    // =========================
+    // HELPERS TEXTO / ESTRUCTURA
+    // =========================
+    function normalizarItem(item) {
+      let s = String(item || "").trim();
+      s = s.replace(/\*\*/g, "");
+      s = s.replace(/^\s*\d+\.\s*/, "");
+      s = s.replace(/^\s*-\s*/gm, "");
+
+      let titulo = s;
+      let bullets = [];
+
+      const parts = s.split(/\s*-\s*Idea principal:\s*/i);
+      if (parts.length > 1) {
+        titulo = parts[0].trim();
+        const idea = parts.slice(1).join(" - Idea principal: ").trim();
+        if (idea) bullets.push(idea);
+      }
+
+      const colon = titulo.split(/\s*:\s*/);
+      if (colon.length > 1) {
+        titulo = colon[0].trim();
+        const resto = colon.slice(1).join(": ").trim();
+        if (resto) bullets.push(resto);
+      }
+
+      const lines = titulo.split("\n").map(l => l.trim()).filter(Boolean);
+      if (lines.length > 1) {
+        titulo = lines[0];
+        bullets = bullets.concat(lines.slice(1));
+      }
+
+      return { title: titulo.trim(), bullets: bullets.map(b => b.trim()).filter(Boolean) };
+    }
+
+    function construirPlanPro(slides) {
+      return (slides || []).map((s, i) => {
+        const title = String(s.title || s.titulo || "").trim();
+        const bullets = Array.isArray(s.bullets) ? s.bullets : [];
+
+        return {
+          idx: i + 1,
+          title,
+          bullets,
+          needs: { text: true, image: false, chart: false },
+          imagePrompt: "",
+          imageData: "",
+          chartSpec: null
+        };
+      });
+    }
+
+    function aplicarReglasPro(plan) {
+      return (plan || []).map((slide) => {
+        if (!slide) return slide;
+
+        const idx = slide.idx || 1;
+
+        // Imágenes clave: 1, 6, 9, 10
+        if (idx === 1 || idx === 6 || idx === 9 || idx === 10) {
+          slide.needs.image = true;
+        }
+
+        // Gráficos fijos: 5 y 7
+        if (idx === 5) {
+          slide.needs.chart = true;
+          slide.chartSpec = {
+            type: "bar",
+            title: "Comparativa",
+            labels: ["A", "B", "C"],
+            values: [40, 35, 25]
+          };
+        }
+
+        if (idx === 7) {
+          slide.needs.chart = true;
+          slide.chartSpec = {
+            type: "line",
+            title: "Evolución",
+            labels: ["2022", "2023", "2024"],
+            values: [20, 45, 70]
+          };
+        }
+
+        if (slide.needs.image) {
+          slide.imagePrompt = `Imagen corporativa profesional, moderna, sin texto, sobre: ${slide.title}. Estilo limpio y alta calidad.`;
+        }
+
+        return slide;
+      });
+    }
+
+    function renderPlanPro(plan) {
+      const resultadoEl = document.getElementById("resultado");
+      if (!resultadoEl) return;
+
+      resultadoEl.innerHTML = `
+        <h3>🧠 Plan NOVA PRO</h3>
+        <ul>
+          ${(plan || []).map((s) => `
+            <li>
+              <b>Diapositiva ${s.idx}:</b> ${s.title}<br/>
+              🖼 Imagen: ${s.needs?.image ? "Sí" : "No"} | 📊 Gráfico: ${s.needs?.chart ? "Sí" : "No"}
+            </li>
+          `).join("")}
+        </ul>
+      `;
+    }
+
+    // =========================
+    // IA Imagen REAL (Backend)
+    // =========================
+    async function prepararAssetsIA(plan) {
+      if (!Array.isArray(plan) || !plan.length) return plan;
+
+      for (let i = 0; i < plan.length; i++) {
+        const s = plan[i];
+        if (!s || !s.needs) continue;
+
+        if (s.needs.image && !s.imageData) {
+          try {
+            const rImg = await fetch(`${API_BASE_URL}${IA_ENDPOINTS.imagen}`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              mode: "cors",
+              body: JSON.stringify({
+                titulo: s.title,
+                prompt: s.imagePrompt || `Imagen conceptual para: ${s.title}`
+              })
+            });
+
+            if (rImg.ok) {
+              const img = await rImg.json().catch(() => ({}));
+              const dataUrl = img.dataUrl || img.dataURL || img.data_url || "";
+              if (dataUrl && String(dataUrl).startsWith("data:image/")) {
+                s.imageData = dataUrl;
+              }
             }
+          } catch (e) {
+            console.warn("IA imagen falló:", e);
           }
-        } catch (e) {
-          console.warn("IA imagen falló:", e);
         }
       }
-    }
-    return plan;
-  }
 
-  // ======================
-  // GENERAR
-  // ======================
-  async function generar() {
-    const t = textos[currentLang] || textos.es;
-
-    const titulo = (document.getElementById("titulo").value || "").trim();
-    const numDiapositivas = document.getElementById("slides").value;
-    const contenido = (document.getElementById("contenido").value || "").trim();
-
-    const estadoEl = document.getElementById("estado");
-    const resultadoEl = document.getElementById("resultado");
-    const loader = document.getElementById("loader");
-
-    if (!contenido) {
-      estadoEl.innerText = t.errorContenido;
-      return;
+      return plan;
     }
 
-    estadoEl.innerText = t.estadoProcesando;
-    resultadoEl.innerHTML = "";
-    if (loader) loader.style.display = "block";
+    function toPptxDataUrl(input) {
+      if (!input) return "";
+      const s = String(input).trim();
+      if (s.startsWith("data:image/")) return s;
+      if (s.startsWith("image/")) return "data:" + s;
+      if (s.includes("base64,") && !s.startsWith("data:")) return "data:" + s;
+      if (!s.includes(",")) return "data:image/png;base64," + s;
+      return "data:image/png;base64," + (s.split(",")[1] || "");
+    }
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/generar`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        mode: "cors",
-        body: JSON.stringify({
-          titulo,
-          num_diapositivas: numDiapositivas,
-          contenido,
-          motorIA: (currentEngine || "nova")
-        })
-      });
+    // =========================
+    // GENERAR
+    // =========================
+    async function generar() {
+      const t = textos[currentLang] || textos.es;
 
-      if (!response.ok) {
+      const tituloEl = document.getElementById("titulo");
+      const slidesEl = document.getElementById("slides");
+      const contenidoEl = document.getElementById("contenido");
+
+      const estadoEl = document.getElementById("estado");
+      const resultadoEl = document.getElementById("resultado");
+      const loader = document.getElementById("loader");
+
+      const titulo = (tituloEl.value || "").trim();
+      const numDiapositivas = slidesEl.value;
+      const contenido = (contenidoEl.value || "").trim();
+      const motorIA = currentEngine || "nova";
+
+      if (!contenido) {
+        estadoEl.innerText = t.errorContenido;
+        return;
+      }
+
+      estadoEl.innerText = t.estadoProcesando;
+      if (loader) loader.style.display = "block";
+      if (resultadoEl) resultadoEl.innerHTML = "";
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/generar`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          mode: "cors",
+          body: JSON.stringify({
+            titulo,
+            num_diapositivas: numDiapositivas,
+            contenido,
+            motorIA
+          })
+        });
+
+        if (!response.ok) {
+          estadoEl.innerText = t.errorConexion;
+          if (loader) loader.style.display = "none";
+          return;
+        }
+
+        const data = await response.json().catch(() => ({}));
+        PRESENTACION_PRO = data;
+
+        estadoEl.innerText = data.mensaje || t.ok;
+        console.log("✅ PRESENTACION_PRO guardada:", PRESENTACION_PRO);
+
+        if (Array.isArray(data.estructura)) {
+          estructuraGenerada = data.estructura;
+
+          // Estructura limpia directa del backend
+          ultimaEstructuraLimpia = data.estructura.map(x => ({
+            title: (x.title || x.titulo || "").trim(),
+            bullets: Array.isArray(x.bullets) ? x.bullets : []
+          }));
+
+          planPro = aplicarReglasPro(construirPlanPro(ultimaEstructuraLimpia));
+          renderPlanPro(planPro);
+
+          document.getElementById("btnPPT").disabled = false;
+          document.getElementById("btnPPT2").disabled = false;
+        }
+      } catch (err) {
+        console.error(err);
         estadoEl.innerText = t.errorConexion;
-        return;
+      } finally {
+        if (loader) loader.style.display = "none";
       }
-
-      const data = await response.json().catch(() => ({}));
-      PRESENTACION_PRO = data;
-
-      estadoEl.innerText = data.mensaje || "✅ Estructura generada correctamente.";
-
-      if (Array.isArray(data.estructura)) {
-        ultimaEstructuraLimpia = data.estructura;
-
-        planPro = aplicarReglasPro(construirPlanPro(ultimaEstructuraLimpia));
-        renderPlanPro(planPro);
-
-        // Render normal
-        const listaHTML = (ultimaEstructuraLimpia || []).map((obj, i) => {
-          const bullets = (obj.bullets && obj.bullets.length)
-            ? `<ul>${obj.bullets.map(b => `<li>${b}</li>`).join("")}</ul>`
-            : "";
-          return `<li><b>${i + 1}. ${obj.title}</b>${bullets}</li>`;
-        }).join("");
-
-        resultadoEl.innerHTML += `
-          <h3>Estructura generada</h3>
-          <ul>${listaHTML}</ul>
-        `;
-
-        document.getElementById("btnPPT").disabled = false;
-        document.getElementById("btnPPT2").disabled = false;
-      }
-    } catch (err) {
-      console.error(err);
-      estadoEl.innerText = t.errorConexion;
-    } finally {
-      if (loader) loader.style.display = "none";
     }
-  }
 
-  // ======================
-  // EXPORTAR PPTX
-  // ======================
-  async function exportarPPT() {
-    if (EXPORTANDO_PPT) return;
-
-    EXPORTANDO_PPT = true;
-
-    const loader = document.getElementById("loader");
-    const b1 = document.getElementById("btnPPT");
-    const b2 = document.getElementById("btnPPT2");
-
-    if (loader) loader.style.display = "block";
-    if (b1) b1.disabled = true;
-    if (b2) b2.disabled = true;
-
-    try {
-      if (!Array.isArray(planPro) || planPro.length === 0) {
-        alert("❌ Primero genera la presentación.");
-        return;
-      }
-      if (typeof PptxGenJS === "undefined") {
-        alert("❌ No se cargó PptxGenJS. Recarga la página.");
+    // =========================
+    // EXPORTAR PPTX
+    // =========================
+    async function exportarPPT() {
+      if (EXPORTANDO_PPT) {
+        console.warn("⛔ Exportación ya en curso, ignorando segundo click...");
         return;
       }
 
-      const titulo = (document.getElementById("titulo").value || "Nova_Presentacion").trim();
-      const safeTitle = titulo.replace(/[^\w\-]+/g, "_").slice(0, 40) || "Nova_Presentacion";
-      const fileName = `${safeTitle}_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.pptx`;
+      EXPORTANDO_PPT = true;
 
-      const pptx = new PptxGenJS();
+      const loader = document.getElementById("loader");
+      const b1 = document.getElementById("btnPPT");
+      const b2 = document.getElementById("btnPPT2");
 
-      // 🔥 preparar imágenes IA reales
-      let planParaExportar = JSON.parse(JSON.stringify(planPro));
-      planParaExportar = await prepararAssetsIA(planParaExportar);
+      if (loader) loader.style.display = "block";
+      if (b1) b1.disabled = true;
+      if (b2) b2.disabled = true;
 
-      console.log("🧠 PLAN FINAL PARA EXPORTAR (DEBUG):",
-        planParaExportar.map(s => ({
-          idx: s.idx,
-          title: s.title,
-          needsImage: !!s?.needs?.image,
-          imgLen: (s.imageData ? s.imageData.length : 0),
-          imgHead: (s.imageData ? String(s.imageData).slice(0, 30) : "")
-        }))
-      );
+      try {
+        if (!PRESENTACION_PRO) {
+          alert("❌ Primero genera la presentación con IA.");
+          return;
+        }
+        if (!Array.isArray(ultimaEstructuraLimpia) || ultimaEstructuraLimpia.length === 0) {
+          alert("❌ Primero genera una presentación.");
+          return;
+        }
+        if (typeof PptxGenJS === "undefined") {
+          alert("❌ No se ha cargado la librería de PowerPoint. Recarga la página.");
+          return;
+        }
 
-      for (let i = 0; i < planParaExportar.length; i++) {
-        const s = planParaExportar[i];
-        if (!s || !s.title) continue;
+        const titulo = (document.getElementById("titulo")?.value || "Nova_Presentacion").trim();
+        const safeTitle = titulo.replace(/[^\w\-]+/g, "_").slice(0, 40) || "Nova_Presentacion";
+        const fileName = `${safeTitle}_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.pptx`;
 
-        const idx = s.idx || (i + 1);
-        const slide = pptx.addSlide();
+        console.log("⏳ Exportando PPTX con imágenes IA...");
 
-        slide.background = { color: "FFFFFF" };
+        const pptx = new PptxGenJS();
 
-        // ✅ Reborde azul siempre
-        slide.addShape(pptx.ShapeType.rect, {
-          x: 0.15, y: 0.15, w: 9.7, h: 5.3,
-          fill: { color: "FFFFFF", transparency: 100 },
-          line: { color: "60A5FA", width: 2 }
-        });
+        // Plan final
+        let planParaExportar = (Array.isArray(planPro) && planPro.length)
+          ? planPro
+          : aplicarReglasPro(construirPlanPro(ultimaEstructuraLimpia));
 
-        slide.addText(s.title, {
-          x: 0.6, y: 0.45, w: 9, h: 0.6,
-          fontSize: 26, bold: true, color: "111111"
-        });
+        // IA REAL (Imagen)
+        planParaExportar = await prepararAssetsIA(planParaExportar);
 
-        // Texto
-        const bullets = Array.isArray(s.bullets) ? s.bullets : [];
-        const texto = bullets.length ? bullets.map(b => `- ${b}`).join("\n") : "- Idea principal";
+        // DEBUG
+        console.log("🧠 PLAN FINAL PARA EXPORTAR (DEBUG):",
+          planParaExportar.map(s => ({
+            idx: s.idx,
+            title: s.title,
+            needsImage: !!s?.needs?.image,
+            imgLen: (s.imageData ? s.imageData.length : 0),
+            imgHead: (s.imageData ? String(s.imageData).slice(0, 30) : ""),
+            needsChart: !!s?.needs?.chart,
+            hasChartSpec: !!s.chartSpec
+          }))
+        );
 
-        slide.addText(texto, {
-          x: 0.7, y: 1.6, w: 4.0, h: 3.7,
-          fontSize: 16, wrap: true, color: "111111"
-        });
+        for (let i = 0; i < planParaExportar.length; i++) {
+          const s = planParaExportar[i];
+          if (!s || !s.title) continue;
 
-        // Imagen
-        if (s.needs?.image) {
+          const idx = s.idx || (i + 1);
+          const slide = pptx.addSlide();
+
+          // Fondo blanco
+          slide.background = { color: "FFFFFF" };
+
+          // Reborde azul en TODAS
+          slide.addShape(pptx.ShapeType.rect, {
+            x: 0.15,
+            y: 0.15,
+            w: 9.7,
+            h: 5.3,
+            fill: { color: "FFFFFF", transparency: 100 },
+            line: { color: "60A5FA", width: 2 }
+          });
+
+          // Título
+          slide.addText(s.title, {
+            x: 0.6,
+            y: 0.45,
+            w: 9,
+            h: 0.6,
+            fontSize: 26,
+            bold: true,
+            color: "111111"
+          });
+
+          // Layout seguro
+          const textBox = { x: 0.7, y: 1.6, w: 4.2, h: 3.7 };
           let imgBox = { x: 5.0, y: 1.4, w: 4.3, h: 3.7 };
+          const chartBox = { x: 5.0, y: 1.4, w: 4.3, h: 3.7 };
 
+          // Slides clave: imagen grande
           if (idx === 1 || idx === 6 || idx === 9 || idx === 10) {
             imgBox = { x: 4.8, y: 1.2, w: 4.7, h: 4.0 };
           }
 
-          const imgData = toPptxDataUrl(s.imageData);
+          // TEXTO (siempre)
+          const bullets = Array.isArray(s.bullets) ? s.bullets : [];
+          const texto = bullets.length ? bullets.map(b => `- ${b}`).join("\n") : "- Idea principal";
 
-          if (imgData && String(imgData).startsWith("data:image/")) {
-            slide.addImage({
-              data: imgData,
-              x: imgBox.x,
-              y: imgBox.y,
-              w: imgBox.w,
-              h: imgBox.h
-            });
-          } else {
-            slide.addText("[Imagen no disponible]", {
-              x: imgBox.x, y: imgBox.y, w: imgBox.w, h: imgBox.h,
-              fontSize: 12, align: "center", valign: "middle", color: "666666"
-            });
+          slide.addText(texto, {
+            x: textBox.x,
+            y: textBox.y,
+            w: textBox.w,
+            h: textBox.h,
+            fontSize: 16,
+            wrap: true,
+            color: "111111"
+          });
+
+          // IMAGEN
+          if (s.needs?.image) {
+            const imgData = toPptxDataUrl(s.imageData);
+            if (imgData && String(imgData).startsWith("data:image/")) {
+              slide.addImage({
+                data: imgData,
+                x: imgBox.x,
+                y: imgBox.y,
+                w: imgBox.w,
+                h: imgBox.h
+              });
+            } else {
+              slide.addText("[Imagen no disponible]", {
+                x: imgBox.x,
+                y: imgBox.y,
+                w: imgBox.w,
+                h: imgBox.h,
+                fontSize: 12,
+                align: "center",
+                valign: "middle",
+                color: "666666"
+              });
+            }
+          }
+
+          // GRÁFICO
+          if (s.needs?.chart) {
+            if (s.chartSpec && Array.isArray(s.chartSpec.labels) && Array.isArray(s.chartSpec.values)) {
+              const spec = s.chartSpec;
+
+              slide.addChart(
+                spec.type === "line"
+                  ? pptx.ChartType.line
+                  : spec.type === "pie"
+                  ? pptx.ChartType.pie
+                  : pptx.ChartType.bar,
+                [{
+                  name: spec.title || s.title,
+                  labels: spec.labels,
+                  values: spec.values
+                }],
+                {
+                  x: chartBox.x,
+                  y: chartBox.y,
+                  w: chartBox.w,
+                  h: chartBox.h,
+                  title: spec.title || s.title,
+                  showLegend: true
+                }
+              );
+            } else {
+              slide.addText("[Gráfico no disponible]", {
+                x: chartBox.x,
+                y: chartBox.y,
+                w: chartBox.w,
+                h: chartBox.h,
+                fontSize: 12,
+                align: "center",
+                valign: "middle",
+                color: "444444"
+              });
+            }
           }
         }
 
-        // Gráfico
-        if (s.needs?.chart && s.chartSpec) {
-          const spec = s.chartSpec;
-          slide.addChart(
-            spec.type === "line" ? pptx.ChartType.line : pptx.ChartType.bar,
-            [{
-              name: spec.title || s.title,
-              labels: spec.labels,
-              values: spec.values
-            }],
-            { x: 5.0, y: 1.4, w: 4.3, h: 3.7, title: spec.title || s.title, showLegend: true }
-          );
-        }
+        console.log("🟢 Exportando PPT:", fileName);
+        await pptx.writeFile({ fileName });
+        console.log("✅ PPTX exportado correctamente");
+
+      } catch (err) {
+        console.error("🔥 Fallo exportando PPT:", err);
+        alert("❌ Error exportando PPT. Mira consola (F12).");
+      } finally {
+        EXPORTANDO_PPT = false;
+        const loader = document.getElementById("loader");
+        const b1f = document.getElementById("btnPPT");
+        const b2f = document.getElementById("btnPPT2");
+
+        if (b1f) b1f.disabled = false;
+        if (b2f) b2f.disabled = false;
+        if (loader) loader.style.display = "none";
       }
-
-      console.log("🟢 Exportando PPT:", fileName);
-      await pptx.writeFile({ fileName });
-      console.log("✅ PPTX exportado correctamente");
-
-    } catch (err) {
-      console.error("🔥 Fallo exportando PPT:", err);
-      alert("❌ Error exportando PPT. Mira consola (F12).");
-    } finally {
-      EXPORTANDO_PPT = false;
-      const loader2 = document.getElementById("loader");
-      const b1f = document.getElementById("btnPPT");
-      const b2f = document.getElementById("btnPPT2");
-      if (b1f) b1f.disabled = false;
-      if (b2f) b2f.disabled = false;
-      if (loader2) loader2.style.display = "none";
     }
-  }
-
-  // ======================
-  // INIT
-  // ======================
-  document.getElementById("langSelector").value = currentLang;
-  setLanguage(currentLang);
-  initMotorIA();
-</script>
+  </script>
 
 </body>
 </html>
