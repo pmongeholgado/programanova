@@ -701,7 +701,7 @@
             const imgData = toPptxDataUrl(s.imageData || s.imgHead);
             if (imgData && String(imgData).startsWith("data:image/")) {
               slide.addImage({
-                data: imgData,
+                data: imgData.replace(/^data:/, ""),
                 x: imgBox.x,
                 y: imgBox.y,
                 w: imgBox.w,
