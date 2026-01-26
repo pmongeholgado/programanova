@@ -643,131 +643,131 @@
           // Fondo blanco
           slide.background = { color: "FFFFFF" };
 
-          // Reborde azul en TODAS
-          slide.addShape(pptx.ShapeType.rect, {
-            x: 0.15,
-            y: 0.15,
-            w: 9.7,
-            h: 5.3,
-            fill: { color: "FFFFFF", transparency: 100 },
-            line: { color: "60A5FA", width: 2 }
-          });
+        // Reborde azul en TODAS
+        slide.addShape(pptx.ShapeType.rect, {
+          x: 0.15,
+          y: 0.15,
+          w: 9.7,
+          h: 5.3,
+          fill: { color: "FFFFFF", transparency: 100 },
+          line: { color: "60A5FA", width: 2 }
+        });
 
-          // Título
-          slide.addText(s.title, {
-            x: 0.6,
-            y: 0.45,
-            w: 9,
-            h: 0.6,
-            fontSize: 26,
-            bold: true,
-            color: "111111"
-          });
+        // Título
+        slide.addText(s.title, {
+          x: 0.6,
+          y: 0.45,
+          w: 9,
+          h: 0.6,
+          fontSize: 26,
+          bold: true,
+          color: "111111"
+        });
 
-          // Layout seguro
-          const textBox = (s.render && s.render.text) || { x: 0.7, y: 1.6, w: 4.4, h: 3.7 };
+        // Layout seguro
+        const textBox = (s.render && s.render.text) || { x: 0.7, y: 1.6, w: 4.4, h: 3.7 };
+        let imgBox = { x: 5.0, y: 1.4, w: 4.3, h: 3.7 };
+        const chartBox = { x: 5.0, y: 1.4, w: 4.3, h: 3.7 };
+
+        // Slides clave: imagen grande
+        if (idx === 1 || idx === 6 || idx === 9 || idx === 10) {
+          imgBox = { x: 4.8, y: 1.2, w: 4.7, h: 4.0 };
+        }
+
+        // TEXTO (siempre)
+        const bullets = Array.isArray(s.bullets) ? s.bullets : [];
+        const texto = bullets.length ? bullets.map(b => `- ${b}`).join("\n") : "- Idea principal";
+
+        slide.addText(texto, {
+          x: textBox.x,
+          y: textBox.y,
+          w: textBox.w,
+          h: textBox.h,
+          fontSize: 16,
+          wrap: true,
+          color: "111111"
+        });
+
+        // IMAGEN
+        if (s?.needs?.image || s?.needsImage) {
           let imgBox = { x: 5.0, y: 1.4, w: 4.3, h: 3.7 };
-          const chartBox = { x: 5.0, y: 1.4, w: 4.3, h: 3.7 };
 
-          // Slides clave: imagen grande
           if (idx === 1 || idx === 6 || idx === 9 || idx === 10) {
             imgBox = { x: 4.8, y: 1.2, w: 4.7, h: 4.0 };
           }
 
-          // TEXTO (siempre)
-          const bullets = Array.isArray(s.bullets) ? s.bullets : [];
-          const texto = bullets.length ? bullets.map(b => `- ${b}`).join("\n") : "- Idea principal";
+          const imgDataUrl = toPptxDataUrl(s.imageData || s.imgHead);
 
-          slide.addText(texto, {
-            x: textBox.x,
-            y: textBox.y,
-            w: textBox.w,
-            h: textBox.h,
-            fontSize: 16,
-            wrap: true,
-            color: "111111"
-          });
+          if (imgDataUrl && String(imgDataUrl).startsWith("data:image/")) {
+            const fixed = String(imgDataUrl);
+            const pureB64 = fixed.includes("base64,")
+              ? fixed.split("base64,")[1]
+              : fixed;
 
-          // IMAGEN
-          if (s?.needs?.image || s?.needsImage) {
-
-            let imgBox = { x: 5.0, y: 1.4, w: 4.3, h: 3.7 };
-
-            if (idx === 1 || idx === 6 || idx === 9 || idx === 10) {
-              imgBox = { x: 4.8, y: 1.2, w: 4.7, h: 4.0 };
-            }
-
-            const imgDataUrl = toPptxDataUrl(s.imageData || s.imgHead);
-
-            if (imgDataUrl && String(imgDataUrl).startsWith("data:image/")) {
-
-              const fixed = String(imgDataUrl);
-              const pureB64 = fixed.includes("base64,")
-                ? fixed.split("base64,")[1]
-                : fixed; 
-            
-              slide.addImage({
-                base64: pureB64,
-                x: imgBox.x,
-                y: imgBox.y,
-                w: imgBox.w,
-                h: imgBox.h
-              });
-            } else {
-              slide.addText("[Imagen no disponible]", {
-                x: imgBox.x,
-                y: imgBox.y,
-                w: imgBox.w,
-                h: imgBox.h,
-                fontSize: 12,
-                align: "center",
-                valign: "middle",
-                color: "666666"
-              });
-            }
+            slide.addImage({
+              base64: pureB64,
+              x: imgBox.x,
+              y: imgBox.y,
+              w: imgBox.w,
+              h: imgBox.h
+            });
+          } else {
+            slide.addText("[Imagen no disponible]", {
+              x: imgBox.x,
+              y: imgBox.y,
+              w: imgBox.w,
+              h: imgBox.h,
+              fontSize: 12,
+              align: "center",
+              valign: "middle",
+              color: "666666"
+            });
           }
+        }
 
-          // GRÁFICO
-          if (s.needs?.chart) {
-            if (s.chartSpec && Array.isArray(s.chartSpec.labels) && Array.isArray(s.chartSpec.values)) {
-              const spec = s.chartSpec;
+        // GRÁFICO
+        if (s.needs?.chart) {
+          if (s.chartSpec && Array.isArray(s.chartSpec.labels) && Array.isArray(s.chartSpec.values)) {
+            const spec = s.chartSpec;
 
-              slide.addChart(
-                spec.type === "line"
-                  ? pptx.ChartType.line
-                  : spec.type === "pie"
-                  ? pptx.ChartType.pie
-                  : pptx.ChartType.bar,
-                [{
-                  name: spec.title || s.title,
-                  labels: spec.labels,
-                  values: spec.values
-                }],
-                {
-                  x: chartBox.x,
-                  y: chartBox.y,
-                  w: chartBox.w,
-                  h: chartBox.h,
-                  title: spec.title || s.title,
-                  showLegend: true
-                }
-              );
-            } else {
-              slide.addText("[Gráfico no disponible]", {
+            slide.addChart(
+              spec.type === "line"
+                ? pptx.ChartType.line
+                : spec.type === "pie"
+                ? pptx.ChartType.pie
+                : pptx.ChartType.bar,
+              [{
+                name: spec.title || s.title,
+                labels: spec.labels,
+                values: spec.values
+              }],
+              {
                 x: chartBox.x,
                 y: chartBox.y,
                 w: chartBox.w,
                 h: chartBox.h,
-                fontSize: 12,
-                align: "center",
-                valign: "middle",
-                color: "444444"
-              });
-            }
+                title: spec.title || s.title,
+                showLegend: true
+              }
+            );
+          } else {
+            slide.addText("[Gráfico no disponible]", {
+              x: chartBox.x,
+              y: chartBox.y,
+              w: chartBox.w,
+              h: chartBox.h,
+              fontSize: 12,
+              align: "center",
+              valign: "middle",
+              color: "444444"
+            });
+          }
+        }
+      } // ✅ ESTA ES LA LLAVE QUE TE FALTABA (CIERRA EL FOR)
 
-        console.log("🟢 Exportando PPT:", fileName);
-        await pptx.writeFile({ fileName });
-        console.log("✅ PPTX exportado correctamente");
+      console.log("🟢 Exportando PPT:", fileName);
+      await pptx.writeFile({ fileName });
+      console.log("✅ PPTX exportado correctamente");    
 
       } catch (err) {
         console.error("🔥 Fallo exportando PPT:", err);
