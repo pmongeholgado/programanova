@@ -702,7 +702,7 @@
             if (imgData && String(imgData).startsWith("data:image/")) 
             
               slide.addImage({
-                base64: pureB64,
+                data: imgData, (/^data:/, ""),
                 x: imgBox.x,
                 y: imgBox.y,
                 w: imgBox.w,
