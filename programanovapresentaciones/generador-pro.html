@@ -690,16 +690,21 @@
 
           // IMAGEN
           if (s?.needs?.image || s?.needsImage) {
-            
-            let imgBox = { x: 5.0, y: 1.35, w: 4.7, h: 3.95 }; // default visible
 
-            // 🔥 Slides clave: imagen grande sí o sí (1,6,9,10)
+            let imgBox = { x: 5.0, y: 1.4, w: 4.3, h: 3.7 };
+
             if (idx === 1 || idx === 6 || idx === 9 || idx === 10) {
-              imgBox = { x: 4.9, y: 1.10, w: 4.85, h: 4.20 };
+              imgBox = { x: 4.8, y: 1.2, w: 4.7, h: 4.0 };
             }
-            
-            const imgData = toPptxDataUrl(s.imageData || s.imgHead);
-            if (imgData && String(imgData).startsWith("data:image/")) 
+
+            const imgDataUrl = toPptxDataUrl(s.imageData || s.imgHead);
+
+            if (imgDataUrl && String(imgDataUrl).startsWith("data:image/")) {
+
+              const fixed = String(imgDataUrl);
+              const pureB64 = fixed.includes("base64,")
+                ? fixed.split("base64,")[1]
+                : fixed; 
             
               slide.addImage({
                 base64: pureB64,
