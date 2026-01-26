@@ -769,7 +769,7 @@
         await pptx.writeFile({ fileName });
         console.log("✅ PPTX exportado correctamente");
 
-        catch (err) {
+      } catch (err) {
         console.error("🔥 Fallo exportando PPT:", err);
         alert("❌ Error exportando PPT. Mira consola (F12).");
       } finally {
