@@ -567,7 +567,24 @@
         if (loader) loader.style.display = "none";
       }
     }
+    
+  function normalizarImagenParaPPT(imageInput) {
+    if (!imageInput || typeof imageInput !== "string") return null;
 
+    // Caso 1: ya viene como dataURL (lo normal en vuestro proyecto)
+    if (imageInput.startsWith("data:image/")) {
+      const [meta, base64] = imageInput.split(",");
+      const ext = meta.includes("image/jpeg") ? "jpeg" :
+              meta.includes("image/jpg")  ? "jpg"  :
+              meta.includes("image/png")  ? "png"  : "png";
+
+    return { base64, ext };
+    }
+
+    // Caso 2: viene como URL (por si en el futuro se usa)
+    return null; // NO convertir aquí para no meter asincronía
+  }
+    
     // =========================
     // EXPORTAR PPTX
     // =========================
@@ -697,11 +714,12 @@
           }
 
           const imgDataUrl = toPptxDataUrl(s.imageData || s.imgHead);
-
-          if (imgDataUrl && String(imgDataUrl).startsWith("data:image/")) {
-
+          const imgNorm = normalizarImagenParaPPT(imgDataUrl);
+          
+          if (imgNorm && imgNorm.base64) {
             slide.addImage({
-              data: imgDataUrl,
+              data: imgNorm.base64,
+              extension: imgNorm.ext || "png",
               x: imgBox.x,
               y: imgBox.y,
               w: imgBox.w,
