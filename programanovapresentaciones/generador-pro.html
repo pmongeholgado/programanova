@@ -699,13 +699,9 @@
           const imgDataUrl = toPptxDataUrl(s.imageData || s.imgHead);
 
           if (imgDataUrl && String(imgDataUrl).startsWith("data:image/")) {
-            const fixed = String(imgDataUrl);
-            const pureB64 = fixed.includes("base64,")
-              ? fixed.split("base64,")[1]
-              : fixed;
 
             slide.addImage({
-              base64: pureB64,
+              data: imgDataUrl,
               x: imgBox.x,
               y: imgBox.y,
               w: imgBox.w,
