@@ -594,6 +594,15 @@
       const blob = new Blob([byteArray], { type: mime });
       return URL.createObjectURL(blob);
     }
+     function base64ToUint8Array(base64) {
+       const binary = atob(base64);
+       const len = binary.length;
+       const bytes = new Uint8Array(len);
+       for (let i = 0; i < len; i++) {
+         bytes[i] = binary.charCodeAt(i);
+       }
+       return bytes;
+    }
 
     // =========================
     // EXPORTAR PPTX
@@ -736,10 +745,11 @@
                 .replace(/^data:image\/[^;]+;base64,/, "")
                 .replace(/^image\/[^;]+;base64,/, "");
 
-              const imgUrl = base64ToBlobUrl(raw);
+              const imgBytes = base64ToUint8Array(raw);
 
               slide.addImage({
-                path: imgUrl,
+                data: imgBytes,
+                extension: "png",
                 x: imgBox.x,
                 y: imgBox.y,
                 w: imgBox.w,
