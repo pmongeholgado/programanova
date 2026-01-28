@@ -744,28 +744,20 @@
                 y: imgBox.y,
                 w: imgBox.w,
                 h: imgBox.h,
-              });
-            
-                // ⚠️ NO pongas extension aquí
-                x: imgBox.x,
-                y: imgBox.y,
-                w: imgBox.w,
-                h: imgBox.h,
-              });
-
-          } else {
-            slide.addText("[Imagen no disponible]", {
-              x: imgBox.x,
-              y: imgBox.y,
-              w: imgBox.w,
-              h: imgBox.h,
-              fontSize: 12,
-              align: "center",
-              valign: "middle",
-              color: "666666"
-            });
-          }
-        }
+              });  
+              } else {
+                slide.addText("[Imagen no disponible]", {
+                  x: imgBox.x,
+                  y: imgBox.y,
+                  w: imgBox.w,
+                  h: imgBox.h,
+                  fontSize: 12,
+                  align: "center",
+                  valign: "middle",
+                  color: "666666"
+                });
+              }
+            }
 
         // GRÁFICO
         if (s.needs?.chart) {
