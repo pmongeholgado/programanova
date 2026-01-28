@@ -584,7 +584,17 @@
     // Caso 2: viene como URL (por si en el futuro se usa)
     return null; // NO convertir aquí para no meter asincronía
   }
-    
+     function base64ToBlobUrl(base64, mime = "image/png") {
+      const byteChars = atob(base64);
+      const byteNumbers = new Array(byteChars.length);
+      for (let i = 0; i < byteChars.length; i++) {
+        byteNumbers[i] = byteChars.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: mime });
+      return URL.createObjectURL(blob);
+    }
+
     // =========================
     // EXPORTAR PPTX
     // =========================
@@ -722,21 +732,20 @@
               imgNorm.base64.slice(0, 80)
           );
             
-              const raw = imgNorm.base64 || "";
-
-              // quita cualquier prefijo si viniera ya con él
-              const rawNoPrefix = raw
+              const raw = imgNorm.base64
                 .replace(/^data:image\/[^;]+;base64,/, "")
                 .replace(/^image\/[^;]+;base64,/, "");
 
-              // ESTE es el formato que tu error pide
-              const pptData = "image/png;base64," + rawNoPrefix;
-
-              console.log("PPT DATA HEAD:", pptData.slice(0, 35));
-              console.log("PPT DATA HAS HEADER:", pptData.startsWith("image/png;base64,"));
+              const imgUrl = base64ToBlobUrl(raw);
 
               slide.addImage({
-                data: pptData,
+                path: imgUrl,
+                x: imgBox.x,
+                y: imgBox.y,
+                w: imgBox.w,
+                h: imgBox.h,
+              });
+            
                 // ⚠️ NO pongas extension aquí
                 x: imgBox.x,
                 y: imgBox.y,
