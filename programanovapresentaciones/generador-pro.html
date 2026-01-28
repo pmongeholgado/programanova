@@ -627,7 +627,6 @@
       if (b1) b1.disabled = true;
       if (b2) b2.disabled = true;
 
-      try {
         if (!PRESENTACION_PRO) {
           alert("❌ Primero genera la presentación con IA.");
           return;
@@ -807,7 +806,7 @@
             });
           }
         }
-          // ✅ ESTA ES LA LLAVE QUE TE FALTABA (CIERRA EL FOR)
+        }  // ✅ ESTA ES LA LLAVE QUE TE FALTABA (CIERRA EL FOR)
 
       console.log("🟢 Exportando PPT:", fileName);
       await pptx.writeFile({ fileName });
