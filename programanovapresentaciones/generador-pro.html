@@ -743,10 +743,10 @@
                 .replace(/^data:image\/[^;]+;base64,/, "")
                 .replace(/^image\/[^;]+;base64,/, "");
 
-              const imgBytes = base64ToUint8Array(raw);
+              const pptData = "image/png;base64," + raw;
 
               slide.addImage({
-                data: imgBytes,
+                data: pptData,
                 extension: "png",
                 x: imgBox.x,
                 y: imgBox.y,
