@@ -717,6 +717,11 @@
           const imgNorm = normalizarImagenParaPPT(imgDataUrl);
           
           if (imgNorm && imgNorm.base64) {
+            console.log(
+              "IMG TEST:",
+              imgNorm.base64.slice(0, 80)
+          );
+
             slide.addImage({
               data: imgNorm.base64.replace(/^data:image\/[^;]+;base64,/, ""),
               extension: imgNorm.ext || "png",
