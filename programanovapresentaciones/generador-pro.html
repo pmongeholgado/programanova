@@ -721,14 +721,29 @@
               "IMG TEST:",
               imgNorm.base64.slice(0, 80)
           );
+            
+              const raw = imgNorm.base64 || "";
 
-            slide.addImage({
-              data: imgNorm.base64.replace(/^data:image\/[^;]+;base64,/, ""),
-              x: imgBox.x,
-              y: imgBox.y,
-              w: imgBox.w,
-              h: imgBox.h
-            });
+              // quita cualquier prefijo si viniera ya con él
+              const rawNoPrefix = raw
+                .replace(/^data:image\/[^;]+;base64,/, "")
+                .replace(/^image\/[^;]+;base64,/, "");
+
+              // ESTE es el formato que tu error pide
+              const pptData = "image/png;base64," + rawNoPrefix;
+
+              console.log("PPT DATA HEAD:", pptData.slice(0, 35));
+              console.log("PPT DATA HAS HEADER:", pptData.startsWith("image/png;base64,"));
+
+              slide.addImage({
+                data: pptData,
+                // ⚠️ NO pongas extension aquí
+                x: imgBox.x,
+                y: imgBox.y,
+                w: imgBox.w,
+                h: imgBox.h,
+              });
+
           } else {
             slide.addText("[Imagen no disponible]", {
               x: imgBox.x,
