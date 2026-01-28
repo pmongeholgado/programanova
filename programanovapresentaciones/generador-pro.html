@@ -718,7 +718,9 @@
           
           if (imgNorm && imgNorm.base64) {
             slide.addImage({
-              data: imgNorm.base64,
+              data: imgNorm.base64.startsWith("data:image")
+                ? imgNorm.base64
+                : "data:image/png;base64," + imgNorm.base64,
               extension: imgNorm.ext || "png",
               x: imgBox.x,
               y: imgBox.y,
