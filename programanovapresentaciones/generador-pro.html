@@ -189,8 +189,8 @@
 
     <hr />
 
-    <button id="btnPPT" onclick="exportarPPT()" disabled>📤 Exportar a PPT</button>
-    <button id="btnPPT2" onclick="exportarPPT()" disabled>📊 Exportar a PowerPoint</button>
+    <button id="btnPPT" disabled>📤 Exportar a PPT</button>
+    <button id="btnPPT2" disabled>📊 Exportar a PowerPoint</button>
 
     <div id="resultado"></div>
 
@@ -614,6 +614,7 @@
         console.warn("⛔ Exportación ya en curso, se ignora llamada duplicada");
         return;
       }
+      window.EXPORTANDO_PPT = true;
       
       try {
 
@@ -637,8 +638,6 @@
           alert("❌ No se ha cargado la librería de PowerPoint. Recarga la página.");
           return;
         }
-        
-        window.EXPORTANDO_PPT = true;
         
         const titulo = (document.getElementById("titulo")?.value || "Nova_Presentacion").trim();
         const safeTitle = titulo.replace(/[^\w\-]+/g, "_").slice(0, 40) || "Nova_Presentacion";
@@ -828,6 +827,15 @@
       }
     }
     
+    // ======================
+    // ENGANCHE ÚNICO BOTONES EXPORTAR
+    // ======================
+    const btn1 = document.getElementById("btnPPT");
+    if (btn1) btn1.onclick = exportarPPT;
+
+    const btn2 = document.getElementById("btnPPT2");
+    if (btn2) btn2.onclick = exportarPPT;
+
 </script>
 </body>
 </html>
