@@ -614,16 +614,8 @@
         console.warn("⛔ Exportación ya en curso, se ignora llamada duplicada");
         return;
       }
-      window.EXPORTANDO_PPT = true;
       
       try {
-      
-      if (EXPORTANDO_PPT) {
-        console.warn("⛔ Exportación ya en curso, ignorando segundo click...");
-        return;
-      }
-
-      EXPORTANDO_PPT = true;
 
       const loader = document.getElementById("loader");
       const b1 = document.getElementById("btnPPT");
@@ -645,7 +637,9 @@
           alert("❌ No se ha cargado la librería de PowerPoint. Recarga la página.");
           return;
         }
-
+        
+        window.EXPORTANDO_PPT = true;
+        
         const titulo = (document.getElementById("titulo")?.value || "Nova_Presentacion").trim();
         const safeTitle = titulo.replace(/[^\w\-]+/g, "_").slice(0, 40) || "Nova_Presentacion";
         const fileName = `${safeTitle}_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.pptx`;
