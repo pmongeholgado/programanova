@@ -811,6 +811,7 @@
       await pptx.writeFile({ fileName });
       console.log("✅ PPTX exportado correctamente");
       return;
+      pptx = null;
       }
       } catch (err) {
         console.error("🔥 Fallo exportando PPT:", err);
