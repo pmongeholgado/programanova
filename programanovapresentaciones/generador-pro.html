@@ -667,12 +667,15 @@
             hasChartSpec: !!s.chartSpec
           }))
         );
+        
+        console.log("PLAN LENGTH:", planParaExportar.length);
 
         for (let i = 0; i < planParaExportar.length; i++) {
           const s = planParaExportar[i];
           if (!s || !s.title) continue;
 
           const idx = s.idx || (i + 1);
+          console.log("CREANDO SLIDE idx:", i + 1);
           const slide = pptx.addSlide();
 
           // Fondo blanco
@@ -811,7 +814,6 @@
       await pptx.writeFile({ fileName });
       console.log("✅ PPTX exportado correctamente");
       return;
-      pptx = null;
       }
       } catch (err) {
         console.error("🔥 Fallo exportando PPT:", err);
