@@ -811,6 +811,9 @@
         }  // ✅ ESTA ES LA LLAVE QUE TE FALTABA (CIERRA EL FOR)
 
       console.log("🟢 Exportando PPT:", fileName);
+
+      await new Promise(resolve => setTimeout(resolve, 0));
+
       await pptx.writeFile({ fileName });
       console.log("✅ PPTX exportado correctamente");
           
