@@ -820,14 +820,8 @@
           "/",
           planParaExportar.length
         );
-        return;
+        throw new Error("PPTX incompleto: se cancela exportación hasta tener todas las slides");
       }
-
-      if (pptx.__written) {
-        console.warn("⛔ writeFile ya ejecutado, cancelando duplicado");
-        return;
-      }
-      pptx.__written = true;
 
       await pptx.writeFile({ fileName });
       console.log("✅ PPTX exportado correctamente");
