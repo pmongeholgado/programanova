@@ -812,17 +812,6 @@
 
       console.log("🟢 Exportando PPT:", fileName);
 
-      // 🔒 SOLO exportar cuando TODAS las slides estén creadas
-      if (pptx._slides.length !== planParaExportar.length) {
-        console.warn(
-          "⏳ PPT incompleto:",
-          pptx._slides.length,
-          "/",
-          planParaExportar.length
-        );
-        throw new Error("PPTX incompleto: se cancela exportación hasta tener todas las slides");
-      }
-
       await pptx.writeFile({ fileName });
       console.log("✅ PPTX exportado correctamente");
       
