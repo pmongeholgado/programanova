@@ -654,6 +654,11 @@
 
         // IA REAL (Imagen)
         planParaExportar = await prepararAssetsIA(planParaExportar);
+        
+        if (!Array.isArray(planParaExportar) || planParaExportar.length === 0) {
+          console.warn("⚠️ prepararAssetsIA devolvió vacío, usando plan original");
+          planParaExportar = planPro;
+        }
 
         // DEBUG
         console.log("🧠 PLAN FINAL PARA EXPORTAR (DEBUG):",
@@ -690,6 +695,10 @@
           fill: { color: "FFFFFF", transparency: 100 },
           line: { color: "60A5FA", width: 2 }
         });
+          
+        if (!texto || texto.trim() === "") {
+          texto = "- Contenido generado por IA";
+        }
 
         // Título
         slide.addText(s.title, {
@@ -748,7 +757,11 @@
                 .replace(/^image\/[^;]+;base64,/, "");
 
               const pptData = "image/png;base64," + raw;
-
+            
+              if (!pptData.startsWith("image/png;base64,")) {
+                pptData = "image/png;base64," + pptData;
+              }
+ 
               slide.addImage({
                 data: pptData,
                 extension: "png",
@@ -774,6 +787,13 @@
         if (s.needs?.chart) {
           if (s.chartSpec && Array.isArray(s.chartSpec.labels) && Array.isArray(s.chartSpec.values)) {
             const spec = s.chartSpec;
+            
+            if (!spec.labels || !spec.values || spec.labels.length !== spec.values.length) {
+              console.warn("Gráfico inválido, se omite");
+            } else {
+              
+              // addChart normal
+            }
 
             slide.addChart(
               spec.type === "line"
@@ -812,7 +832,8 @@
 
       console.log("🟢 Exportando PPT:", fileName);
 
-      await new Promise(resolve => setTimeout(resolve, 0));
+      if (pptx.__exported) return;
+      pptx.__exported = true;
 
       await pptx.writeFile({ fileName });
       console.log("✅ PPTX exportado correctamente");
