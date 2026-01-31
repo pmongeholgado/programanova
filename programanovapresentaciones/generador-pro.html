@@ -695,10 +695,6 @@
           fill: { color: "FFFFFF", transparency: 100 },
           line: { color: "60A5FA", width: 2 }
         });
-          
-        if (!texto || texto.trim() === "") {
-          texto = "- Contenido generado por IA";
-        }
 
         // Título
         slide.addText(s.title, {
@@ -723,8 +719,11 @@
 
         // TEXTO (siempre)
         const bullets = Array.isArray(s.bullets) ? s.bullets : [];
-        const texto = bullets.length ? bullets.map(b => `- ${b}`).join("\n") : "- Idea principal";
-
+        let texto = bullets.length ? bullets.map(b => `- ${b}`).join("\n") : "- Idea principal";
+          
+        if (!texto || texto.trim() === "") {
+          texto = "- Contenido generado por IA";
+        }
         slide.addText(texto, {
           x: textBox.x,
           y: textBox.y,
