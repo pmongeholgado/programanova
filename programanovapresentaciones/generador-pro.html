@@ -831,9 +831,6 @@
 
       console.log("🟢 Exportando PPT:", fileName);
 
-      if (pptx.__exported) return;
-      pptx.__exported = true;
-
       await pptx.writeFile({ fileName });
       console.log("✅ PPTX exportado correctamente");
           
