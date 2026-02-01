@@ -781,7 +781,7 @@
                   color: "666666"
                 });
               }
-
+        }
         // GRÁFICO
         if (s.needs?.chart) {
           if (s.chartSpec && Array.isArray(s.chartSpec.labels) && Array.isArray(s.chartSpec.values)) {
@@ -833,8 +833,6 @@
 
       await pptx.writeFile({ fileName });
       console.log("✅ PPTX exportado correctamente");
-          
-      window.EXPORTANDO_PPT = false;
           
       } catch (err) {
         console.error("🔥 Fallo exportando PPT:", err);
