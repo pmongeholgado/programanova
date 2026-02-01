@@ -565,7 +565,7 @@
         console.error(err);
         estadoEl.innerText = t.errorConexion;
       } finally {
-        if (loader) loader.style.display = "none";
+        window.EXPORTANDO_PPT = false;
       }
     }
     
@@ -836,12 +836,11 @@
           
       window.EXPORTANDO_PPT = false;
           
-      }
       } catch (err) {
         console.error("🔥 Fallo exportando PPT:", err);
         alert("❌ Error exportando PPT. Mira consola (F12).");
       } finally {
-          
+        window.EXPORTANDO_PPT = false;  
         
         const loader = document.getElementById("loader");
         const b1f = document.getElementById("btnPPT");
