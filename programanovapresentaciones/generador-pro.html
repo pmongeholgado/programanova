@@ -733,9 +733,11 @@
           wrap: true,
           color: "111111"
         });
+          
+        console.log("IMG?", idx, !!s.imageData, s.imageData?.slice(0, 30));
 
         // IMAGEN
-        if (s?.needs?.image || s?.needsImage) {
+        if (s?.needs?.image || s?.needsImage) && s.imageData) {
           let imgBox = { x: 5.0, y: 1.4, w: 4.3, h: 3.7 };
 
           if (idx === 1 || idx === 6 || idx === 9 || idx === 10) {
@@ -762,12 +764,13 @@
               }
  
               slide.addImage({
-                data: pptData,
+                data: s.imageData,
                 extension: "png",
                 x: imgBox.x,
                 y: imgBox.y,
                 w: imgBox.w,
                 h: imgBox.h,
+                sizing: { type: "contain" }
               });  
               } else {
                 slide.addText("[Imagen no disponible]", {
