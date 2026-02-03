@@ -760,9 +760,12 @@
               if (!pptData.startsWith("image/png;base64,")) {
                 pptData = "image/png;base64," + pptData;
               }
+            
+              const src = s.imageData || s.imgHead;          // ← usa la imagen completa si existe
+              const base64Clean = (src && src.includes(",")) ? src.split(",")[1] : "";
  
               slide.addImage({
-                data: pptData,
+                data: base64Clean,
                 extension: "png",
                 x: imgBox.x,
                 y: imgBox.y,
