@@ -196,3 +196,53 @@ def generate_chart_spec(
 
     except Exception:
         return _fallback_chart_spec(title=title or "Datos", seed=12)
+
+import os
+import base64
+from openai import OpenAI
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+
+def generar_imagenes_ppt(texto_completo: str, output_dir: str = "generated_images"):
+    """
+    Genera EXACTAMENTE 4 imágenes basadas en el texto del PPT.
+    Devuelve una lista con las rutas de las 4 imágenes.
+    """
+
+    os.makedirs(output_dir, exist_ok=True)
+
+    prompts = [
+        f"Imagen profesional de portada para una presentación sobre: {texto_completo}. "
+        f"Estilo tecnológico, moderno, limpio, tonos azules y grises, sin texto.",
+
+        f"Ilustración clara y profesional que represente procesos o funcionamiento relacionado con: {texto_completo}. "
+        f"Estilo corporativo, diagramático, limpio, sin texto.",
+
+        f"Imagen visual que represente beneficios, impacto y valor del tema: {texto_completo}. "
+        f"Estilo empresarial, moderno, inspirador, sin texto.",
+
+        f"Imagen futurista y tecnológica que represente visión y futuro del tema: {texto_completo}. "
+        f"Estilo innovador, elegante, profesional, sin texto."
+    ]
+
+    image_paths = []
+
+    for idx, prompt in enumerate(prompts, start=1):
+        result = client.images.generate(
+            model="gpt-image-1",
+            prompt=prompt,
+            size="1024x1024"
+        )
+
+        image_base64 = result.data[0].b64_json
+        image_bytes = base64.b64decode(image_base64)
+
+        image_path = os.path.join(output_dir, f"imagen_{idx}.png")
+        with open(image_path, "wb") as f:
+            f.write(image_bytes)
+
+        image_paths.append(image_path)
+
+    return image_paths
+
