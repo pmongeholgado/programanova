@@ -25,6 +25,12 @@ def crear_pptx_con_imagenes(titulo: str, slides: list, image_dataurls_by_slide: 
     - image_dataurls_by_slide: {1: dataUrl, 6: dataUrl, 9: dataUrl, 10: dataUrl}
     """
     prs = Presentation()
+    
+    # Normalizar claves del dict (a veces llegan como "1","6","9","10" desde JSON)
+    if image_dataurls_by_slide:
+        image_dataurls_by_slide = {int(k): v for k, v in image_dataurls_by_slide.items()}
+    else:
+        image_dataurls_by_slide = {}
 
         # BLINDAJE: asegurar que el dict existe siempre y evitar errores si viene None
         image_dataurls_by_slide = image_dataurls_by_slide or {}
