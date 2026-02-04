@@ -2,6 +2,8 @@
 # Programa Nova - Backend REAL (PRO)
 # main_pro.py (FINAL)
 # ============================
+from app_pro.ia_assets_pro import generar_imagenes_ppt
+import base64
 
 import os
 from datetime import datetime
