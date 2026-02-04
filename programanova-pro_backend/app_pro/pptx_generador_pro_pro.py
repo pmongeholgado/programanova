@@ -1,11 +1,12 @@
 # app/pptx_generator_pro.py
 
+from app_pro.ia_assets_pro import generar_imagenes_ppt
 from io import BytesIO
 import base64
 from pptx import Presentation
 from pptx.util import Inches, Pt
 
-SLIDES_CON_IMAGEN = {1, 6, 9, 10}
+SLIDES_CON_IMAGEN = {6, 9, 10}
 
 def _decode_data_url_to_bytes(data_url: str) -> bytes:
     """
@@ -24,6 +25,9 @@ def crear_pptx_con_imagenes(titulo: str, slides: list, image_dataurls_by_slide: 
     - image_dataurls_by_slide: {1: dataUrl, 6: dataUrl, 9: dataUrl, 10: dataUrl}
     """
     prs = Presentation()
+
+        # BLINDAJE: asegurar que el dict existe siempre y evitar errores si viene None
+        image_dataurls_by_slide = image_dataurls_by_slide or {}
 
     # Layouts típicos: 0=title, 1=title+content, 5=title only
     layout_title = prs.slide_layouts[0]
