@@ -742,9 +742,14 @@
             imgBox = { x: 4.8, y: 1.2, w: 4.7, h: 4.0 };
           }
 
-          const imgDataUrl = toPptxDataUrl(s.imageData || s.imgHead);
+          const imgDataUrl = toPptxDataUrl(s.imageData);
           const imgNorm = normalizarImagenParaPPT(imgDataUrl);
           
+          if (!imgDataUrl || imgDataUrl.length < 2000) {
+            console.warn("⚠️ Imagen incompleta para idx:", idx);
+            continue;
+          }
+
           if (imgNorm && imgNorm.base64) {
             console.log(
               "IMG TEST:",
@@ -755,11 +760,7 @@
                 .replace(/^data:image\/[^;]+;base64,/, "")
                 .replace(/^image\/[^;]+;base64,/, "");
 
-              const pptData = "image/png;base64," + raw;
-            
-              if (!pptData.startsWith("image/png;base64,")) {
-                pptData = "image/png;base64," + pptData;
-              }
+              let pptData = "image/png;base64," + raw;
             
               const src = s.imageData || s.imgHead;          // ← usa la imagen completa si existe
               const base64Clean = (src && src.includes(",")) ? src.split(",")[1] : "";
