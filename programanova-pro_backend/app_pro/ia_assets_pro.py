@@ -58,8 +58,7 @@ def generate_image_data_url(
     client = _get_openai_client()
     if client is None:
         b64 = _fallback_png_base64(prompt)
-        return _data_url_from_b64png(b64)
-
+        
     try:
         resp = client.images.generate(
             model=model,
@@ -71,7 +70,7 @@ def generate_image_data_url(
         b64_png = ""
         img_url = ""
         used_fallback = False
-        
+
         # Caso SDK objeto
         if hasattr(resp, "data") and resp.data:
             d0 = resp.data[0]
@@ -98,7 +97,6 @@ def generate_image_data_url(
             except Exception:
                 pass
         
-        return _data_url_from_b64png(b64_png)
         # ✅ Fallback si no se pudo
         if not b64_png:
             used_fallback = True
