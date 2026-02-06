@@ -760,10 +760,24 @@
                 .replace(/^data:image\/[^;]+;base64,/, "")
                 .replace(/^image\/[^;]+;base64,/, "");
 
-              let pptData = "image/png;base64," + raw;
+              let pptData = "data:image/png;base64," + raw;
             
               const src = s.imageData || s.imgHead;          // ← usa la imagen completa si existe
               const base64Clean = (src && src.includes(",")) ? src.split(",")[1] : "";
+            
+              // 1) Asegurar DataURL completo (lo que PptxGenJS necesita)
+              const imgDataUrl = toPptxDataUrl(s.imageData || s.imgHead);
+
+              // 2) Guard-rail (por seguridad)
+              if (!imgDataUrl || imgDataUrl.length < 2000) {
+                console.warn("⚠️ Imagen incompleta para idx:", idx);
+              } else {
+              // 3) base64 limpio
+              const raw = imgDataUrl.includes(",") ? imgDataUrl.split(",")[1] : "";
+
+              // 4) DataURL FINAL correcto para PPTX
+              pptData = "data:image/png;base64," + raw;
+            }
  
               slide.addImage({
                 data: pptData,
