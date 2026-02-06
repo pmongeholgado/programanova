@@ -12,11 +12,22 @@ def _decode_data_url_to_bytes(data_url: str) -> bytes:
     """
     Convierte "data:image/png;base64,AAAA..." -> bytes reales
     """
+    
     if not data_url or "base64," not in data_url:
         raise ValueError("DataURL inválida o vacía")
 
     b64_part = data_url.split("base64,", 1)[1].strip()
     return base64.b64decode(b64_part)
+    
+def _remove_placeholder(slide, placeholder_idx: int):
+    """
+    Elimina un placeholder del slide (evita que tape imágenes).
+    """
+    try:
+        ph = slide.placeholders[placeholder_idx]
+        ph.element.getparent().remove(ph.element)
+    except Exception:
+        pass
 
 def crear_pptx_con_imagenes(titulo: str, slides: list, image_dataurls_by_slide: dict) -> bytes:
     """
@@ -64,7 +75,19 @@ def crear_pptx_con_imagenes(titulo: str, slides: list, image_dataurls_by_slide: 
         slide = prs.slides.add_slide(layout_content)
         slide.shapes.title.text = s.get("title", f"Diapositiva {idx}")
 
-        body = slide.placeholders[1].text_frame
+        # Si esta slide lleva imagen, eliminamos el placeholder de contenido
+        # para que no tape la imagen
+        if idx in SLIDES_CON_IMAGEN:
+            _remove_placeholder(slide, 1)
+
+        # Crear cuadro de texto propio para bullets
+        left = Inches(1.0)
+        top = Inches(1.8)
+        width = Inches(4.8)
+        height = Inches(5.0)
+
+        tx = slide.shapes.add_textbox(left, top, width, height)
+        body = tx.text_frame
         body.clear()
 
         bullets = s.get("bullets", []) or []
