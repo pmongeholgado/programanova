@@ -58,6 +58,7 @@ def generate_image_data_url(
     client = _get_openai_client()
     if client is None:
         b64 = _fallback_png_base64(prompt)
+        return _data_url_from_b64png(b64)
         
     try:
         resp = client.images.generate(
