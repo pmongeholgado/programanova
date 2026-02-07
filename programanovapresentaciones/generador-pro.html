@@ -852,7 +852,7 @@
         alert("❌ Error exportando PPT. Mira consola (F12).");
       } finally {
         window.EXPORTANDO_PPT = false;  
-      
+      }
         const loader = document.getElementById("loader");
         const b1f = document.getElementById("btnPPT");
         const b2f = document.getElementById("btnPPT2");
@@ -870,6 +870,7 @@
 
     const btn2 = document.getElementById("btnPPT2");
     if (btn2) btn2.onclick = exportarPPT;
+    }
 
   </script>
 </body>
