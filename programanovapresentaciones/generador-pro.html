@@ -761,28 +761,39 @@
             
               const src = s.imageData || s.imgHead;          // ← usa la imagen completa si existe
               const base64Clean = (src && src.includes(",")) ? src.split(",")[1] : "";
-            
-           // 1) DataURL completo
-          const imgDataUrl = toPptxDataUrl(s.imageData || s.imgHead);
+             
+        // 1) DataURL completo
+        const imgDataUrl = toPptxDataUrl(s.imageData || s.imgHead);
 
-          // 2) Guard-rail
-          if (!imgDataUrl || imgDataUrl.length < 2000) {
-            console.warn("⚠️ Imagen incompleta para idx:", idx);
-          } else {
-            // 3) base64 limpio + HEADER que PptxGenJS exige
-            const raw = (imgDataUrl.split(",")[1] || "").replace(/\s/g, "");
-            const pptData = "image/png;base64," + raw;
-            
-              slide.addImage({
-                data: pptData,
-                x: imgBox.x,
-                y: imgBox.y,
-                w: imgBox.w,
-                h: imgBox.h,
-                sizing: { type: "contain" }
-              });  
-              }
-        }
+        // 2) Guard-rail
+        if (!imgDataUrl || imgDataUrl.length < 2000) {
+          console.warn("⚠️ Imagen incompleta para idx:", idx);
+
+          slide.addText("[Imagen no disponible]", {
+            x: imgBox.x,
+            y: imgBox.y,
+            w: imgBox.w,
+            h: imgBox.h,
+            fontSize: 12,
+            align: "center",
+            valign: "middle",
+            color: "666666"
+          });
+
+        } else {
+          // 3) base64 limpio + header correcto
+          const raw = (imgDataUrl.split(",")[1] || "").replace(/\s/g, "");
+          const pptData = "image/png;base64," + raw;
+
+          slide.addImage({
+            data: pptData,
+            x: imgBox.x,
+            y: imgBox.y,
+            w: imgBox.w,
+            h: imgBox.h,
+            sizing: { type: "contain" }
+          });
+        } 
           
         // GRÁFICO
         if (s.needs?.chart) {
