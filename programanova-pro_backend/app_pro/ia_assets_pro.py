@@ -21,7 +21,12 @@ def _fallback_png_base64(text: str = "NOVA PRO") -> str:
         img.save(buf, format="PNG")
         b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
         return b64
-    except Exception:
+    except Exception as e:
+        b64 = _fallback_png_base64(prompt)
+        print("❌ IMAGEN EXCEPTION (OpenAI):", repr(e))
+        print("❌ EXCEPTION -> usando fallback len =", len(b64))
+        return _data_url_from_b64png(b64)
+
         # Si Pillow no está instalado, devolvemos un PNG mínimo (1x1) para que NUNCA sea vacío
         return "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMB/6X8Z6QAAAAASUVORK5CYII="
 
