@@ -733,7 +733,7 @@
           wrap: true,
           color: "111111"
         });
-          
+
         // IMAGEN
         if (s?.needs?.image || s?.needsImage) {
           let imgBox = { x: 5.0, y: 1.4, w: 4.3, h: 3.7 };
@@ -741,12 +741,10 @@
           if (idx === 1 || idx === 6 || idx === 9 || idx === 10) {
             imgBox = { x: 4.8, y: 1.2, w: 4.7, h: 4.0 };
           }
-          
-          if (!imgDataUrl || imgDataUrl.length < 2000) {
-            console.warn("⚠️ Imagen incompleta para idx:", idx);
-            continue;
-          }
 
+          const imgDataUrl = toPptxDataUrl(s.imageData || s.imgHead);
+          const imgNorm = normalizarImagenParaPPT(imgDataUrl);
+          
           if (imgNorm && imgNorm.base64) {
             console.log(
               "IMG TEST:",
@@ -757,44 +755,33 @@
                 .replace(/^data:image\/[^;]+;base64,/, "")
                 .replace(/^image\/[^;]+;base64,/, "");
 
-              let pptData = "data:image/png;base64," + raw;
+              const pptData = "image/png;base64," + raw;
             
-              const src = s.imageData || s.imgHead;          // ← usa la imagen completa si existe
-              const base64Clean = (src && src.includes(",")) ? src.split(",")[1] : "";
-             
-        // 1) DataURL completo
-        const imgDataUrl = toPptxDataUrl(s.imageData || s.imgHead);
-
-        // 2) Guard-rail
-        if (!imgDataUrl || imgDataUrl.length < 2000) {
-          console.warn("⚠️ Imagen incompleta para idx:", idx);
-
-          slide.addText("[Imagen no disponible]", {
-            x: imgBox.x,
-            y: imgBox.y,
-            w: imgBox.w,
-            h: imgBox.h,
-            fontSize: 12,
-            align: "center",
-            valign: "middle",
-            color: "666666"
-          });
-
-        } else {
-          // 3) base64 limpio + header correcto
-          const raw = (imgDataUrl.split(",")[1] || "").replace(/\s/g, "");
-          const pptData = "image/png;base64," + raw;
-
-          slide.addImage({
-            data: pptData,
-            x: imgBox.x,
-            y: imgBox.y,
-            w: imgBox.w,
-            h: imgBox.h,
-            sizing: { type: "contain" }
-          });
-        } 
-          
+              if (!pptData.startsWith("image/png;base64,")) {
+                pptData = "image/png;base64," + pptData;
+              }
+ 
+              slide.addImage({
+                data: pptData,
+                extension: "png",
+                x: imgBox.x,
+                y: imgBox.y,
+                w: imgBox.w,
+                h: imgBox.h,
+              });  
+              } else {
+                slide.addText("[Imagen no disponible]", {
+                  x: imgBox.x,
+                  y: imgBox.y,
+                  w: imgBox.w,
+                  h: imgBox.h,
+                  fontSize: 12,
+                  align: "center",
+                  valign: "middle",
+                  color: "666666"
+                });
+              }
+        }
         // GRÁFICO
         if (s.needs?.chart) {
           if (s.chartSpec && Array.isArray(s.chartSpec.labels) && Array.isArray(s.chartSpec.values)) {
@@ -839,23 +826,20 @@
               color: "444444"
             });
           }
+        }
         }  // ✅ ESTA ES LA LLAVE QUE TE FALTABA (CIERRA EL FOR)
 
       console.log("🟢 Exportando PPT:", fileName);
-            
-    try {
+
       await pptx.writeFile({ fileName });
       console.log("✅ PPTX exportado correctamente");
           
-    } catch (err) {
+      } catch (err) {
         console.error("🔥 Fallo exportando PPT:", err);
         alert("❌ Error exportando PPT. Mira consola (F12).");
       } finally {
         window.EXPORTANDO_PPT = false;  
-      }
-
-      }
-          
+        
         const loader = document.getElementById("loader");
         const b1f = document.getElementById("btnPPT");
         const b2f = document.getElementById("btnPPT2");
@@ -864,6 +848,7 @@
         if (b2f) b2f.disabled = false;
         if (loader) loader.style.display = "none";
       }
+    }
     
     // ======================
     // ENGANCHE ÚNICO BOTONES EXPORTAR
@@ -873,7 +858,7 @@
 
     const btn2 = document.getElementById("btnPPT2");
     if (btn2) btn2.onclick = exportarPPT;
-        
+
 </script>
 </body>
 </html>
