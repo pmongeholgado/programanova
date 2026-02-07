@@ -741,9 +741,6 @@
           if (idx === 1 || idx === 6 || idx === 9 || idx === 10) {
             imgBox = { x: 4.8, y: 1.2, w: 4.7, h: 4.0 };
           }
-
-          const imgDataUrl = toPptxDataUrl(s.imageData);
-          const imgNorm = normalizarImagenParaPPT(imgDataUrl);
           
           if (!imgDataUrl || imgDataUrl.length < 2000) {
             console.warn("⚠️ Imagen incompleta para idx:", idx);
