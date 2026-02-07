@@ -781,19 +781,9 @@
                 h: imgBox.h,
                 sizing: { type: "contain" }
               });  
-              } else {
-                slide.addText("[Imagen no disponible]", {
-                  x: imgBox.x,
-                  y: imgBox.y,
-                  w: imgBox.w,
-                  h: imgBox.h,
-                  fontSize: 12,
-                  align: "center",
-                  valign: "middle",
-                  color: "666666"
-                });
               }
         }
+          
         // GRÁFICO
         if (s.needs?.chart) {
           if (s.chartSpec && Array.isArray(s.chartSpec.labels) && Array.isArray(s.chartSpec.values)) {
