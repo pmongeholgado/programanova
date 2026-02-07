@@ -842,16 +842,17 @@
         }  // ✅ ESTA ES LA LLAVE QUE TE FALTABA (CIERRA EL FOR)
 
       console.log("🟢 Exportando PPT:", fileName);
-
+            
+    try {
       await pptx.writeFile({ fileName });
       console.log("✅ PPTX exportado correctamente");
           
-      } catch (err) {
+    } catch (err) {
         console.error("🔥 Fallo exportando PPT:", err);
         alert("❌ Error exportando PPT. Mira consola (F12).");
       } finally {
         window.EXPORTANDO_PPT = false;  
-        
+      } 
         const loader = document.getElementById("loader");
         const b1f = document.getElementById("btnPPT");
         const b2f = document.getElementById("btnPPT2");
