@@ -760,7 +760,9 @@
               if (!pptData.startsWith("image/png;base64,")) {
                 pptData = "image/png;base64," + pptData;
               }
- 
+
+              console.log("🧪 IMG CHECK idx:", idx, "rawLen:", raw.length, "head:", raw.slice(0, 20));
+            
               slide.addImage({
                 data: pptData,
                 extension: "png",
