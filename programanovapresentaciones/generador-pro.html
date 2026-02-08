@@ -694,6 +694,14 @@
           h: 5.3,
           fill: { color: "FFFFFF", transparency: 100 },
           line: { color: "60A5FA", width: 2 }
+        // Caja de imagen REAL (referencia única)
+        const imgBox = {
+          x: 4.8,
+          y: 1.2,
+          w: 4.6,
+          h: 3.6
+        };
+
         });
 
         // Título
@@ -770,6 +778,7 @@
                 y: imgBox.y,
                 w: imgBox.w,
                 h: imgBox.h,
+                sizing: { type: "cover" }
               });  
               } else {
                 slide.addText("[Imagen no disponible]", {
