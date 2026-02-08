@@ -22,8 +22,10 @@ def _fallback_png_base64(text: str = "NOVA PRO") -> str:
         b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
         return b64
     except Exception as e:
+        import traceback
         b64 = _fallback_png_base64(prompt)
         print("❌ IMAGEN EXCEPTION (OpenAI):", repr(e))
+        traceback.print_exc()
         print("❌ EXCEPTION -> usando fallback len =", len(b64))
         return _data_url_from_b64png(b64)
 
