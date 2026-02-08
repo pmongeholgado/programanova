@@ -43,7 +43,7 @@ def _fallback_chart_spec(title: str = "Datos", seed: int = 10) -> Dict[str, Any]
     return {"type": "bar", "labels": labels, "values": values, "title": title or "Datos"}
 
 def _get_openai_client():
-    api_key = os.environ.get("OPENAI_API_KEY")
+    api_key = os.environ.get("OPENAI_API_KEY") or "").strip()
     if not api_key:
         return None
     try:
