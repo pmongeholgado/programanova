@@ -114,7 +114,9 @@ def generate_image_data_url(
             print("⚠️ FALLBACK ACTIVADO -> usando PNG fallback len =", len(b64_png))
         else:
             print("✅ IMAGEN REAL OK -> b64 recibido len =", len(b64_png))
-
+                                                               
+        return _data_url_from_b64png(b64_png)
+                                                                
     except Exception:
         b64 = _fallback_png_base64(prompt)
         print("❌ EXCEPTION -> usando fallback len =", len(b64))
