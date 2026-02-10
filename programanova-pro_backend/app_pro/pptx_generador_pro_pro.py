@@ -88,7 +88,7 @@ def crear_pptx_con_imagenes(titulo: str, slides: list, image_dataurls_by_slide: 
 
         tx = slide.shapes.add_textbox(left, top, width, height)
         body = tx.text_frame
-        body.clear
+        body.clear()
         
         # Insertar imagen SOLO en 6, 9, 10
         if idx in SLIDES_CON_IMAGEN and idx in image_dataurls_by_slide:
