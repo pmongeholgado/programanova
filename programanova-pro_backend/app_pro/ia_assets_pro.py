@@ -1,4 +1,6 @@
 # app/ia_assets.py
+print("🔥 EJECUTANDO ia_assets_pro.py 🔥")
+
 import os
 import json
 import base64
