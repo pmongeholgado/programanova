@@ -71,8 +71,12 @@ def crear_pptx_con_imagenes(titulo: str, slides: list, image_dataurls_by_slide: 
         if idx == 1:
             continue
 
-        # layout para texto
-        slide = prs.slides.add_slide(layout_content)
+        # layout para texto (layout especial en slides con imagen)
+        if idx in SLIDES_CON_IMAGEN:
+            slide = prs.slides.add_slide(layout_title_only)
+        else:
+            slide = prs.slides.add_slide(layout_content)
+
         slide.shapes.title.text = s.get("title", f"Diapositiva {idx}")
 
         # Si esta slide lleva imagen, eliminamos el placeholder de contenido
