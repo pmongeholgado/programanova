@@ -48,7 +48,7 @@ def crear_pptx_con_imagenes(titulo: str, slides: list, image_dataurls_by_slide: 
 
     # Layouts típicos: 0=title, 1=title+content, 5=title only
     layout_title = prs.slide_layouts[0]
-    layout_content = prs.slide_layouts[1]
+    layout_content = prs.slide_layouts[5] # ✅ Title Only
     layout_title_only = prs.slide_layouts[5]
 
     # --- Slide 1 (portada)
