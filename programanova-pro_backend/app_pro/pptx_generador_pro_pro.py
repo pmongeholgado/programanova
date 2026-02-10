@@ -90,17 +90,19 @@ def crear_pptx_con_imagenes(titulo: str, slides: list, image_dataurls_by_slide: 
         body = tx.text_frame
         body.clear()
         
-        # Insertar imagen SOLO en 6, 9, 10
-        if idx in SLIDES_CON_IMAGEN and idx in image_dataurls_by_slide:
-            img_bytes = _decode_data_url_to_bytes(image_dataurls_by_slide[idx])
-            slide.shapes.add_picture(BytesIO(img_bytes), Inches(5.5), Inches(2.0), width=Inches(3.8))
+        
             
         bullets = s.get("bullets", []) or []
         for j, b in enumerate(bullets):
             p = body.paragraphs[0] if j == 0 else body.add_paragraph()
             p.text = str(b)
             p.font.size = Pt(18)
-
+            
+        # Insertar imagen SOLO en 6, 9, 10
+        if idx in SLIDES_CON_IMAGEN and idx in image_dataurls_by_slide:
+            img_bytes = _decode_data_url_to_bytes(image_dataurls_by_slide[idx])
+            slide.shapes.add_picture(BytesIO(img_bytes), Inches(5.5), Inches(2.0), width=Inches(3.8))
+            
     # Guardar PPTX en memoria
     output = BytesIO()
     prs.save(output)
