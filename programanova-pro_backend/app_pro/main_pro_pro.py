@@ -2,6 +2,7 @@
 # Programa Nova - Backend REAL (PRO)
 # main_pro.py (FINAL)
 # ============================
+from app.ia_assets import generate_image_data_url
 from app_pro.ia_assets_pro import generar_imagenes_ppt
 import base64
 
