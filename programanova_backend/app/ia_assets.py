@@ -175,6 +175,8 @@ def generate_chart_spec(
             response_format={"type": "json_schema", "json_schema": schema},
         )
 
+        print("🔵 RESP RAW:", resp)
+
         txt = ""
         if hasattr(resp, "output_text"):
             txt = resp.output_text or ""
