@@ -421,9 +421,12 @@ Devuelve una lista numerada con:
             9: f"Imagen profesional relacionada con '{slides[8]['title']}', estilo corporativo moderno 16:9",
             10: f"Imagen de cierre profesional relacionada con '{slides[9]['title']}', estilo corporativo elegante 16:9",
         }
+        
+        print("🟢 ENTRANDO EN /generar")
 
         images = {}
         for slide_num, img_prompt in image_prompts.items():
+            print("🟢 GENERANDO IMAGEN PARA SLIDE:", slide_num)
             images[slide_num] = generate_image_data_url(img_prompt)
 
         # 3) Crear PPTX real con imágenes incrustadas
