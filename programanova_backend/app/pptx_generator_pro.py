@@ -58,14 +58,15 @@ def crear_pptx_con_imagenes(titulo: str, slides: list, image_dataurls_by_slide: 
 
         slide.shapes.title.text = s.get("title", f"Diapositiva {idx}")
 
-        body = slide.placeholders[1].text_frame
-        body.clear()
+        if idx not in SLIDES_CON_IMAGEN:
+            body = slide.placeholders[1].text_frame
+            body.clear()
 
-        bullets = s.get("bullets", []) or []
-        for j, b in enumerate(bullets):
-            p = body.paragraphs[0] if j == 0 else body.add_paragraph()
-            p.text = str(b)
-            p.font.size = Pt(18)
+            bullets = s.get("bullets", []) or []
+            for j, b in enumerate(bullets):
+                p = body.paragraphs[0] if j == 0 else body.add_paragraph()
+                p.text = str(b)
+                p.font.size = Pt(18)
 
         # Insertar imagen SOLO en 6, 9, 10
         if idx in SLIDES_CON_IMAGEN and idx in image_dataurls_by_slide:
