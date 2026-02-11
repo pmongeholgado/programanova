@@ -23,6 +23,8 @@ from app.pptx_generator_pro import crear_pptx_con_imagenes
 
 import traceback
 
+print("🚀 BACKEND PRO REAL ACTIVO - main_pro_pro.py")
+
 # ============================
 # CONFIGURACIÓN OPENAI
 # ============================
