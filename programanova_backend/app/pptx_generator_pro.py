@@ -69,6 +69,14 @@ def crear_pptx_con_imagenes(titulo: str, slides: list, image_dataurls_by_slide: 
 
         # Insertar imagen SOLO en 6, 9, 10
         if idx in SLIDES_CON_IMAGEN and idx in image_dataurls_by_slide:
+            
+            # Eliminar placeholders de contenido si existen
+            for shape in slide.placeholders:
+                if not shape.is_placeholder:
+                    continue
+                if shape.placeholder_format.type != 1:  # no es title
+                    slide.shapes._spTree.remove(shape._element)
+
             img_bytes = _decode_data_url_to_bytes(image_dataurls_by_slide[idx])
             slide.shapes.add_picture(BytesIO(img_bytes), Inches(5.5), Inches(2.0), width=Inches(3.8))
 
