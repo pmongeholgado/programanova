@@ -110,12 +110,14 @@ def generate_image_data_url(
                                                                
         return _data_url_from_b64png(b64_png)
                                                                 
-    except Exception:
+    except Exception as e:
+        import traceback
+        print("❌ IMAGEN EXCEPTION (OpenAI):", repr(e))
+        traceback.print_exc()
+
         b64 = _fallback_png_base64(prompt)
         print("❌ EXCEPTION -> usando fallback len =", len(b64))
         return _data_url_from_b64png(b64)
-
-
 
 # ============================
 # API: GRÁFICO (SYNC)
