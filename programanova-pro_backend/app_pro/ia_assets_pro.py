@@ -76,6 +76,8 @@ def generate_image_data_url(
             size=size,
             response_format="b64_json"
         )
+        
+        print("🔵 RESP RAW:", resp)
 
         b64_png = ""
         img_url = ""
