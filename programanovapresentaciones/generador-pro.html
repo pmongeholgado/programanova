@@ -762,14 +762,18 @@
                   pptData = pptData.split(",")[1];
               }
  
-              slide.addImage({
+              const img = slide.addImage({
                 data: pptData,
                 extension: "png",
                 x: imgBox.x,
                 y: imgBox.y,
                 w: imgBox.w,
                 h: imgBox.h,
-              });  
+              });
+
+              // Forzar traer al frente
+              img.moveToFront();
+            
               } else {
                 slide.addText("[Imagen no disponible]", {
                   x: imgBox.x,
