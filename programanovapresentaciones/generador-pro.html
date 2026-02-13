@@ -752,11 +752,16 @@
           );
             
               // Asegurar formato correcto para pptxgenjs
-              let pptData = imgNorm.base64;
+              let pptData = imgNorm.base64.trim();
 
-              // Si no tiene prefijo correcto, lo añadimos
+              // Si viene como "image/png;base64,XXXXX"
+              if (pptData.startsWith("image/")) {
+                pptData = "data:" + pptData;
+              }
+
+              // Si viene solo como base64 puro
               if (!pptData.startsWith("data:image/")) {
-                pptData = "data:image/png;base64," + pptData.replace(/^image\/[^;]+;base64,/, "");
+                pptData = "data:image/png;base64," + pptData;
               }
 
               slide.addImage({
@@ -767,16 +772,6 @@
                 w: imgBox.w,
                 h: imgBox.h,
               });
-
- 
-              slide.addImage({
-                  data: pptData,
-                  extension: "png",
-                  x: imgBox.x,
-                  y: imgBox.y,
-                  w: imgBox.w,
-                  h: imgBox.h,
-               });
               } else {
                 slide.addText("[Imagen no disponible]", {
                   x: imgBox.x,
