@@ -751,18 +751,25 @@
               imgNorm.base64.slice(0, 80)
           );
             
-              const raw = imgNorm.base64
-                .replace(/^data:image\/[^;]+;base64,/, "")
-                .replace(/^image\/[^;]+;base64,/, "");
+              // Asegurar formato correcto para pptxgenjs
+              let pptData = imgNorm.base64;
 
-              let pptData = raw;
-
-              // Si viene como data:image/png;base64,XXXX
-              if (pptData.startsWith("data:image")) {
-                  pptData = pptData.split(",")[1];
+              // Si no tiene prefijo correcto, lo añadimos
+              if (!pptData.startsWith("data:image/")) {
+                pptData = "data:image/png;base64," + pptData.replace(/^image\/[^;]+;base64,/, "");
               }
+
+              slide.addImage({
+                data: pptData,
+                extension: "png",
+                x: imgBox.x,
+                y: imgBox.y,
+                w: imgBox.w,
+                h: imgBox.h,
+              });
+
  
-              const img = slide.addImage({
+              slide.addImage({
                   data: pptData,
                   extension: "png",
                   x: imgBox.x,
