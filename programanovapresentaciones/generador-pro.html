@@ -755,10 +755,10 @@
                 .replace(/^data:image\/[^;]+;base64,/, "")
                 .replace(/^image\/[^;]+;base64,/, "");
 
-              const pptData = "image/png;base64," + raw;
-            
-              if (!pptData.startsWith("image/png;base64,")) {
-                pptData = "image/png;base64," + pptData;
+              let pptData = "data:image/png;base64," + raw;
+
+              if (!pptData.startsWith("data:image/")) {
+                pptData = "data:image/png;base64," + raw;
               }
  
               slide.addImage({
