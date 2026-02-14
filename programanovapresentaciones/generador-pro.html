@@ -745,43 +745,50 @@
           const imgDataUrl = toPptxDataUrl(s.imageData || s.imgHead);
           const imgNorm = normalizarImagenParaPPT(imgDataUrl);
           
-          if (imgNorm && imgNorm.base64) {
-            console.log(
-              "IMG TEST:",
-              imgNorm.base64.slice(0, 80)
-          );
-            
-              const raw = imgNorm.base64
-                .replace(/^data:image\/[^;]+;base64,/, "")
-                .replace(/^image\/[^;]+;base64,/, "");
+          1) coger la fuente más fiable
+          const src = (imgNorm && imgNorm.base64) ? String(imgNorm.base64).trim() : "";
 
-              let pptData = "data:image/png;base64," + raw;
+          // 2) normalizar SIEMPRE a DataURL válido para pptxgenjs
+          let pptData = src;
 
-              if (!pptData.startsWith("data:image/")) {
-                pptData = "data:image/png;base64," + raw;
-              }
- 
-              slide.addImage({
-                data: pptData,
-                extension: "png",
-                x: imgBox.x,
-                y: imgBox.y,
-                w: imgBox.w,
-                h: imgBox.h,
-              });  
-              } else {
-                slide.addText("[Imagen no disponible]", {
-                  x: imgBox.x,
-                  y: imgBox.y,
-                  w: imgBox.w,
-                  h: imgBox.h,
-                  fontSize: 12,
-                  align: "center",
-                  valign: "middle",
-                  color: "666666"
-                });
-              }
+          // si viene como "image/png;base64,XXXXX" -> añadir "data:"
+          if (pptData.startsWith("image/")) {
+            pptData = "data:" + pptData;
+          }
+
+          // si viene como base64 puro (iVBORw0...) -> envolverlo
+          if (pptData && !pptData.startsWith("data:image/")) {
+            pptData = pptData
+              .replace(/^data:image\/[^;]+;base64,/, "")
+              .replace(/^image\/[^;]+;base64,/, "");
+            pptData = "data:image/png;base64," + pptData;
+          }
+
+          if (pptData && pptData.startsWith("data:image/")) {
+            console.log("IMG TEST RAW:", pptData.slice(0, 80));
+
+            // IMPORTANTÍSIMO: UNA SOLA VEZ (sin duplicados)
+            slide.addImage({
+              data: pptData,
+              x: imgBox.x,
+              y: imgBox.y,
+              w: imgBox.w,
+              h: imgBox.h,
+            });  
+          } else {
+            slide.addText("[Imagen no disponible]", {
+              x: imgBox.x,
+              y: imgBox.y,
+              w: imgBox.w,
+              h: imgBox.h,
+              fontSize: 12,
+              align: "center",
+              valign: "middle",
+              color: "666666"
+            });
+          }
         }
+          
         // GRÁFICO
         if (s.needs?.chart) {
           if (s.chartSpec && Array.isArray(s.chartSpec.labels) && Array.isArray(s.chartSpec.values)) {
