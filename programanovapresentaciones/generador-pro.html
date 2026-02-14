@@ -737,54 +737,52 @@
         // IMAGEN
         if (s?.needs?.image || s?.needsImage) {
           let imgBox = { x: 5.0, y: 1.4, w: 4.3, h: 3.7 };
-
           if (idx === 1 || idx === 6 || idx === 9 || idx === 10) {
             imgBox = { x: 4.8, y: 1.2, w: 4.7, h: 4.0 };
           }
 
           const imgDataUrl = toPptxDataUrl(s.imageData || s.imgHead);
           const imgNorm = normalizarImagenParaPPT(imgDataUrl);
-          
-          if (imgNorm && imgNorm.base64) {
-            console.log(
-              "IMG TEST:",
-              imgNorm.base64.slice(0, 80)
-          );
-            
-              // Asegurar formato correcto para pptxgenjs
-              let pptData = imgNorm.base64.trim();
 
-              // Si viene como "image/png;base64,XXXXX"
-              if (pptData.startsWith("image/")) {
-                pptData = "data:" + pptData;
-              }
+          // 1) Tomamos lo que venga (data:image..., image/png..., o base64 puro)
+          let raw = (imgNorm && imgNorm.base64 ? imgNorm.base64 : (imgDataUrl || "")).trim();
 
-              // Si viene solo como base64 puro
-              if (!pptData.startsWith("data:image/")) {
-                pptData = "data:image/png;base64," + pptData;
-              }
+          // 2) Limpieza TOTAL de prefijos
+          raw = raw
+            .replace(/^data:image\/[a-zA-Z0-9.+-]+;base64,/, "")
+            .replace(/^image\/[a-zA-Z0-9.+-]+;base64,/, "")
+            .replace(/^data:;base64,/, "")
+            .replace(/\s/g, ""); // quita saltos de línea / espacios
 
-              slide.addImage({
-                data: pptData,
-                extension: "png",
-                x: imgBox.x,
-                y: imgBox.y,
-                w: imgBox.w,
-                h: imgBox.h,
-              });
-              } else {
-                slide.addText("[Imagen no disponible]", {
-                  x: imgBox.x,
-                  y: imgBox.y,
-                  w: imgBox.w,
-                  h: imgBox.h,
-                  fontSize: 12,
-                  align: "center",
-                  valign: "middle",
-                  color: "666666"
-                });
-              }
+          // 3) Validación mínima (si no parece base64, NO insertamos)
+          const pareceBase64 = raw.length > 100 && /^[A-Za-z0-9+/]+=*$/.test(raw.slice(0, 200));
+
+          if (pareceBase64) {
+            console.log("IMG TEST RAW:", raw.slice(0, 80));
+
+            slide.addImage({
+              data: raw,          // <<<<<< BASE64 PURO
+              extension: "png",
+              x: imgBox.x,
+              y: imgBox.y,
+              w: imgBox.w,
+              h: imgBox.h
+            });
+          } else {
+            console.warn("IMG INVALIDA (no base64 puro). idx=", idx, "rawHead=", raw.slice(0, 40));
+            slide.addText("[Imagen no disponible]", {
+              x: imgBox.x,
+              y: imgBox.y,
+              w: imgBox.w,
+              h: imgBox.h,
+              fontSize: 12,
+              align: "center",
+              valign: "middle",
+              color: "666666"
+            });
+          }
         }
+  
         // GRÁFICO
         if (s.needs?.chart) {
           if (s.chartSpec && Array.isArray(s.chartSpec.labels) && Array.isArray(s.chartSpec.values)) {
