@@ -65,7 +65,6 @@ def generate_image_data_url(
             model=model,
             prompt=prompt,
             size=size,
-            response_format="b64_json"
         )
 
         b64_png = ""
