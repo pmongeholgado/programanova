@@ -20,6 +20,13 @@ class PorteroMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next) -> Response:
         # 1) Bypass rutas seguras
         path = request.url.path
+        internal_header = self.cfg.get("internal_access_header")
+        internal_key = self.cfg.get("internal_access_key")
+
+        if internal_header and internal_key:
+            if request.headers.get(internal_header) == internal_key:
+                return await call_next(request)
+                
         if path in self.bypass:
             return await call_next(request)
 
