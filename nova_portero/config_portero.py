@@ -9,6 +9,9 @@ PORTERO_CONFIG = {
     # Límite de tamaño del body (evita peticiones gigantes)
     "max_body_bytes": 250_000,  # 250 KB
 
+    "internal_access_header": "X-NOVA-ADMIN",
+    "internal_access_key": "nova_pablo_full_access",
+    
     # Límite de caracteres para campos típicos
     "limits": {
         "titulo_min": 3,
