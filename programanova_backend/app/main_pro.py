@@ -41,6 +41,10 @@ app = FastAPI(
     version="1.0.0",
     description="Backend real con IA para Nova Presentaciones"
 )
+
+from nova_portero.middleware_portero import PorteroMiddleware
+app.add_middleware(PorteroMiddleware)
+
 api = APIRouter(prefix="/api")
 
 # ============================
