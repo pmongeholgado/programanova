@@ -45,7 +45,7 @@ app = FastAPI(
 from nova_portero.middleware_portero import PorteroMiddleware
 from nova_portero.config_portero import PORTERO_CONFIG
 
-app.add_middleware(PorteroMiddleware), config=PORTERO_CONFIG)
+app.add_middleware(PorteroMiddleware, config=PORTERO_CONFIG)
 
 api = APIRouter(prefix="/api")
 
