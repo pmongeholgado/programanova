@@ -27,6 +27,24 @@ class PorteroMiddleware(BaseHTTPMiddleware):
             if request.headers.get(internal_header) == internal_key:
                 return await call_next(request)
                 
+        # --- NUEVO: control de acceso público ---
+        public_header = self.cfg.get("public_access_header")
+        public_key = self.cfg.get("public_access_key")
+        protected_prefix = self.cfg.get("protected_paths_prefix", [])
+
+        # si la ruta empieza por alguno de los prefijos protegidos
+        if any(path.startswith(p) for p in protected_prefix):
+            if public_header and public_key:
+                if request.headers.get(public_header) != public_key:
+                    return JSONResponse(
+                        status_code=401,
+                        content={
+                            "ok": False,
+                            "error": "Acceso no autorizado. Falta clave pública.",
+                            "portero": "bloqueado"
+                        },
+                    )
+        
         if path in self.bypass:
             return await call_next(request)
 
