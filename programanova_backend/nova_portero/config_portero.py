@@ -1,4 +1,5 @@
 # nova_portero/config_portero.py
+import os
 
 PORTERO_CONFIG = {
     # Rutas que NO deben ser interceptadas (docs, health, openapi...)
@@ -10,11 +11,11 @@ PORTERO_CONFIG = {
     "max_body_bytes": 250_000,  # 250 KB
 
     "internal_access_header": "X-NOVA-ADMIN",
-    "internal_access_key": "nova_pablo_full_access",
+    "internal_access_key": os.getenv("NOVA_ADMIN_KEY", "nova_pablo_full_access"),
 
     # --- NUEVO: acceso público controlado ---
     "public_access_header": "X-NOVA-KEY",
-    "public_access_key": "",  # se leerá desde Railway env si existe
+    "public_access_key": os.getenv("NOVA_PUBLIC_KEY", ""),
     "protected_paths_prefix": ["/chat", "/generar"],
 
     # Límite de caracteres para campos típicos
