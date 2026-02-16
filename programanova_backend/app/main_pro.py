@@ -8,6 +8,7 @@ from datetime import datetime
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException, APIRouter
+from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -46,6 +47,40 @@ from nova_portero.middleware_portero import PorteroMiddleware
 from nova_portero.config_portero import PORTERO_CONFIG
 
 app.add_middleware(PorteroMiddleware, config=PORTERO_CONFIG)
+# =========================
+# SWAGGER AUTHORIZE (API KEY)
+# =========================
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+
+    openapi_schema = get_openapi(
+        title=app.title,
+        version=app.version,
+        description=app.description,
+        routes=app.routes,
+    )
+
+    openapi_schema.setdefault("components", {})
+    openapi_schema["components"].setdefault("securitySchemes", {})
+    openapi_schema["components"]["securitySchemes"].update({
+        "NovaKeyAuth": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "X-NOVA-KEY",
+        },
+        "NovaAdminAuth": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "X-NOVA-ADMIN",
+        },
+    })
+
+    # No lo forzamos global: solo habilita el botón Authorize en /docs
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+app.openapi = custom_openapi
 
 api = APIRouter(prefix="/api")
 
