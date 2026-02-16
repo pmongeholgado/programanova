@@ -11,7 +11,12 @@ PORTERO_CONFIG = {
 
     "internal_access_header": "X-NOVA-ADMIN",
     "internal_access_key": "nova_pablo_full_access",
-    
+
+    # --- NUEVO: acceso público controlado ---
+    "public_access_header": "X-NOVA-KEY",
+    "public_access_key": "",  # se leerá desde Railway env si existe
+    "protected_paths_prefix": ["/chat", "/generar"],
+
     # Límite de caracteres para campos típicos
     "limits": {
         "titulo_min": 3,
