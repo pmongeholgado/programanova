@@ -81,5 +81,6 @@ class PorteroMiddleware(BaseHTTPMiddleware):
             return {"type": "http.request", "body": body, "more_body": False}
 
         request._receive = receive  # starlette internal but common pattern
+        request._body = body
 
         return await call_next(request)
