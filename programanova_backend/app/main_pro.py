@@ -120,7 +120,7 @@ class GenerarRequest(BaseModel):
     titulo: Optional[str] = "Presentación Nova"
     num_diapositivas: Optional[int] = 10
     contenido: str
-
+    idioma: Optional[str] = "es"
 
 class GenerarResponse(BaseModel):
     mensaje: str
@@ -227,8 +227,11 @@ def decide_needs(title: str):
 @app.post("/generar", response_model=GenerarResponse)
 async def generar_presentacion(data: GenerarRequest):
     try:
+        idioma = (data.idioma or "es").lower()
         prompt = f"""
 Eres un experto creador de presentaciones profesionales.
+
+IMPORTANTE: genera TODO el contenido en idioma: {idioma}
 
 Genera una estructura clara de {data.num_diapositivas} diapositivas
 para una presentación titulada:
