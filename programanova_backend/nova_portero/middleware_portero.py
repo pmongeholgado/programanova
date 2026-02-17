@@ -1,5 +1,7 @@
 # nova_portero/middleware_portero.py
 
+import logging
+logger = logging.getLogger("nova_portero")
 import json
 from typing import Any, Dict, Optional
 
@@ -36,6 +38,8 @@ class PorteroMiddleware(BaseHTTPMiddleware):
         if any(path.startswith(p) for p in protected_prefix):
             if public_header and public_key:
                 if request.headers.get(public_header) != public_key:
+                    ip = request.client.host if request.client else "unknown"
+                    logger.warning(f"PORTERO 401 ip={ip} path={path} public key missing/invalid")
                     return JSONResponse(
                         status_code=401,
                         content={
@@ -55,6 +59,8 @@ class PorteroMiddleware(BaseHTTPMiddleware):
         # 3) Control de tamaño del body (anti-abuso)
         body = await request.body()
         if len(body) > self.max_body:
+            ip = request.client.host if request.client else "unknown"
+            logger.warning(f"PORTERO 413 ip={ip} path={path} body too large")
             return JSONResponse(
                 status_code=413,
                 content={"ok": False, "error": "Body demasiado grande. Petición rechazada por PORTERO."},
@@ -71,6 +77,8 @@ class PorteroMiddleware(BaseHTTPMiddleware):
         # 5) Validación suave (valida campos si vienen)
         ok, msg = validar_payload(payload, self.cfg)
         if not ok:
+            ip = request.client.host if request.client else "unknown"
+            logger.warning(f"PORTERO 422 ip={ip} path={path} payload invalid: {msg}")
             return JSONResponse(
                 status_code=422,
                 content={"ok": False, "error": msg, "portero": "bloqueado"},
