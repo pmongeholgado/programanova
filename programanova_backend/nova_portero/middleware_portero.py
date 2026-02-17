@@ -2,6 +2,7 @@
 
 import logging
 logger = logging.getLogger("nova_portero")
+import time
 import json
 from typing import Any, Dict, Optional
 
