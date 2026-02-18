@@ -515,6 +515,7 @@
       const titulo = (tituloEl.value || "").trim();
       const numDiapositivas = slidesEl.value;
       const contenido = (contenidoEl.value || "").trim();
+      const contenidoConIdioma = `[IDIOMA:${currentLang}]\n${contenido}`;
       const motorIA = currentEngine || "nova";
 
       if (!contenido) {
@@ -537,7 +538,7 @@
           body: JSON.stringify({
             titulo,
             num_diapositivas: numDiapositivas,
-            contenido,
+            contenido: contenidoConIdioma,
             motorIA
           })
         });
