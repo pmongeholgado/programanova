@@ -308,13 +308,24 @@ Devuelve una lista numerada con:
         target_n = int(data.num_diapositivas or 10)
 
         if not slides:
-            slides = [{"title": f"Diapositiva {i+1}", "bullets": ["Idea principal"]} for i in range(target_n)]
+            if idioma == "en":
+                slides = [{"title": f"Slide {i+1}", "bullets": ["Main idea"]} for i in range(target_n)]
+        elif idioma == "ja":
+                slides = [{"title": f"スライド {i+1}", "bullets": ["主なポイント"]} for i in range(target_n)]
+        else:
+                slides = [{"title": f"Diapositiva {i+1}", "bullets": ["Idea principal"]} for i in range(target_n)]
+
         else:
             # Ajusta a EXACTAMENTE num_diapositivas (ni más ni menos)
             slides = slides[:target_n]
             while len(slides) < target_n:
-                slides.append({"title": f"Diapositiva {len(slides)+1}", "bullets": ["Idea principal"]})
-
+                if idioma == "en":
+                    slides.append({"title": f"Slide {len(slides)+1}", "bullets": ["Main idea"]})
+                elif idioma == "ja":
+                    slides.append({"title": f"スライド {len(slides)+1}", "bullets": ["主なポイント"]})
+                else:
+                    slides.append({"title": f"Diapositiva {len(slides)+1}", "bullets": ["Idea principal"]})
+                    
         return GenerarResponse(
             mensaje="Presentación generada correctamente con IA real (imagenes + graficos)",
             estructura=slides
