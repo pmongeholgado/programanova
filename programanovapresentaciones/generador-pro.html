@@ -215,6 +215,8 @@
     // CONFIG BACKEND
     // =========================
     const API_BASE_URL = "https://programanovabackend-production-a426.up.railway.app";
+    // Clave pública PORTERO (misma que en Railway)
+    const NOVA_PUBLIC_KEY = "NOVAP_PUBLIC_2026_PABLO_NOVA_8H3K1X9Q";
 
     // Endpoints IA real
     const IA_ENDPOINTS = {
@@ -459,7 +461,10 @@
           try {
             const rImg = await fetch(`${API_BASE_URL}${IA_ENDPOINTS.imagen}`, {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
+              headers: {
+                "Content-Type": "application/json",
+                "X-NOVA-KEY": NOVA_PUBLIC_KEY
+              },
               mode: "cors",
               body: JSON.stringify({
                 titulo: s.title,
@@ -524,13 +529,17 @@
       try {
         const response = await fetch(`${API_BASE_URL}/generar`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "X-NOVA-KEY": NOVA_PUBLIC_KEY
+        },
           mode: "cors",
           body: JSON.stringify({
             titulo,
             num_diapositivas: numDiapositivas,
             contenido,
             motorIA
+            idioma: currentLang
           })
         });
 
