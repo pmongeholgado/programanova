@@ -310,12 +310,12 @@ Devuelve una lista numerada con:
         if not slides:
             if idioma == "en":
                 slides = [{"title": f"Slide {i+1}", "bullets": ["Main idea"]} for i in range(target_n)]
-        elif idioma == "ja":
+            elif idioma == "ja":
                 slides = [{"title": f"スライド {i+1}", "bullets": ["主なポイント"]} for i in range(target_n)]
-        else:
+            else:
                 slides = [{"title": f"Diapositiva {i+1}", "bullets": ["Idea principal"]} for i in range(target_n)]
 
-        else:
+        if slides:
             # Ajusta a EXACTAMENTE num_diapositivas (ni más ni menos)
             slides = slides[:target_n]
             while len(slides) < target_n:
