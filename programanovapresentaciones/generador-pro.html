@@ -148,9 +148,6 @@
   <h1>Generador Nova · Presentaciones <span style="font-size:14px; color:#7dd3fc;">PRO</span></h1>
 
   <div class="box">
-    
-    <label for="novaKey">Clave NOVA</label>
-    <input id="novaKey" type="password" placeholder="Introduce tu NOVA_PUBLIC_KEY" />
 
     <div class="row">
       <div>
@@ -462,9 +459,7 @@
           try {
             const rImg = await fetch(`${API_BASE_URL}${IA_ENDPOINTS.imagen}`, {
               method: "POST",
-              headers: { "Content-Type": "application/json",
-              "X-NOVA-KEY": "TU_CLAVE_PUBLICA"
-          }
+              headers: { "Content-Type": "application/json" },
               mode: "cors",
               body: JSON.stringify({
                 titulo: s.title,
@@ -529,17 +524,13 @@
       try {
         const response = await fetch(`${API_BASE_URL}/generar`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-NOVA-KEY": "TU_CLAVE_PUBLICA"
-          },
+          headers: { "Content-Type": "application/json" },
           mode: "cors",
           body: JSON.stringify({
             titulo,
             num_diapositivas: numDiapositivas,
             contenido,
             motorIA
-            idioma: currentLang
           })
         });
 
