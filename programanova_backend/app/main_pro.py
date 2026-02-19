@@ -232,7 +232,11 @@ async def generar_presentacion(data: GenerarRequest):
         prompt = f"""
 Eres un experto creador de presentaciones profesionales.
 
-IMPORTANTE: genera TODO el contenido en idioma: {idioma}
+REGLA CRITICA:
+- Genera TODO el contenido UNICAMENTE en este idioma: {idioma}
+- Prohibido mezclar idiomas.
+- Si el idioma es "en", NO uses español.
+- Si el idioma es "ja", NO uses español.
 
 Genera una estructura clara de {data.num_diapositivas} diapositivas
 para una presentación titulada:
