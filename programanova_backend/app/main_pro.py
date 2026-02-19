@@ -228,6 +228,7 @@ def decide_needs(title: str):
 async def generar_presentacion(data: GenerarRequest):
     try:
         idioma = (data.idioma or "es").lower()
+        print("🌐 IDIOMA RECIBIDO:", idioma)
         prompt = f"""
 Eres un experto creador de presentaciones profesionales.
 
