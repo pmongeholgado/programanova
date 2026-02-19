@@ -227,7 +227,15 @@ def decide_needs(title: str):
 @app.post("/generar", response_model=GenerarResponse)
 async def generar_presentacion(data: GenerarRequest):
     try:
-        idioma = (data.idioma or "es").lower()
+        contenido_lower = data.contenido.lower()
+
+        if "[idioma:en]" in contenido_lower:
+            idioma = "en"
+        elif "[idioma:ja]" in contenido_lower:
+            idioma = "ja"
+        else:
+            idioma = "es"
+
         print("🌐 IDIOMA RECIBIDO:", idioma)
         prompt = f"""
 Eres un experto creador de presentaciones profesionales.
