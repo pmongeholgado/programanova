@@ -1,0 +1,33 @@
+OPCIÓN 1 (más profesional)
+
+👉 “Sí Nova, quiero que al entrar al dominio se vea mi página web.”
+
+🧩 DESGLOSE REAL DEL TIEMPO
+1️⃣ Ajustar api_server.py para servir archivos estáticos
+
+⏱️ 5 minutos
+(Editar unas líneas y subir a GitHub)
+
+2️⃣ Configurar FastAPI para entregar tu index.html como página raíz /
+
+⏱️ 5 minutos
+(Es solo añadir un par de rutas específicas)
+
+3️⃣ Subir cambios a GitHub
+
+⏱️ 2 minutos
+
+4️⃣ Railway detecta cambios y despliega
+
+⏱️ 5–10 minutos
+(a veces tarda 8–12, depende del servidor)
+
+5️⃣ Probar en dominio web
+
+⏱️ 3 minutos
+🔥 TOTAL
+👉 25–35 minutos reales
+
+Y te lo garantizo:
+YA TENEMOS TODO EL BACKEND LISTO
+Este paso es simplemente hacer que tu dominio muestre tu web.
