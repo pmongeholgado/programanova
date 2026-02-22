@@ -8,20 +8,31 @@
 <body>
 
   <div class="chat-container">
+
     <div class="chat-header">
       <h1>chatNOVAP</h1>
     </div>
 
-    <div class="chat-messages" id="chatMessages">
-      <!-- Aquí aparecerán los mensajes -->
+    <div class="chat-wrapper">
+
+      <div id="chat-messages" class="chat-messages"></div>
+
+      <form id="chat-form" class="chat-form">
+        <input
+          type="text"
+          id="user-input"
+          placeholder="Escribe tu mensaje..."
+          autocomplete="off"
+          required
+        />
+        <button type="submit">Enviar</button>
+      </form>
+
     </div>
 
-    <div class="chat-input-area">
-      <input type="text" id="userInput" placeholder="Escribe tu mensaje...">
-      <button id="sendBtn">Enviar</button>
-    </div>
   </div>
 
   <script src="assets/js/chatnovap.js"></script>
+
 </body>
 </html>
