@@ -1,6 +1,6 @@
 # ============================
 # Programa Nova - Backend REAL
-# main.py (FINAL)
+# main_cors.py (SAFE - CORS)
 # ============================
 
 import os
@@ -35,24 +35,16 @@ app = FastAPI(
     version="1.0.0",
     description="Backend real con IA para Nova Presentaciones"
 )
+
+# ✅ CORS (único bloque, correcto y suficiente)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://programanovapresentaciones.com",
-        "https://www.programanovapresentaciones.com"
+        "https://www.programanovapresentaciones.com",
     ],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# CORS (abierto para frontend web)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["https://programanovapresentaciones.com",
-                    "https://www.programanovapresentaciones.com"],
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -150,6 +142,7 @@ Devuelve:
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 # ============================
 # GENERADOR DE PRESENTACIONES (IA REAL)
 # ============================
@@ -200,6 +193,3 @@ Devuelve una lista numerada con:
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
-   
