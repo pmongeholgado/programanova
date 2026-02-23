@@ -97,7 +97,10 @@ def root():
 @app.get("/health-pro")
 def health_pro():
     return {"ok": True, "service": "programa-nova-backend", "hora": datetime.utcnow().isoformat()}
-
+    
+@app.get("/debug-open")
+def debug_open():
+    return {"debug": "chatNOVAP backend activo"}
 
 # ============================
 # CHAT CON IA (REAL)
