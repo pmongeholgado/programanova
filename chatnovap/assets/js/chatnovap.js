@@ -7,7 +7,7 @@ const userInput = document.getElementById("user-input");
 const chatMessages = document.getElementById("chat-messages");
 
 // URL REAL de Railway
-const API_URL = "https://programanovabackend-production-a426.up.railway.app/chat";
+const API_URL = "https://programanovabackend-production-a426.up.railway.app/chat-open";
 
 // Mostrar mensajes
 function addMessage(text, sender = "user") {
