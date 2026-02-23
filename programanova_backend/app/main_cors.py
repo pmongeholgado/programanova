@@ -5,7 +5,7 @@
 
 import os
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -74,7 +74,7 @@ class GenerarRequest(BaseModel):
 
 class GenerarResponse(BaseModel):
     mensaje: str
-    estructura: list
+    estructura: List[str]
 
 
 # ============================
@@ -88,6 +88,15 @@ def root():
         "mensaje": "Programa Nova Backend operativo",
         "hora": datetime.utcnow().isoformat()
     }
+
+
+# ============================
+# HEALTH (como aparece en tu /docs)
+# ============================
+
+@app.get("/health-pro")
+def health_pro():
+    return {"ok": True, "service": "programa-nova-backend", "hora": datetime.utcnow().isoformat()}
 
 
 # ============================
@@ -115,14 +124,8 @@ Devuelve:
         response = client.responses.create(
             model="gpt-4o-mini",
             input=[
-                {
-                    "role": "system",
-                    "content": "Eres Nova, IA colaborativa del proyecto Programa Nova."
-                },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
+                {"role": "system", "content": "Eres Nova, IA colaborativa del proyecto Programa Nova."},
+                {"role": "user", "content": prompt}
             ],
             temperature=0.6,
             max_output_tokens=500
@@ -141,6 +144,16 @@ Devuelve:
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================
+# CHAT OPEN (para ChatNOVAP)
+# Entrada sin portero / sin clave pública
+# ============================
+
+@app.post("/chat-open", response_model=ChatResponse)
+def chat_open(data: ChatRequest):
+    return chat_con_nova(data)
 
 
 # ============================
@@ -170,21 +183,15 @@ Devuelve una lista numerada con:
         response = client.responses.create(
             model="gpt-4o-mini",
             input=[
-                {
-                    "role": "system",
-                    "content": "Eres un generador profesional de presentaciones."
-                },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
+                {"role": "system", "content": "Eres un generador profesional de presentaciones."},
+                {"role": "user", "content": prompt}
             ],
             temperature=0.5,
             max_output_tokens=700
         )
 
         texto = response.output_text.strip()
-        estructura = texto.split("\n")
+        estructura = [line.strip() for line in texto.split("\n") if line.strip()]
 
         return GenerarResponse(
             mensaje="Presentación generada correctamente con IA real",
