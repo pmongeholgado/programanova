@@ -46,17 +46,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# CORS (abierto para frontend web)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["https://programanovapresentaciones.com",
-                    "https://www.programanovapresentaciones.com"],
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["*"],
-)
-
-
 # ============================
 # MODELOS
 # ============================
