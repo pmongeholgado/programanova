@@ -1,4 +1,5 @@
 /* ================= RESET ================= */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -7,6 +8,7 @@
 }
 
 /* ================= BODY ================= */
+
 body {
   background: #111827;
   color: #e5e7eb;
@@ -15,14 +17,18 @@ body {
 }
 
 /* ================= LAYOUT ================= */
+
 .app {
   display: flex;
   height: 100vh;
+  width: 100%;
 }
 
 /* ================= SIDEBAR ================= */
+
 .sidebar {
   width: 260px;
+  min-width: 260px;
   background: #0b1220;
   padding: 20px;
   border-right: 1px solid #1e293b;
@@ -36,7 +42,8 @@ body {
   color: #f9fafb;
 }
 
-/* NUEVO CHAT */
+/* ================= BOTÓN NUEVO CHAT ================= */
+
 .new-chat {
   width: 100%;
   padding: 10px;
@@ -54,6 +61,7 @@ body {
 }
 
 /* ================= LISTA CHATS ================= */
+
 .chat-list {
   margin-top: 20px;
   display: flex;
@@ -61,6 +69,8 @@ body {
   gap: 6px;
   overflow-y: auto;
 }
+
+/* ITEM CHAT */
 
 .chat-item {
   display: flex;
@@ -82,6 +92,8 @@ body {
   background: #2b6bff;
 }
 
+/* TÍTULO CHAT */
+
 .chat-title {
   flex: 1;
   overflow: hidden;
@@ -90,6 +102,7 @@ body {
 }
 
 /* ================= MAIN CHAT ================= */
+
 .chat-area {
   flex: 1;
   display: flex;
@@ -97,7 +110,8 @@ body {
   background: #0f1a2f;
 }
 
-/* MENSAJES */
+/* ================= MENSAJES ================= */
+
 .messages {
   flex: 1;
   padding: 24px;
@@ -105,7 +119,8 @@ body {
   scroll-behavior: smooth;
 }
 
-/* BURBUJAS */
+/* ================= BURBUJAS ================= */
+
 .message {
   max-width: 65%;
   margin-bottom: 12px;
@@ -113,21 +128,33 @@ body {
   border-radius: 14px;
   font-size: 14px;
   line-height: 1.5;
+  word-wrap: break-word;
   animation: fadeIn 0.15s ease-in-out;
 }
 
+/* ANIMACIÓN */
+
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* BOT */
+/* MENSAJE BOT */
+
 .bot {
   background: #23324a;
   color: #e5e7eb;
 }
 
-/* USER */
+/* MENSAJE USER */
+
 .user {
   background: #2b6bff;
   color: white;
@@ -135,12 +162,15 @@ body {
 }
 
 /* ================= INPUT ================= */
+
 .input-area {
   display: flex;
   padding: 16px;
   border-top: 1px solid #1e293b;
   background: #0b1220;
 }
+
+/* INPUT TEXTO */
 
 .input-area input {
   flex: 1;
@@ -153,9 +183,15 @@ body {
   color: #e5e7eb;
 }
 
+.input-area input::placeholder {
+  color: #94a3b8;
+}
+
 .input-area input:focus {
   box-shadow: 0 0 0 2px #2b6bff;
 }
+
+/* BOTÓN ENVIAR */
 
 .input-area button {
   padding: 12px 20px;
@@ -171,4 +207,17 @@ body {
 .input-area button:hover {
   background: #3b7cff;
   transform: translateY(-1px);
+}
+
+/* ================= SCROLL ================= */
+
+.messages::-webkit-scrollbar,
+.chat-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages::-webkit-scrollbar-thumb,
+.chat-list::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 3px;
 }
