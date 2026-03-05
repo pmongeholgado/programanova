@@ -1,51 +1,86 @@
 <!doctype html>
 <html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>chatNOVAP</title>
 
-  <link rel="stylesheet" href="styles.css" />
+<head>
+
+<meta charset="utf-8" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>chatNOVAP</title>
+
+<meta name="description" content="chatNOVAP — IA conversacional desarrollada por Pablo & Nova" />
+
+<link rel="stylesheet" href="styles.css" />
+
 </head>
+
+
 <body>
 
 <div class="app">
 
   <!-- SIDEBAR -->
+
   <aside class="sidebar">
+
     <h2>chatNOVAP</h2>
 
-    <button id="newChatBtn" class="new-chat" type="button">
+    <button
+      id="newChatBtn"
+      class="new-chat"
+      type="button"
+    >
       + Nueva conversación
     </button>
 
     <div id="chatList" class="chat-list"></div>
+
   </aside>
 
-  <!-- MAIN -->
+
+  <!-- CHAT -->
+
   <main class="chat-area">
 
     <div id="messages" class="messages"></div>
 
     <div class="input-area">
-      <input 
+
+      <input
         id="inputMessage"
         type="text"
         placeholder="Escribe tu mensaje..."
         autocomplete="off"
       />
 
-      <button id="sendBtn" type="button">
+      <button
+        id="sendBtn"
+        type="button"
+      >
         Enviar
       </button>
+
     </div>
 
   </main>
 
 </div>
 
-<!-- Carga JS al final y con defer -->
+
+<!-- CONFIGURACIÓN BACKEND -->
+
+<script>
+
+window.__API_BASE__ = "https://programanova-production.up.railway.app";
+
+</script>
+
+
+<!-- APP -->
+
 <script src="app.js" defer></script>
 
 </body>
+
 </html>
