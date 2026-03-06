@@ -5,31 +5,34 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.routes_novap import router as novap_router
 
+
 app = FastAPI(
     title="chatNOVAP",
     version="1.0",
 )
 
-# 🔹 CORS correcto para desarrollo local
+# CORS correcto para LOCAL + NETLIFY
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://127.0.0.1:5500",
-        "http://localhost:5500"
+        "http://localhost:5500",
+        "https://gentle-puffpuff-4753cf.netlify.app"
     ],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# 🔹 Rutas del módulo NOVAP
+# Rutas del módulo NOVAP
 app.include_router(novap_router, prefix="/novap")
 
-# 🔹 Ruta raíz de prueba
+
+# Ruta raíz de prueba
 @app.get("/")
 def root():
     return {
         "status": "ok",
         "service": "chatNOVAP",
-        "mode": "local"
+        "mode": "railway"
     }
