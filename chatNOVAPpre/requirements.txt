@@ -4,4 +4,5 @@ sqlalchemy
 python-jose
 passlib
 openai
+python-dotenv
 python-multipart
