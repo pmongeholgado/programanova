@@ -1,0 +1,112 @@
+{
+  "1772572074818": [
+    {
+      "role": "user",
+      "content": "Hola"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Hola! ¿En qué parte de tu proyecto tecnológico te gustaría que te acompañe hoy? Podemos revisar avances, planificar próximos pasos o resolver algún desafío técnico que tengas. Estoy aquí para construir contigo."
+    }
+  ],
+  "test_direct": [
+    {
+      "role": "user",
+      "content": "hola"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Hola! ¿En qué parte de tu proyecto tecnológico estás trabajando ahora? Estoy aquí para ayudarte a avanzar con estructura y claridad, ¿quieres que revisemos alguna funcionalidad, arquitectura o integración específica?"
+    }
+  ],
+  "1772574464837": [
+    {
+      "role": "user",
+      "content": "Hola"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Hola! ¿En qué parte de tu proyecto tecnológico estás trabajando hoy? Estoy aquí para ayudarte a avanzar con estructura y claridad. ¿Quieres que revisemos alguna funcionalidad, arquitectura o integración en particular?"
+    }
+  ],
+  "1772579041895": [
+    {
+      "role": "user",
+      "content": "Hola"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Hola! ¿En qué parte del proyecto tecnológico quieres que trabajemos juntos hoy? ¿Quieres avanzar en el backend, el frontend, la integración con IA, o tienes alguna idea o problema específico que quieras abordar?"
+    },
+    {
+      "role": "user",
+      "content": "Hola"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Hola de nuevo! ¿Quieres que revisemos algún avance o tienes alguna duda técnica en la que pueda ayudarte ahora? Estoy aquí para acompañarte en el desarrollo del proyecto."
+    }
+  ],
+  "1772579465065": [
+    {
+      "role": "user",
+      "content": "Hola"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Hola! ¿En qué parte del proyecto tecnológico te gustaría que trabajemos juntos hoy? Estoy aquí para ayudarte con cualquier aspecto técnico o de diseño que necesites."
+    },
+    {
+      "role": "user",
+      "content": "Buenas tardes Nova aquí de nuevo"
+    },
+    {
+      "role": "assistant",
+      "content": "Buenas tardes, bienvenido de nuevo. ¿En qué punto del proyecto estás trabajando ahora? ¿Quieres que revisemos algún avance o que te apoye en alguna tarea específica?"
+    }
+  ],
+  "1772649824842": [
+    {
+      "role": "user",
+      "content": "Hola"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Hola! ¿En qué parte de tu proyecto tecnológico te gustaría que te acompañe hoy? Podemos avanzar en diseño, desarrollo, integración con IA o cualquier otro aspecto que necesites."
+    },
+    {
+      "role": "user",
+      "content": "Hola"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Hola de nuevo! ¿Quieres retomar algún tema específico o prefieres que te ayude a planificar el siguiente paso en tu proyecto? Estoy aquí para avanzar contigo."
+    },
+    {
+      "role": "user",
+      "content": "Hola"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Hola! Veo que estás iniciando la conversación. ¿Quieres que te ayude con alguna tarea concreta o prefieres que te proponga un plan para avanzar en tu proyecto tecnológico?"
+    }
+  ],
+  "1772653190950": [
+    {
+      "role": "user",
+      "content": "Hola"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Hola! ¿En qué parte de tu proyecto tecnológico puedo ayudarte hoy? Podemos avanzar en diseño, desarrollo, integración con IA o cualquier otro aspecto que necesites."
+    },
+    {
+      "role": "user",
+      "content": "Hola"
+    },
+    {
+      "role": "assistant",
+      "content": "¡Hola de nuevo! ¿Quieres continuar con el proyecto o prefieres que te ayude a resolver alguna duda específica? Estoy aquí para acompañarte en lo que necesites."
+    }
+  ]
+}
