@@ -5,7 +5,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.routes_novap import router as novap_router
 from backend.routes_auth import router as auth_router
-
 from backend.routes_chats import router as chats_router
 from backend.routes_users import router as users_router
 from backend.routes_messages import router as messages_router
@@ -23,13 +22,14 @@ app = FastAPI(
     version="2.0",
 )
 
-# CORS correcto para LOCAL + NETLIFY
+# CORS correcto para LOCAL + NETLIFY + DOMINIO
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://127.0.0.1:5500",
         "http://localhost:5500",
-        "https://gentle-puffpuff-4753cf.netlify.app"
+        "https://gentle-puffpuff-4753cf.netlify.app",
+        "https://chatnovap.online"
     ],
     allow_credentials=False,
     allow_methods=["*"],
