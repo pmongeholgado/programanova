@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+sqlalchemy
+python-jose
+passlib
+openai
+python-multipart
