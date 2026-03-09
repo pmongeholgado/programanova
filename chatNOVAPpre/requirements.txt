@@ -2,8 +2,9 @@ fastapi
 uvicorn
 sqlalchemy
 python-jose
-passlib
 openai
 python-dotenv
 python-multipart
-bcrypt
+passlib[bcrypt]==1.7.4
+bcrypt==4.0.1
+
