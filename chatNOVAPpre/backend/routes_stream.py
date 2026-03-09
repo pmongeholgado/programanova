@@ -6,10 +6,11 @@ from backend.services_novap import generate_reply_stream
 router = APIRouter()
 
 
-@router.get("/")
+@router.get("/reply")
 def stream_reply(chat_id: str, message: str):
 
     return StreamingResponse(
         generate_reply_stream(chat_id, message),
         media_type="text/plain"
+
     )
