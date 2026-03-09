@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-DATABASE_URL = "sqlite:///./backend/novap.db"
+DATABASE_URL = "sqlite:///./backend/novap_v2.db"
 
 engine = create_engine(
     DATABASE_URL,
@@ -22,4 +22,5 @@ def get_db():
     try:
         yield db
     finally:
+
         db.close()
