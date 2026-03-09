@@ -22,7 +22,8 @@ app = FastAPI(
     version="2.0",
 )
 
-# CORS correcto para LOCAL + NETLIFY + DOMINIO
+
+# CORS para desarrollo + Netlify + dominio final
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -31,10 +32,11 @@ app.add_middleware(
         "https://gentle-puffpuff-4753cf.netlify.app",
         "https://chatnovap.online"
     ],
-    allow_credentials=False,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # Rutas del módulo NOVAP
 app.include_router(novap_router, prefix="/novap")
@@ -44,7 +46,7 @@ app.include_router(auth_router, prefix="/auth")
 app.include_router(chats_router, prefix="/chats")
 app.include_router(messages_router, prefix="/messages")
 app.include_router(users_router, prefix="/users")
-app.include_router(stream_router, prefix="/stream")
+app.include_router(stream_router)
 
 
 # Ruta raíz de prueba
