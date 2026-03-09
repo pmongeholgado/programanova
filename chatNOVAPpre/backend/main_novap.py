@@ -22,7 +22,6 @@ app = FastAPI(
     version="2.0",
 )
 
-
 # CORS para desarrollo + Netlify + dominio final
 app.add_middleware(
     CORSMiddleware,
@@ -37,7 +36,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 # Rutas del módulo NOVAP
 app.include_router(novap_router, prefix="/novap")
 
@@ -46,7 +44,7 @@ app.include_router(auth_router, prefix="/auth")
 app.include_router(chats_router, prefix="/chats")
 app.include_router(messages_router, prefix="/messages")
 app.include_router(users_router, prefix="/users")
-app.include_router(stream_router)
+app.include_router(stream_router, prefix="/stream")
 
 
 # Ruta raíz de prueba
