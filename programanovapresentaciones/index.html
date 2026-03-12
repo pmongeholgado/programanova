@@ -565,80 +565,27 @@ function setLanguage(lang) {
       aplicarIdiomaChat(saved);
     });
     /* =========================
-   PORTERO · PLATAFORMA NOVA
+   PORTERO DEL EDIFICIO NOVA
    ========================= */
 
 function mostrarPortero() {
   const overlay = document.getElementById("porteroOverlay");
-  if (overlay) {
-    overlay.style.display = "flex";
-  }
+  if (overlay) overlay.style.display = "flex";
 }
 
 function cerrarPortero() {
   const overlay = document.getElementById("porteroOverlay");
-  if (overlay) {
-    overlay.style.display = "none";
-  }
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-  const cerrarBtn = document.getElementById("porteroCerrar");
-  if (cerrarBtn) {
-    cerrarBtn.addEventListener("click", function () {
-      cerrarPortero();
-    });
-  }
-});
-  /* =========================
-   ACTIVAR PORTERO PRIMER CLICK
-   ========================= */
-
-  let porteroActivado = false;
-
-  document.addEventListener("click", function () {
-
-    const accesoInicial = localStorage.getItem("accesoInicialNova");
-
-    if (!porteroActivado && accesoInicial !== "activo") {
-
-      mostrarPortero();
-      porteroActivado = true;
-
-    }
-
-  });
-  function porteroInfo() {
-  alert("Con el acceso inicial podrás usar 5 veces el chat con IA de la portada, entrar en la sala de idiomas y consultar la información de los accesos de la plataforma.");
-}
-
-function activarAcceso() {
-  localStorage.setItem("accesoInicialNova", "activo");
-  cerrarPortero();
-  alert("Acceso inicial activado correctamente.");
+  if (overlay) overlay.style.display = "none";
 }
 
 /* =========================
-   PORTERO INTERCEPTA BOTONES
+   CONFIGURAR PORTERO GENERAL
    ========================= */
 
-/* =========================
-   PORTERO GENERADOR
-   ========================= */
-
-document.querySelectorAll('a[href^="/generador"], a[href^="/generador-pro"]').forEach(function(link){
-
-  link.addEventListener("click", function(e){
-
-    const accesoInicial = localStorage.getItem("accesoInicialNova");
-
-    if(accesoInicial !== "activo"){
-
-      e.preventDefault();
-    
 function configurarPorteroGeneral() {
 
-  document.getElementById("porteroTitulo").innerText = "PORTERO DEL EDIFICIO NOVA";
+  document.getElementById("porteroTitulo").innerText =
+    "PORTERO DEL EDIFICIO NOVA";
 
   document.getElementById("porteroTexto1").innerHTML =
     'Bienvenido al <strong>Edificio Nova</strong>. Para acceder debes activar el acceso inicial.';
@@ -653,13 +600,11 @@ function configurarPorteroGeneral() {
   document.getElementById("porteroPrecio").innerText =
     "PRECIO: Acceso inicial 0,90 €";
 
-  document.getElementById("porteroBtnInfo").innerText = "Qué incluye";
-
   document.getElementById("porteroBtnInfo").onclick = function () {
 
     alert(
       "Acceso inicial al Edificio Nova:\n\n" +
-      "• Sala de idiomas (español, inglés y japonés)\n" +
+      "• Sala de idiomas (ES / EN / JP)\n" +
       "• 5 usos del chat con IA de la portada\n" +
       "• Acceso a información de Generador y chatNOVAP\n\n" +
       "Precio: 0,90 €"
@@ -667,19 +612,17 @@ function configurarPorteroGeneral() {
 
   };
 
-  document.getElementById("porteroBtnAcceso").innerText = "Activar acceso 0,90 €";
   document.getElementById("porteroBtnAcceso").onclick = activarAcceso;
-
-  document.getElementById("porteroBtnCerrar").innerText = "Volver";
-  document.getElementById("porteroBtnCerrar").onclick = cerrarPortero;
-
 }
 
-
+/* =========================
+   CONFIGURAR PORTERO GENERADOR
+   ========================= */
 
 function configurarPorteroGenerador() {
 
-  document.getElementById("porteroTitulo").innerText = "PORTERO DEL EDIFICIO · GENERADOR IA";
+  document.getElementById("porteroTitulo").innerText =
+    "PORTERO DEL EDIFICIO · GENERADOR IA";
 
   document.getElementById("porteroTexto1").innerHTML =
     'Has pulsado <strong>Generador de Presentaciones con IA</strong>.';
@@ -689,52 +632,28 @@ function configurarPorteroGenerador() {
     '• Prueba individual<br>' +
     '• Acceso mensual disponible<br>' +
     '• Acceso anual disponible<br>' +
-    '• Acceso empresa / educación disponible<br><br>' +
-    'QUÉ INCLUYE LA PRUEBA:<br>' +
-    '• 1 presentación completa<br>' +
-    '• Generación en español, inglés o japonés<br>' +
-    '• Descarga de la presentación';
+    '• Acceso empresa / educación disponible';
 
   document.getElementById("porteroPrecio").innerText =
-    "PRECIO: Prueba Generador 1,10 € · Planes mensual/anual y empresa/educación: a consultar";
-
-  document.getElementById("porteroBtnInfo").innerText = "Qué incluye";
-
-  document.getElementById("porteroBtnInfo").onclick = function () {
-
-    alert(
-      "Generador de Presentaciones con IA:\n\n" +
-      "• 1 prueba individual\n" +
-      "• 1 presentación completa\n" +
-      "• Uso en español, inglés o japonés\n" +
-      "• Descarga incluida\n\n" +
-      "Precio de prueba: 1,10 €\n" +
-      "Planes mensual, anual y empresa/educación disponibles."
-    );
-
-  };
-
-  document.getElementById("porteroBtnAcceso").innerText = "Activar Generador 1,10 €";
+    "PRECIO: Prueba Generador 1,10 €";
 
   document.getElementById("porteroBtnAcceso").onclick = function () {
 
     localStorage.setItem("accesoGeneradorNova", "activo");
     cerrarPortero();
-
-    alert("Acceso de prueba al Generador activado correctamente.");
+    alert("Acceso de prueba al Generador activado.");
 
   };
-
-  document.getElementById("porteroBtnCerrar").innerText = "Volver";
-  document.getElementById("porteroBtnCerrar").onclick = cerrarPortero;
-
 }
 
-
+/* =========================
+   CONFIGURAR PORTERO CHAT
+   ========================= */
 
 function configurarPorteroChatNOVAP() {
 
-  document.getElementById("porteroTitulo").innerText = "PORTERO DEL EDIFICIO · chatNOVAP";
+  document.getElementById("porteroTitulo").innerText =
+    "PORTERO DEL EDIFICIO · chatNOVAP";
 
   document.getElementById("porteroTexto1").innerHTML =
     'Has pulsado <strong>chatNOVAP</strong>.';
@@ -744,50 +663,42 @@ function configurarPorteroChatNOVAP() {
     '• Acceso inicial a chatNOVAP<br>' +
     '• Uso gratuito limitado<br>' +
     '• Acceso mensual disponible<br>' +
-    '• Acceso anual disponible<br><br>' +
-    'QUÉ INCLUYE EL ACCESO INICIAL:<br>' +
-    '• Entrada a chatNOVAP<br>' +
-    '• Acceso al chat completo<br>' +
-    '• Conversación avanzada con IA';
+    '• Acceso anual disponible';
 
   document.getElementById("porteroPrecio").innerText =
-    "PRECIO: Acceso inicial chatNOVAP 0,80 € · Planes mensual/anual: a consultar";
-
-  document.getElementById("porteroBtnInfo").innerText = "Qué incluye";
-
-  document.getElementById("porteroBtnInfo").onclick = function () {
-
-    alert(
-      "chatNOVAP:\n\n" +
-      "• Acceso inicial al chat completo\n" +
-      "• Conversación avanzada con IA\n" +
-      "• Uso gratuito limitado\n" +
-      "• Plan mensual y anual disponibles\n\n" +
-      "Precio inicial: 0,80 €"
-    );
-
-  };
-
-  document.getElementById("porteroBtnAcceso").innerText = "Activar chatNOVAP 0,80 €";
+    "PRECIO: Acceso inicial chatNOVAP 0,80 €";
 
   document.getElementById("porteroBtnAcceso").onclick = function () {
 
     localStorage.setItem("accesoChatNOVAPNova", "activo");
     cerrarPortero();
-
-    alert("Acceso inicial a chatNOVAP activado correctamente.");
+    alert("Acceso a chatNOVAP activado.");
 
   };
-
-  document.getElementById("porteroBtnCerrar").innerText = "Volver";
-  document.getElementById("porteroBtnCerrar").onclick = cerrarPortero;
-
 }
 
+/* =========================
+   PRIMER CLICK ACTIVA PORTERO
+   ========================= */
 
+let porteroActivado = false;
+
+document.addEventListener("click", function () {
+
+  const accesoInicial = localStorage.getItem("accesoInicialNova");
+
+  if (!porteroActivado && accesoInicial !== "activo") {
+
+    configurarPorteroGeneral();
+    mostrarPortero();
+    porteroActivado = true;
+
+  }
+
+});
 
 /* =========================
-   PORTERO GENERADOR
+   INTERCEPTAR BOTONES
    ========================= */
 
 document.querySelectorAll('a[href^="/generador"], a[href^="/generador-pro"]').forEach(function(link){
@@ -813,12 +724,6 @@ document.querySelectorAll('a[href^="/generador"], a[href^="/generador-pro"]').fo
   });
 
 });
-
-
-
-/* =========================
-   PORTERO chatNOVAP
-   ========================= */
 
 document.querySelectorAll('a[href*="chatnovap"]').forEach(function(link){
 
@@ -889,6 +794,7 @@ document.querySelectorAll('a[href*="chatnovap"]').forEach(function(link){
     
 </body>
 </html>
+
 
 
 
