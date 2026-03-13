@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from openai import OpenAI
-
+import stripe
 
 # ============================
 # CONFIGURACIÓN OPENAI
@@ -24,7 +24,14 @@ if not OPENAI_API_KEY:
     raise RuntimeError("❌ OPENAI_API_KEY no está definida en las variables de entorno")
 
 client = OpenAI(api_key=OPENAI_API_KEY)
+# ============================
+# CONFIGURACIÓN STRIPE
+# ============================
 
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+
+if STRIPE_SECRET_KEY:
+    stripe.api_key = STRIPE_SECRET_KEY
 
 # ============================
 # APP FASTAPI
@@ -190,5 +197,38 @@ Devuelve una lista numerada con:
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# ============================
+# STRIPE CHECKOUT PORTERO
+# ============================
 
+@app.post("/crear-checkout-portero")
+def crear_checkout_portero():
+
+    if not STRIPE_SECRET_KEY:
+        raise HTTPException(status_code=500, detail="Stripe no configurado")
+
+    try:
+        session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=[
+                {
+                    "price_data": {
+                        "currency": "eur",
+                        "product_data": {
+                            "name": "Acceso inicial Edificio Nova"
+                        },
+                        "unit_amount": 90,
+                    },
+                    "quantity": 1,
+                }
+            ],
+            mode="payment",
+            success_url="https://programanovapresentaciones.com?acceso=ok",
+            cancel_url="https://programanovapresentaciones.com?acceso=cancel",
+        )
+
+        return {"url": session.url}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
    
