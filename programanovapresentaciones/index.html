@@ -845,7 +845,30 @@ document.querySelectorAll('a[href*="chatnovap"]').forEach(function(link){
 
   });
 
-});      
+});
+
+async function pagarAccesoNova() {
+  try {
+    const res = await fetch(
+      "https://programanovabackend-production.up.railway.app/crear-checkout-portero",
+      {
+        method: "POST"
+      }
+    );
+    
+    const data = await res.json();
+
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert("Error creando el pago.");
+    }
+
+  } catch (err) {
+    console.error(err);
+    alert("Error conectando con el backend.");
+  }
+}
 </script>
 <!-- PORTERO PLATAFORMA NOVA -->
 
@@ -876,7 +899,7 @@ document.querySelectorAll('a[href*="chatnovap"]').forEach(function(link){
         Información
       </button>
 
-      <button onclick="activarAcceso()" style="padding:10px 18px; border-radius:8px; border:none; background:#2563eb; color:white; cursor:pointer;">
+      <button onclick="pagarAccesoNova()" style="padding:10px 18px; border-radius:8px; border:none; background:#2563eb; color:white; cursor:pointer;">
         Activar acceso 0,90 €
       </button>
 
