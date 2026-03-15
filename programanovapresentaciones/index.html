@@ -837,7 +837,27 @@ document.querySelectorAll('a[href*="chatnovap"]').forEach(function(link){
   });
 
 });
+    
+/* =========================
+   DETECTAR PAGO STRIPE
+   ========================= */
 
+const params = new URLSearchParams(window.location.search);
+
+if (params.get("generador") === "ok") {
+
+  localStorage.setItem("accesoGeneradorNova", "activo");
+  window.location.href = "/generador-pro";
+
+}
+
+if (params.get("chatnovap") === "ok") {
+
+  localStorage.setItem("accesoChatNOVAPNova", "activo");
+  window.location.href = "https://chatnovap.online";
+
+}
+    
 async function pagarAccesoNova() {
   try {
     const res = await fetch(
