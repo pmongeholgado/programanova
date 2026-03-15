@@ -876,34 +876,34 @@ async function pagarAccesoNova() {
 
   <div style="background:#0f172a; padding:42px; border-radius:14px; text-align:center; color:white; max-width:440px; margin:auto; box-shadow:0 10px 40px rgba(0,0,0,0.6);">
 
-    <h2 style="margin-bottom:18px;">PORTERO · PLATAFORMA NOVA</h2>
+    <h2 id="porteroTitulo" style="margin-bottom:18px;">PORTERO · PLATAFORMA NOVA</h2>
 
-    <p style="line-height:1.6; margin-bottom:18px;">
+    <p id="porteroTexto1" style="line-height:1.6; margin-bottom:18px;">
       Bienvenido a <strong>Programa Nova Presentaciones</strong>.
       Para acceder a la plataforma debes activar el acceso inicial.
     </p>
 
-    <p style="line-height:1.6; margin-bottom:22px;">
+    <p id="porteroTexto2" style="line-height:1.6; margin-bottom:22px;">
       ✔ Acceso a sala de idiomas (ES / EN / JP)<br>
       ✔ 5 usos del chat con IA de la portada<br>
       ✔ Acceso a información de los botones
     </p>
 
-    <p style="font-weight:600; margin-bottom:26px;">
+    <p id="porteroPrecio" style="font-weight:600; margin-bottom:26px;">
       Acceso inicial: 0,90 €
     </p>
 
     <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
 
-      <button onclick="porteroInfo()" style="padding:10px 18px; border-radius:8px; border:none; background:#374151; color:white; cursor:pointer;">
+      <button id="porteroBtnInfo" onclick="porteroInfo()" style="padding:10px 18px; border-radius:8px; border:none; background:#374151; color:white; cursor:pointer;">
         Información
       </button>
 
-      <button onclick="pagarAccesoNova()" style="padding:10px 18px; border-radius:8px; border:none; background:#2563eb; color:white; cursor:pointer;">
+      <button id="porteroBtnAcceso" onclick="pagarAccesoNova()" style="padding:10px 18px; border-radius:8px; border:none; background:#2563eb; color:white; cursor:pointer;">
         Activar acceso 0,90 €
       </button>
 
-      <button onclick="cerrarPortero()" style="padding:10px 18px; border-radius:8px; border:none; background:#4b5563; color:white; cursor:pointer;">
+      <button id="porteroBtnCerrar" onclick="cerrarPortero()" style="padding:10px 18px; border-radius:8px; border:none; background:#4b5563; color:white; cursor:pointer;">
         Volver
       </button>
 
