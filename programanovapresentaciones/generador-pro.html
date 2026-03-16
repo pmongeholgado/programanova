@@ -639,6 +639,21 @@
           alert("❌ Primero genera la presentación con IA.");
           return;
         }
+// =========================
+// CONTROL PAGO GENERADOR
+// =========================
+
+let usos = parseInt(localStorage.getItem("usosGeneradorNova") || "1");
+
+if (usos <= 0) {
+  alert("⚠️ Para generar otra presentación debes realizar un nuevo pago de 1,10€.");
+  window.location.href = "https://buy.stripe.com/"eVq14m6V6fLb8OvabJeIw04";
+  return;
+}
+
+// consumir uso
+localStorage.setItem("usosGeneradorNova", usos - 1);
+        
         if (!Array.isArray(ultimaEstructuraLimpia) || ultimaEstructuraLimpia.length === 0) {
           alert("❌ Primero genera una presentación.");
           return;
