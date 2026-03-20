@@ -101,6 +101,11 @@ body {
   border-radius: 12px;
   line-height: 1.5;
   font-size: 14px;
+
+  /* 🔵 MEJORA REAL DE LECTURA */
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 /* BOT */
