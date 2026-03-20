@@ -15,19 +15,15 @@ function getApiUrl() {
     host === "localhost" ||
     host.endsWith(".local");
 
-  /* LOCAL */
   if (isLocal) {
     return "http://127.0.0.1:8000/stream";
   }
 
-  /* PRODUCCIÓN */
   return "https://programanova-production.up.railway.app/stream";
 
 }
 
 const API_URL = getApiUrl();
-
-console.log("chatNOVAP API:", API_URL);
 
 /* ---------- ESTADO ---------- */
 
@@ -35,7 +31,7 @@ let chats = [];
 let activeChatId = null;
 let isSending = false;
 
-/* ---------- PERSISTENCIA FRONT ---------- */
+/* ---------- PERSISTENCIA ---------- */
 
 function saveState() {
   localStorage.setItem("novap_chats", JSON.stringify(chats));
@@ -45,7 +41,6 @@ function saveState() {
 function loadState() {
 
   try {
-
     const saved = localStorage.getItem("novap_chats");
     const savedActive = localStorage.getItem("novap_active");
 
@@ -53,11 +48,29 @@ function loadState() {
     activeChatId = savedActive || null;
 
   } catch {
-
     chats = [];
     activeChatId = null;
-
   }
+
+}
+
+/* ---------- FORMATEO REAL DE TEXTO ---------- */
+
+function formatText(text) {
+
+  let formatted = text;
+
+  // Negritas **texto**
+  formatted = formatted.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+  // Saltos de línea
+  formatted = formatted.replace(/\n/g, "<br>");
+
+  // Listas numeradas
+  formatted = formatted.replace(/(\d+\.\s)/g, "<br>$1");
+
+  return formatted;
+
 }
 
 /* ---------- UI ---------- */
@@ -68,7 +81,8 @@ function addMessageToDOM(text, sender) {
 
   div.classList.add("message", sender);
 
-  div.textContent = text;
+  // 🔵 AQUÍ ESTÁ LA CLAVE REAL
+  div.innerHTML = formatText(text);
 
   messagesEl.appendChild(div);
 
@@ -85,7 +99,6 @@ function renderMessages() {
   messagesEl.innerHTML = "";
 
   const chat = chats.find(c => c.id === activeChatId);
-
   if (!chat) return;
 
   chat.messages.forEach(m => addMessageToDOM(m.text, m.sender));
@@ -99,63 +112,43 @@ function renderChatList() {
   chats.forEach(chat => {
 
     const container = document.createElement("div");
-
     container.classList.add("chat-item");
 
     if (chat.id === activeChatId)
       container.classList.add("active");
 
     const title = document.createElement("div");
-
     title.classList.add("chat-title");
-
     title.textContent = chat.title;
 
     title.ondblclick = (e) => {
-
       e.stopPropagation();
-
       const newTitle = prompt("Nuevo nombre:", chat.title);
 
       if (newTitle) {
-
         chat.title = newTitle;
-
         saveState();
-
         renderChatList();
-
       }
-
     };
 
     const deleteBtn = document.createElement("button");
-
     deleteBtn.textContent = "🗑";
-
     deleteBtn.type = "button";
 
     deleteBtn.onclick = (e) => {
-
       e.stopPropagation();
-
       deleteChat(chat.id);
-
     };
 
     container.appendChild(title);
     container.appendChild(deleteBtn);
 
     container.onclick = () => {
-
       activeChatId = chat.id;
-
       saveState();
-
       renderChatList();
-
       renderMessages();
-
     };
 
     chatListEl.appendChild(container);
@@ -171,26 +164,20 @@ function createNewChat() {
   const id = Date.now().toString();
 
   chats.unshift({
-
     id,
-
     title: "Nueva conversación",
-
     messages: [
       {
         text: "Hola 👋 Bienvenido a chatNOVAP",
         sender: "bot"
       }
     ]
-
   });
 
   activeChatId = id;
 
   saveState();
-
   renderChatList();
-
   renderMessages();
 
 }
@@ -200,68 +187,56 @@ function deleteChat(id) {
   chats = chats.filter(c => c.id !== id);
 
   if (activeChatId === id) {
-
     activeChatId = chats.length ? chats[0].id : null;
-
   }
 
   if (!activeChatId)
     createNewChat();
 
   saveState();
-
   renderChatList();
-
   renderMessages();
 
 }
 
-/* ---------- ENVÍO MENSAJE CON STREAMING ---------- */
+/* ---------- ENVÍO ---------- */
 
 async function sendMessage() {
 
   if (isSending) return;
 
   const text = inputEl.value.trim();
-
   if (!text) return;
 
   const chat = chats.find(c => c.id === activeChatId);
-
   if (!chat) return;
 
   isSending = true;
 
-  chat.messages.push({
-    text,
-    sender: "user"
-  });
+  chat.messages.push({ text, sender: "user" });
 
   if (chat.title === "Nueva conversación")
     chat.title = text.substring(0, 30);
 
   inputEl.value = "";
-  
   inputEl.focus();
-  
+
   saveState();
-
   renderChatList();
-
   renderMessages();
 
   const messageDiv = addMessageToDOM("", "bot");
 
-  messageDiv.textContent = "NOVA está escribiendo...";
+  messageDiv.innerHTML = "NOVA está escribiendo...";
   messageDiv.style.opacity = "0.7";
-  
+
   let dots = 0;
 
   const typingInterval = setInterval(() => {
     dots = (dots + 1) % 4;
-    messageDiv.textContent = "NOVA está escribiendo" + ".".repeat(dots);
+    messageDiv.innerHTML = "NOVA está escribiendo" + ".".repeat(dots);
   }, 400);
-  
+
   try {
 
     const url = `${API_URL}?chat_id=${activeChatId}&message=${encodeURIComponent(text)}`;
@@ -276,16 +251,14 @@ async function sendMessage() {
     while (true) {
 
       const { done, value } = await reader.read();
-
       if (done) break;
 
       const chunk = decoder.decode(value);
-
       resultText += chunk;
-      
+
       clearInterval(typingInterval);
-      
-      messageDiv.textContent = resultText;
+
+      messageDiv.innerHTML = formatText(resultText);
       messageDiv.style.opacity = "1";
 
       requestAnimationFrame(() => {
@@ -299,16 +272,11 @@ async function sendMessage() {
       sender: "bot"
     });
 
-  }
-
-  catch (err) {
-
+  } catch {
     messageDiv.textContent = "❌ Error conectando con NOVA";
-
   }
 
   isSending = false;
-
   saveState();
 
 }
@@ -316,31 +284,20 @@ async function sendMessage() {
 /* ---------- EVENTOS ---------- */
 
 sendBtn.addEventListener("click", (e) => {
-
   e.preventDefault();
-
   sendMessage();
-
 });
 
 inputEl.addEventListener("keydown", (e) => {
-  
   if (e.key === "Enter") {
-
     e.preventDefault();
-
     sendMessage();
-
   }
-
 });
 
 newChatBtn.addEventListener("click", (e) => {
-
   e.preventDefault();
-
   createNewChat();
-
 });
 
 /* ---------- INIT ---------- */
@@ -348,20 +305,12 @@ newChatBtn.addEventListener("click", (e) => {
 loadState();
 
 if (!chats.length) {
-
   createNewChat();
-
-}
-
-else {
-
+} else {
   if (!activeChatId || !chats.find(c => c.id === activeChatId))
     activeChatId = chats[0].id;
 
   saveState();
-
   renderChatList();
-
   renderMessages();
-
 }
