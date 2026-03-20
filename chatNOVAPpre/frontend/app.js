@@ -56,22 +56,7 @@ function loadState() {
 
 /* ---------- FORMATEO REAL DE TEXTO ---------- */
 
-function formatText(text) {
 
-  let formatted = text;
-
-  // Negritas **texto**
-  formatted = formatted.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-
-  // Saltos de línea
-  formatted = formatted.replace(/\n/g, "<br>");
-
-  // Listas numeradas
-  formatted = formatted.replace(/(\d+\.\s)/g, "<br>$1");
-
-  return formatted;
-
-}
 
 /* ---------- UI ---------- */
 
@@ -86,7 +71,48 @@ function addMessageToDOM(text, sender) {
 
   messagesEl.appendChild(div);
 
-  requestAnimationFrame(() => {
+  function formatText(text) {
+
+  let html = text;
+
+  // Negritas
+  html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+  const lines = html.split(/\n|(?=\d+\.\s)/);
+
+  let result = "";
+  let inList = false;
+
+  lines.forEach(line => {
+
+    line = line.trim();
+    if (!line) return;
+
+    if (/^\d+\.\s/.test(line)) {
+
+      if (!inList) {
+        result += "<ul>";
+        inList = true;
+      }
+
+      result += `<li>${line.replace(/^\d+\.\s/, "")}</li>`;
+
+    } else {
+
+      if (inList) {
+        result += "</ul>";
+        inList = false;
+      }
+
+      result += `<p>${line}</p>`;
+    }
+
+  });
+
+  if (inList) result += "</ul>";
+
+  return result;
+}requestAnimationFrame(() => {
     messagesEl.scrollTop = messagesEl.scrollHeight;
   });
 
