@@ -172,3 +172,52 @@ body {
   background: #3b7cff;
   transform: translateY(-1px);
 }
+
+/* ================= NOVA WRAPPER (NUEVO) ================= */
+
+.nova-wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at top, #0f172a, #020617);
+}
+
+/* ================= APP CENTRADA ================= */
+
+.app {
+  width: 100%;
+  max-width: 1200px;
+  height: 92vh;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 0 60px rgba(0,0,0,0.6);
+}
+
+/* ================= SCROLL FINO ================= */
+
+.messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: #2b6bff;
+  border-radius: 10px;
+}
+
+/* ================= BURBUJAS MEJORADAS ================= */
+
+.message {
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+/* ================= EFECTO HOVER BOTONES ================= */
+
+button {
+  transition: all 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.97);
+}
