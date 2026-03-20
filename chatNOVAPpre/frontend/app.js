@@ -252,6 +252,16 @@ async function sendMessage() {
 
   const messageDiv = addMessageToDOM("", "bot");
 
+  messageDiv.textContent = "NOVA está escribiendo...";
+  messageDiv.style.opacity = "0.7";
+  
+  let dots = 0;
+
+  const typingInterval = setInterval(() => {
+    dots = (dots + 1) % 4;
+    messageDiv.textContent = "NOVA está escribiendo" + ".".repeat(dots);
+  }, 400);
+  
   try {
 
     const url = `${API_URL}?chat_id=${activeChatId}&message=${encodeURIComponent(text)}`;
@@ -272,8 +282,11 @@ async function sendMessage() {
       const chunk = decoder.decode(value);
 
       resultText += chunk;
-
+      
+      clearInterval(typingInterval);
+      
       messageDiv.textContent = resultText;
+      messageDiv.style.opacity = "1";
 
       requestAnimationFrame(() => {
         messagesEl.scrollTop = messagesEl.scrollHeight;
