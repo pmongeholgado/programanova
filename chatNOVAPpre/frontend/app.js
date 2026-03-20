@@ -72,7 +72,9 @@ function addMessageToDOM(text, sender) {
 
   messagesEl.appendChild(div);
 
-  messagesEl.scrollTop = messagesEl.scrollHeight;
+  requestAnimationFrame(() => {
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  });
 
   return div;
 
@@ -239,7 +241,9 @@ async function sendMessage() {
     chat.title = text.substring(0, 30);
 
   inputEl.value = "";
-
+  
+  inputEl.focus();
+  
   saveState();
 
   renderChatList();
@@ -271,7 +275,9 @@ async function sendMessage() {
 
       messageDiv.textContent = resultText;
 
-      messagesEl.scrollTop = messagesEl.scrollHeight;
+      requestAnimationFrame(() => {
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      });
 
     }
 
@@ -305,7 +311,7 @@ sendBtn.addEventListener("click", (e) => {
 });
 
 inputEl.addEventListener("keydown", (e) => {
-
+  
   if (e.key === "Enter") {
 
     e.preventDefault();
