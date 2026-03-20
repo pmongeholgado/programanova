@@ -67,6 +67,22 @@ function formatText(text) {
     .replace(/\n/g, "<br>");
 }
 
+function normalizeText(text) {
+  if (!text) return "";
+
+  let t = text;
+
+  // separar listas tipo "1. texto 2. texto"
+  t = t.replace(/(\d+\.\s)/g, "\n$1");
+
+  // separar frases largas pegadas
+  t = t.replace(/([a-zA-Z0-9])\.\s+(?=[A-ZÁÉÍÓÚÑ0-9])/g, "$1.\n");
+
+  // limpiar dobles saltos
+  t = t.replace(/\n{2,}/g, "\n\n");
+
+  return t.trim();
+}
 /* ---------- UI ---------- */
 
 function scrollMessagesToBottom() {
@@ -78,7 +94,7 @@ function scrollMessagesToBottom() {
 function addMessageToDOM(text, sender) {
   const div = document.createElement("div");
   div.classList.add("message", sender);
-  div.innerHTML = formatText(text);
+  div.innerHTML = formatText(normalizeText(text));
 
   messagesEl.appendChild(div);
   scrollMessagesToBottom();
@@ -249,7 +265,7 @@ async function sendMessage() {
         typingStopped = true;
       }
 
-      messageDiv.innerHTML = formatText(resultText);
+      messageDiv.innerHTML = formatText(normalizeText(resultText));
       messageDiv.style.opacity = "1";
       scrollMessagesToBottom();
     }
