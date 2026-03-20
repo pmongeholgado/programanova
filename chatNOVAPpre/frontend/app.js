@@ -7,7 +7,6 @@ const chatListEl = document.getElementById("chatList");
 /* ---------- API LOCAL / RED DEFINITIVA ---------- */
 
 function getApiUrl() {
-
   const host = location.hostname;
 
   const isLocal =
@@ -20,7 +19,6 @@ function getApiUrl() {
   }
 
   return "https://programanova-production.up.railway.app/stream";
-
 }
 
 const API_URL = getApiUrl();
@@ -39,109 +37,74 @@ function saveState() {
 }
 
 function loadState() {
-
   try {
     const saved = localStorage.getItem("novap_chats");
     const savedActive = localStorage.getItem("novap_active");
 
     chats = saved ? JSON.parse(saved) : [];
     activeChatId = savedActive || null;
-
   } catch {
     chats = [];
     activeChatId = null;
   }
-
 }
 
 /* ---------- FORMATEO REAL DE TEXTO ---------- */
 
+function formatText(text) {
+  if (!text) return "";
 
+  // Usa marked si está disponible
+  if (window.marked && typeof window.marked.parse === "function") {
+    return window.marked.parse(text);
+  }
+
+  // Fallback seguro y simple si marked no cargó
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\n/g, "<br>");
+}
 
 /* ---------- UI ---------- */
 
+function scrollMessagesToBottom() {
+  requestAnimationFrame(() => {
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  });
+}
+
 function addMessageToDOM(text, sender) {
-
   const div = document.createElement("div");
-
   div.classList.add("message", sender);
-
-  // 🔵 AQUÍ ESTÁ LA CLAVE REAL
   div.innerHTML = formatText(text);
 
   messagesEl.appendChild(div);
-
-  function formatText(text) {
-
-  let html = text;
-
-  // Negritas
-  html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-
-  const lines = html.split(/\n|(?=\d+\.\s)/);
-
-  let result = "";
-  let inList = false;
-
-  lines.forEach(line => {
-
-    line = line.trim();
-    if (!line) return;
-
-    if (/^\d+\.\s/.test(line)) {
-
-      if (!inList) {
-        result += "<ul>";
-        inList = true;
-      }
-
-      result += `<li>${line.replace(/^\d+\.\s/, "")}</li>`;
-
-    } else {
-
-      if (inList) {
-        result += "</ul>";
-        inList = false;
-      }
-
-      result += `<p>${line}</p>`;
-    }
-
-  });
-
-  if (inList) result += "</ul>";
-
-  return result;
-}requestAnimationFrame(() => {
-    messagesEl.scrollTop = messagesEl.scrollHeight;
-  });
+  scrollMessagesToBottom();
 
   return div;
-
 }
 
 function renderMessages() {
-
   messagesEl.innerHTML = "";
 
   const chat = chats.find(c => c.id === activeChatId);
   if (!chat) return;
 
   chat.messages.forEach(m => addMessageToDOM(m.text, m.sender));
-
 }
 
 function renderChatList() {
-
   chatListEl.innerHTML = "";
 
   chats.forEach(chat => {
-
     const container = document.createElement("div");
     container.classList.add("chat-item");
 
-    if (chat.id === activeChatId)
+    if (chat.id === activeChatId) {
       container.classList.add("active");
+    }
 
     const title = document.createElement("div");
     title.classList.add("chat-title");
@@ -149,6 +112,7 @@ function renderChatList() {
 
     title.ondblclick = (e) => {
       e.stopPropagation();
+
       const newTitle = prompt("Nuevo nombre:", chat.title);
 
       if (newTitle) {
@@ -178,15 +142,12 @@ function renderChatList() {
     };
 
     chatListEl.appendChild(container);
-
   });
-
 }
 
 /* ---------- CHATS ---------- */
 
 function createNewChat() {
-
   const id = Date.now().toString();
 
   chats.unshift({
@@ -205,30 +166,28 @@ function createNewChat() {
   saveState();
   renderChatList();
   renderMessages();
-
 }
 
 function deleteChat(id) {
-
   chats = chats.filter(c => c.id !== id);
 
   if (activeChatId === id) {
     activeChatId = chats.length ? chats[0].id : null;
   }
 
-  if (!activeChatId)
+  if (!activeChatId) {
     createNewChat();
+    return;
+  }
 
   saveState();
   renderChatList();
   renderMessages();
-
 }
 
 /* ---------- ENVÍO ---------- */
 
 async function sendMessage() {
-
   if (isSending) return;
 
   const text = inputEl.value.trim();
@@ -239,10 +198,14 @@ async function sendMessage() {
 
   isSending = true;
 
-  chat.messages.push({ text, sender: "user" });
+  chat.messages.push({
+    text,
+    sender: "user"
+  });
 
-  if (chat.title === "Nueva conversación")
+  if (chat.title === "Nueva conversación") {
     chat.title = text.substring(0, 30);
+  }
 
   inputEl.value = "";
   inputEl.focus();
@@ -252,59 +215,60 @@ async function sendMessage() {
   renderMessages();
 
   const messageDiv = addMessageToDOM("", "bot");
-
-  messageDiv.innerHTML = "NOVA está escribiendo...";
+  messageDiv.textContent = "NOVA está escribiendo...";
   messageDiv.style.opacity = "0.7";
 
   let dots = 0;
-
   const typingInterval = setInterval(() => {
     dots = (dots + 1) % 4;
-    messageDiv.innerHTML = "NOVA está escribiendo" + ".".repeat(dots);
+    messageDiv.textContent = "NOVA está escribiendo" + ".".repeat(dots);
   }, 400);
 
   try {
-
     const url = `${API_URL}?chat_id=${activeChatId}&message=${encodeURIComponent(text)}`;
-
     const res = await fetch(url);
+
+    if (!res.ok || !res.body) {
+      throw new Error("Respuesta no válida del servidor");
+    }
 
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
-
     let resultText = "";
+    let typingStopped = false;
 
     while (true) {
-
       const { done, value } = await reader.read();
       if (done) break;
 
-      const chunk = decoder.decode(value);
+      const chunk = decoder.decode(value, { stream: true });
       resultText += chunk;
 
-      clearInterval(typingInterval);
+      if (!typingStopped) {
+        clearInterval(typingInterval);
+        typingStopped = true;
+      }
 
       messageDiv.innerHTML = formatText(resultText);
       messageDiv.style.opacity = "1";
-
-      requestAnimationFrame(() => {
-        messagesEl.scrollTop = messagesEl.scrollHeight;
-      });
-
+      scrollMessagesToBottom();
     }
+
+    clearInterval(typingInterval);
 
     chat.messages.push({
       text: resultText,
       sender: "bot"
     });
-
-  } catch {
+  } catch (err) {
+    clearInterval(typingInterval);
     messageDiv.textContent = "❌ Error conectando con NOVA";
+    messageDiv.style.opacity = "1";
+    console.error("chatNOVAP error:", err);
   }
 
   isSending = false;
   saveState();
-
 }
 
 /* ---------- EVENTOS ---------- */
@@ -333,8 +297,9 @@ loadState();
 if (!chats.length) {
   createNewChat();
 } else {
-  if (!activeChatId || !chats.find(c => c.id === activeChatId))
+  if (!activeChatId || !chats.find(c => c.id === activeChatId)) {
     activeChatId = chats[0].id;
+  }
 
   saveState();
   renderChatList();
