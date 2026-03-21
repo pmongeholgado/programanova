@@ -23,9 +23,25 @@ def generate_reply(chat_id: str, message: str) -> str:
 
         # 🔹 3. Construir mensajes para OpenAI
         messages = [
-            {"role": "system", "content": NOVA_SYSTEM_PROMPT},
-            *history
-        ]
+    {
+        "role": "system",
+        "content": NOVA_SYSTEM_PROMPT + """
+
+FORMATO OBLIGATORIO:
+
+- Usa saltos de línea reales entre cada punto
+- Cada elemento de lista debe ir en su propia línea
+- Separa párrafos con líneas en blanco
+- No escribas múltiples puntos en una sola línea
+- Usa markdown limpio (listas, negritas, títulos)
+
+IMPORTANTE:
+Nunca devuelvas texto en bloque continuo.
+Siempre estructura la respuesta en líneas separadas.
+"""
+    },
+    *history
+]
 
         # 🔹 4. Llamada a OpenAI
         response = client.chat.completions.create(
@@ -54,9 +70,25 @@ def generate_reply_stream(chat_id: str, message: str):
     history = get_history(chat_id)
 
     messages = [
-        {"role": "system", "content": NOVA_SYSTEM_PROMPT},
-        *history
-    ]
+    {
+        "role": "system",
+        "content": NOVA_SYSTEM_PROMPT + """
+
+FORMATO OBLIGATORIO:
+
+- Usa saltos de línea reales entre cada punto
+- Cada elemento de lista debe ir en su propia línea
+- Separa párrafos con líneas en blanco
+- No escribas múltiples puntos en una sola línea
+- Usa markdown limpio (listas, negritas, títulos)
+
+IMPORTANTE:
+Nunca devuelvas texto en bloque continuo.
+Siempre estructura la respuesta en líneas separadas.
+"""
+    },
+    *history
+]
 
     stream = client.chat.completions.create(
         model=DEFAULT_MODEL,
