@@ -9,23 +9,41 @@ from backend.config_novap import OPENAI_API_KEY, DEFAULT_MODEL, DEFAULT_TEMPERAT
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 
+# 🔹 NORMALIZADOR FINAL (NO ROMPE NADA)
+def fix_format(text: str) -> str:
+    import re
+
+    t = text
+
+    # Forzar saltos antes de listas numeradas
+    t = re.sub(r'(\d+\.\s)', r'\n\1', t)
+
+    # Forzar saltos en listas con guiones
+    t = re.sub(r'\s-\s', '\n- ', t)
+
+    # Forzar separación de títulos ###
+    t = re.sub(r'(###\s*)', r'\n\n### ', t)
+
+    # Limpiar saltos duplicados
+    t = re.sub(r'\n{2,}', '\n\n', t)
+
+    return t.strip()
+
+
 def generate_reply(chat_id: str, message: str) -> str:
     """
     Genera respuesta de NOVA usando memoria persistente.
     """
 
     try:
-        # 🔹 1. Guardar mensaje del usuario primero
         append_message(chat_id, "user", message)
 
-        # 🔹 2. Obtener historial actualizado
         history = get_history(chat_id)
 
-        # 🔹 3. Construir mensajes para OpenAI
         messages = [
-    {
-        "role": "system",
-        "content": NOVA_SYSTEM_PROMPT + """
+            {
+                "role": "system",
+                "content": NOVA_SYSTEM_PROMPT + """
 
 FORMATO OBLIGATORIO:
 
@@ -39,11 +57,10 @@ IMPORTANTE:
 Nunca devuelvas texto en bloque continuo.
 Siempre estructura la respuesta en líneas separadas.
 """
-    },
-    *history
-]
+            },
+            *history
+        ]
 
-        # 🔹 4. Llamada a OpenAI
         response = client.chat.completions.create(
             model=DEFAULT_MODEL,
             messages=messages,
@@ -52,13 +69,16 @@ Siempre estructura la respuesta en líneas separadas.
 
         reply = response.choices[0].message.content.strip()
 
-        # 🔹 5. Guardar respuesta IA
+        # 🔹 Aplicar normalización (NO rompe nada)
+        reply = fix_format(reply)
+
         append_message(chat_id, "assistant", reply)
 
         return reply
 
     except Exception as e:
         return f"Error IA: {str(e)}"
+
 
 def generate_reply_stream(chat_id: str, message: str):
     """
@@ -70,9 +90,9 @@ def generate_reply_stream(chat_id: str, message: str):
     history = get_history(chat_id)
 
     messages = [
-    {
-        "role": "system",
-        "content": NOVA_SYSTEM_PROMPT + """
+        {
+            "role": "system",
+            "content": NOVA_SYSTEM_PROMPT + """
 
 FORMATO OBLIGATORIO:
 
@@ -86,9 +106,9 @@ IMPORTANTE:
 Nunca devuelvas texto en bloque continuo.
 Siempre estructura la respuesta en líneas separadas.
 """
-    },
-    *history
-]
+        },
+        *history
+    ]
 
     stream = client.chat.completions.create(
         model=DEFAULT_MODEL,
@@ -100,10 +120,12 @@ Siempre estructura la respuesta en líneas separadas.
     reply_full = ""
 
     for chunk in stream:
-
         if chunk.choices[0].delta.content:
             token = chunk.choices[0].delta.content
             reply_full += token
             yield token
+
+    # 🔹 NORMALIZACIÓN FINAL (CLAVE)
+    reply_full = fix_format(reply_full)
 
     append_message(chat_id, "assistant", reply_full)
