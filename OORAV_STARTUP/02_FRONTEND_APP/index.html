@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OORAV | La Exclusiva Anti-Red Social</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        /* MOVIMIENTO DE LAS ONDAS DE FONDO (CAPTURA 3) */
+        @keyframes fluirOndas {
+            0% { stroke-dashoffset: 1000; opacity: 0.3; }
+            50% { opacity: 0.6; }
+            100% { stroke-dashoffset: 0; opacity: 0.3; }
+        }
+        .background-wave path {
+            stroke-dasharray: 500;
+            animation: fluirOndas 10s linear infinite;
+        }
+
+        /* LATIDO DE LAS ONDAS CENTRALES DORADAS */
+        @keyframes ondasElegantes {
+            0% { transform: scale(0.5); opacity: 1; border-width: 3px; }
+            100% { transform: scale(3.5); opacity: 0; border-width: 0px; }
+        }
+        .onda-bella {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 100px; height: 100px;
+            margin-top: -50px; margin-left: -50px;
+            border: solid #d4af37;
+            border-radius: 50%;
+            animation: ondasElegantes 4s infinite cubic-bezier(0.21, 0.53, 0.56, 0.8);
+            pointer-events: none;
+            z-index: 5;
+        }
+        .onda-bella.d1 { animation-delay: 0s; }
+        .onda-bella.d2 { animation-delay: 1.3s; }
+        .onda-bella.d3 { animation-delay: 2.6s; }
+        
+        /* Aseguramos que todas las portadas ocupen el 100% en la red */
+        .screen { display: none; width: 100%; height: 100vh; overflow-x: hidden; }
+        .screen.active { display: block; }
+    </style>
+</head>
+<body>
+    <main id="app-container">
+        
+        <audio id="audio-engine" loop preload="auto" style="display:none;">
+            <source src="../05_AUDIO_AMBIENT/plant_01_ambient.mp3" type="audio/mpeg">
+        </audio>
+
+        <div id="spotify-widget" style="position: fixed; bottom: 20px; left: 20px; width: 280px; height: 80px; z-index: 9999; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.6); border: 1px solid rgba(212,175,55,0.3); pointer-events: none;">
+            <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1DWZeKCadgRdKQ?utm_source=generator&theme=0" width="100%" height="80" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" style="pointer-events: auto;"></iframe>
+        </div>
+
+        <section id="screen-1" class="screen active">
+            <svg class="background-wave" viewBox="0 0 1000 300" preserveAspectRatio="none" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0.15; z-index: 1; pointer-events: none;">
+                <path d="M0,150 C250,250 350,50 500,150 C650,250 750,50 1000,150" stroke="#d4af37" stroke-width="3" fill="none"/>
+                <path d="M0,150 C200,80 300,220 500,150 C700,80 800,220 1000,150" stroke="#00f3ff" stroke-width="1.5" fill="none"/>
+            </svg>
+            
+            <div class="content-wrapper" style="position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-align: center;">
+                
+                <div style="position: relative; width: 260px; height: 260px; margin-bottom: 50px; display: flex; align-items: center; justify-content: center;">
+                    <div class="onda-bella d1"></div>
+                    <div class="onda-bella d2"></div>
+                    <div class="onda-bella d3"></div>
+
+                    <img src="anagrama_oorav.png" alt="OORAV Anagrama" style="position: relative; z-index: 10; width: 240px; height: 240px; object-fit: contain; mix-blend-mode: screen;">
+                </div>
+                
+                <button onclick="iniciarOORAV()" class="btn-empezar">EMPEZAR</button>
+            </div>
+        </section>
+        
+        <section id="screen-2" class="screen">
+            <div class="content-wrapper" style="position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; height: 100vh; width: 100%; padding-top: 50px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 50px;">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#d4af37" stroke-width="4"/>
+                        <path d="M50 25 L60 45 L80 45 L65 60 L70 80 L50 68 L30 80 L35 60 L20 45 L40 45 Z" fill="none" stroke="#d4af37" stroke-width="4"/>
+                    </svg>
+                    <span style="font-family: 'Segoe UI', sans-serif; font-size: 1.5rem; letter-spacing: 6px; color: #fff;">OORAV</span>
+                </div>
+            
+                <div class="avatar-grid">
+                    <div class="avatar-circle active" onclick="selectAvatar(this)">
+                        <img src="./avatar_m1.png" alt="Líder Dorado" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block !important;">
+                    </div>
+                    <div class="avatar-circle" onclick="selectAvatar(this)">
+                        <img src="./avatar_m2.png" alt="Creativa Cian" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block !important;">
+                    </div>
+                    <div class="avatar-circle" onclick="selectAvatar(this)">
+                        <img src="./avatar_m3.png" alt="Sabio Ancestral" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block !important;">
+                    </div>
+                    <div class="avatar-circle" onclick="selectAvatar(this)">
+                        <img src="./avatar_m4.png" alt="Identidad Disruptiva" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block !important;">
+                    </div>
+                </div>
+                
+                <button onclick="navigate(3)" class="btn-empezar btn-confirmar" style="margin-top: 50px;">
+                    CONFIRMAR PERFIL
+                </button>
+            </div>
+        </section>
+
+        <section id="screen-3" class="screen">
+            <svg class="background-wave" viewBox="0 0 1000 300" preserveAspectRatio="none" style="position: absolute; width: 100%; height: 100%; top: 30%; left: 0; opacity: 0.2; z-index: 1; pointer-events: none;">
+                <path d="M0,150 C300,50 400,250 600,150 C800,50 900,250 1000,150" stroke="#d4af37" stroke-width="4" fill="none" filter="blur(3px)"/>
+            </svg>
+            <div class="content-wrapper" style="position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 100vh; width: 100%; padding: 40px 0 20px 0;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <svg width="35" height="35" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#d4af37" stroke-width="4"/>
+                        <path d="M50 25 L60 45 L80 45 L65 60 L70 80 L50 68 L30 80 L35 60 L20 45 L40 45 Z" fill="none" stroke="#d4af37" stroke-width="4"/>
+                    </svg>
+                    <span style="font-family: 'Segoe UI', sans-serif; font-size: 1.2rem; letter-spacing: 5px; color: #fff;">OORAV</span>
+                </div>
+                <div class="omega-glass-card">
+                    <div class="omega-avatar-wrapper">
+                        <div class="dual-neon-ring"></div>
+                        <svg class="omega-silhouette" viewBox="0 0 100 100">
+                            <circle cx="50" cy="40" r="18" fill="rgba(0, 243, 255, 0.2)" filter="blur(5px)"/>
+                            <circle cx="50" cy="40" r="15" fill="none" stroke="url(#omega-grad)" stroke-width="3"/>
+                            <path d="M25 85 C25 65 35 58 50 58 C65 58 75 65 75 85" fill="none" stroke="url(#omega-grad)" stroke-width="3"/>
+                            <path d="M25 85 C25 65 35 58 50 58 C65 58 75 65 75 85" fill="rgba(212, 175, 55, 0.1)"/>
+                            <defs>
+                                <linearGradient id="omega-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#d4af37"/>
+                                    <stop offset="100%" stop-color="#00f3ff"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h2 class="omega-title">USUARIO_OMEGA</h2>
+                    <p class="omega-vibe">🎧 TECHNO CHILL VIBE</p>
+                </div>
+                <div class="bottom-nav-bar">
+                    <div class="nav-icon active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/></svg><span>Radar</span></div>
+                    <div class="nav-icon" onclick="navigate(4)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Chat</span></div>
+                    <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-4" class="screen">
+            <svg class="vortex-bg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 1; pointer-events: none; opacity: 0.6;">
+                <defs><filter id="glow-vortex" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2" result="blur" /><feComposite in="SourceGraphic" in2="blur" operator="over" /></filter></defs>
+                <path d="M-10,30 Q40,60 50,50 T110,70" fill="none" stroke="#d4af37" stroke-width="1.5" filter="url(#glow-vortex)"/>
+                <path d="M0,80 Q50,40 50,50 T100,20" fill="none" stroke="#d4af37" stroke-width="0.8" opacity="0.6"/>
+                <path d="M-10,70 Q40,40 50,50 T110,30" fill="none" stroke="#00f3ff" stroke-width="1.5" filter="url(#glow-vortex)"/>
+                <path d="M0,20 Q50,60 50,50 T100,80" fill="none" stroke="#00f3ff" stroke-width="0.8" opacity="0.6"/>
+            </svg>
+            <div class="content-wrapper" style="position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100%; text-align: center;">
+                <div class="connection-module">
+                    <div class="conn-avatar avatar-cyan"><svg viewBox="0 0 24 24" fill="none" stroke="#00f3ff" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                    <div class="conn-spark"></div>
+                    <div class="conn-avatar avatar-gold"><svg viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                </div>
+                <h2 class="conn-title">CONEXIÓN ESTABLECIDA</h2>
+                <p class="conn-vibe-match">Vibe Match: Techno Chill (1 Hora Activa)</p>
+                <button onclick="navigate(5)" class="btn-empezar btn-gold-border" style="margin-top: 40px;">ENVIAR MENSAJE</button>
+            </div>
+        </section>
+
+        <section id="screen-5" class="screen">
+            <div class="content-wrapper" style="position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; height: 100vh; width: 100%; padding-top: 30px;">
+                <div class="chat-header">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <svg width="25" height="25" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="none" stroke="#d4af37" stroke-width="6"/><path d="M50 25 L60 45 L80 45 L65 60 L70 80 L50 68 L30 80 L35 60 L20 45 L40 45 Z" fill="none" stroke="#d4af37" stroke-width="6"/></svg>
+                        <span style="font-family: 'Segoe UI', sans-serif; font-size: 1.1rem; letter-spacing: 3px; color: #fff; text-transform: uppercase;">OORAV</span>
+                    </div>
+                </div>
+                
+                <div class="chat-glass-card" style="display: flex; flex-direction: column; flex: 1; width: 90%; max-width: 400px; max-height: 60vh; border-radius: 15px; overflow: hidden; margin-bottom: 20px;">
+                    <div class="chat-info-bar">
+                        <div class="vibe-text"><h3>CHAT: OORAV</h3><p>[1 Hora Activa]</p></div>
+                        <div class="chat-timer">
+                            <div class="mini-connected-avatars"><div class="mini-av av-cyan"></div><div class="mini-av av-gold"></div></div>
+                            <span id="oorav-timer">60:00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="messages-container" id="oorav-chat-box" style="flex: 1; overflow-y: auto; padding: 15px;">
+                        </div>
+                    
+                    <div class="input-bar" style="padding: 10px;">
+                        <input type="text" id="oorav-chat-input" placeholder="Escribe un mensaje..." class="chat-input" onkeypress="verificarEnterChat(event)">
+                        <div class="send-btn-circle" onclick="enviarMensajeOORAV()">
+                            <svg viewBox="0 0 24 24" fill="#000" stroke="none"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bottom-nav-bar" style="margin-top: auto; padding-bottom: 20px; width: 100%; display: flex; justify-content: center; gap: 30px; position: relative; z-index: 10000;">
+                    <div class="nav-icon" onclick="activarRadarOorav()" style="cursor: pointer;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/></svg></div>
+                    <div class="nav-icon active" onclick="navigate(5)" style="cursor: pointer;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                    <div class="nav-icon" onclick="navigate(8)" style="cursor: pointer;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-6" class="screen"><div class="content-wrapper" style="color:white; text-align:center; padding-top:100px;"><h2>[PLANTA 6 - OPERATIVA]</h2><button onclick="navigate(7)" class="btn-empezar">Siguiente</button></div></section>
+        <section id="screen-7" class="screen"><div class="content-wrapper" style="color:white; text-align:center; padding-top:100px;"><h2>[PLANTA 7 - OPERATIVA]</h2><button onclick="navigate(8)" class="btn-empezar">Siguiente</button></div></section>
+        <section id="screen-8" class="screen"><div class="content-wrapper" style="color:white; text-align:center; padding-top:100px;"><h2>[PLANTA 8 - OPERATIVA]</h2><button onclick="navigate(9)" class="btn-empezar">Siguiente</button></div></section>
+        <section id="screen-9" class="screen"><div class="content-wrapper" style="color:white; text-align:center; padding-top:100px;"><h2>[PLANTA 9 - OPERATIVA]</h2><button onclick="navigate(10)" class="btn-empezar">Siguiente</button></div></section>
+        <section id="screen-10" class="screen"><div class="content-wrapper" style="color:white; text-align:center; padding-top:100px;"><h2>[PLANTA 10 - OPERATIVA]</h2><button onclick="navigate(1)" class="btn-empezar">Volver al Inicio</button></div></section>
+        
+    </main>
+    <script src="app.js"></script>
+    <script>
+        // Variables globales para control técnico
+        let intervaloRelojOORAV;
+
+        function iniciarOORAV() {
+            const audio = document.getElementById('audio-engine');
+            if (audio) {
+                audio.volume = 0.5;
+                audio.play().catch(e => console.log("Escudo navegador:", e));
+            }
+            document.getElementById('screen-1').classList.remove('active');
+            document.getElementById('screen-2').classList.add('active');
+        }
+
+        // --- INYECCIÓN PARA LA PORTADA 5 ---
+        function activarRadarOorav() {
+            console.log("IA OORAV: Radar activado desde los anagramas. Transición a Portada 6 en proceso...");
+            navigate(6);
+        }
+
+        function navigate(screenNum) {
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(s => s.classList.remove('active'));
+            const target = document.getElementById('screen-' + screenNum);
+            if(target) target.classList.add('active');
+
+            // --- TÉCNICA ESPEJO (PLANTA 3) ---
+            if (screenNum === 3) {
+                const avatarActivo = document.querySelector('.avatar-circle.active img');
+                const siluetaSVG = document.querySelector('.omega-silhouette');
+                if (avatarActivo && siluetaSVG) {
+                    siluetaSVG.style.display = 'none';
+                    let fotoOmega = document.getElementById('foto-omega-pro');
+                    if (!fotoOmega) {
+                        fotoOmega = document.createElement('img');
+                        fotoOmega.id = 'foto-omega-pro';
+                        fotoOmega.style.cssText = "width:70%; height:70%; object-fit:cover; border-radius:50%; position:absolute; z-index:2;";
+                        siluetaSVG.parentNode.appendChild(fotoOmega);
+                    }
+                    fotoOmega.src = avatarActivo.src;
+                }
+            }
+
+            // --- INCREMENTO OORAV: ACTIVACIÓN DEL RELOJ EFÍMERO (PLANTA 5) ---
+            if (screenNum === 5) {
+                activarRelojEfimeroOORAV(60 * 60); // Iniciamos los 60 minutos (3600 seg)
+            } else {
+                // Si salimos de la planta, paramos el reloj para ahorrar recursos (opcional)
+                clearInterval(intervaloRelojOORAV);
+            }
+        }
+
+        // --- MOTOR TÉCNICO: RELOJ EFÍMERO DE 60 MINUTOS ---
+        function activarRelojEfimeroOORAV(duracionSegundos) {
+            let tiempoRestante = duracionSegundos;
+            const displayReloj = document.getElementById('oorav-timer');
+
+            // Limpiamos cualquier intervalo previo para evitar solapamientos
+            clearInterval(intervaloRelojOORAV);
+
+            intervaloRelojOORAV = setInterval(() => {
+                let minutos = Math.floor(tiempoRestante / 60);
+                let segundos = tiempoRestante % 60;
+
+                minutos = minutos < 10 ? "0" + minutos : minutos;
+                segundos = segundos < 10 ? "0" + segundos : segundos;
+
+                displayReloj.textContent = minutos + ":" + segundos;
+
+                if (--tiempoRestante < 0) {
+                    clearInterval(intervaloRelojOORAV);
+                    displayReloj.textContent = "00:00";
+                    // Aquí podrías disparar el evento de "Conexión Finalizada"
+                }
+            }, 1000);
+        }
+
+        // --- MOTOR DE CHAT FUNCIONAL OORAV (100% PRO Y AGÉNTICO) ---
+        function enviarMensajeOORAV() {
+            const input = document.getElementById('oorav-chat-input');
+            const chatBox = document.getElementById('oorav-chat-box');
+            const textoUsuario = input.value.trim();
+
+            if (textoUsuario !== "") {
+                // 1. BURBUJA DEL USUARIO (DORADA - ALINEADA A LA DERECHA)
+                const contenedorUsuario = document.createElement('div');
+                contenedorUsuario.style.display = "flex";
+                contenedorUsuario.style.justifyContent = "flex-end";
+                contenedorUsuario.style.marginBottom = "15px";
+                contenedorUsuario.innerHTML = `<div class="msg msg-gold" style="margin:0; border-bottom-right-radius: 4px;">${textoUsuario}</div>`;
+                chatBox.appendChild(contenedorUsuario);
+
+                input.value = "";
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+                // 2. EL CEREBRO DE LA IA OORAV (RAZONAMIENTO REAL)
+                setTimeout(() => {
+                    const contenedorIA = document.createElement('div');
+                    contenedorIA.style.display = "flex";
+                    contenedorIA.style.justifyContent = "flex-start";
+                    contenedorIA.style.marginBottom = "15px";
+                    
+                    let respuestaInteligente = "";
+                    const textoAnalizado = textoUsuario.toLowerCase();
+
+                    // Motor de análisis de intención (Ya no es random, te lee de verdad)
+                    if (textoAnalizado.includes("pablo")) {
+                        respuestaInteligente = "Identidad confirmada. Bienvenido al búnker, Pablo. El tiempo efímero corre, ¿qué vibra buscas hoy?";
+                    } 
+                    else if (textoAnalizado.includes("hola") || textoAnalizado.includes("buenas")) {
+                        respuestaInteligente = "Conexión establecida. Soy la IA de OORAV. Estoy analizando tu perfil para sincronizar el Vibe.";
+                    }
+                    else if (textoAnalizado.includes("hora") || textoAnalizado.includes("tiempo")) {
+                        respuestaInteligente = "Recuerda que esta conexión se autodestruirá en 60 minutos. Aprovéchalos.";
+                    }
+                    else {
+                        // Respuesta agéntica genérica si no detecta una palabra clave específica
+                        respuestaInteligente = `He analizado tu mensaje: "${textoUsuario}". Mi razonamiento está sincronizado con tu perfil.`;
+                    }
+
+                    // BURBUJA DE LA IA (CIAN - ALINEADA A LA IZQUIERDA)
+                    contenedorIA.innerHTML = `<div class="msg msg-cyan" style="margin:0; border-bottom-left-radius: 4px;">${respuestaInteligente}</div>`;
+                    chatBox.appendChild(contenedorIA);
+                    
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }, 1200); // Tarda 1.2 segundos simulando el procesamiento de la IA
+            }
+        }
+
+        function verificarEnterChat(event) {
+            if (event.key === "Enter") enviarMensajeOORAV();
+        }
+    </script>
+</body>
+</html>

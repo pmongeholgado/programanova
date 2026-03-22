@@ -1,0 +1,8 @@
+# ==========================================
+# OORAV - DEPENDENCIAS DE RED (BLINDADAS)
+# ==========================================
+fastapi==0.103.1
+uvicorn[standard]==0.23.2
+pydantic==2.3.0
+httpx==0.25.0
+python-dotenv==1.0.0

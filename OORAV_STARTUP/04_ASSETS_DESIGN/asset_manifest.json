@@ -1,0 +1,30 @@
+{
+  "project": "OORAV Startup",
+  "version": "1.1.0",
+  "config": {
+    "environment": "production_ready",
+    "cache_control": "max-age=31536000",
+    "cdn_ready": true
+  },
+  "visual_assets": {
+    "pantalla_01": "screens/acceso_unico.png",
+    "pantalla_02": "screens/identidad_visual.png",
+    "pantalla_03": "screens/interfaz_base.png",
+    "pantalla_04": "screens/generador_pulsos.png",
+    "pantalla_05": "screens/modulo_clonacion.png",
+    "pantalla_06": "screens/conexiones_neuronales.png",
+    "pantalla_07": "screens/seguridad_cuantica.png",
+    "pantalla_08": "screens/panel_administracion.png",
+    "pantalla_09": "screens/pulso_global.png",
+    "pantalla_10": "screens/informe_pro.png"
+  },
+  "branding": {
+    "logo_oficial": "icons/favicon_oorav.ico",
+    "iconos_3d": "icons/pack_futurista.svg"
+  },
+  "preload_critical": [
+    "pantalla_01",
+    "pantalla_10",
+    "logo_oficial"
+  ]
+}

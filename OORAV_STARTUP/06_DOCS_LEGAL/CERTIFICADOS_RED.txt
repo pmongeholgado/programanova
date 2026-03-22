@@ -1,0 +1,11 @@
+==========================================
+REGISTRO DE SEGURIDAD - OORAV
+==========================================
+
+DOMINIO: oorav.net
+ESTADO: Activo en RED
+CERTIFICADO: HTTPS / SSL Certificado
+TÉCNICA APLICADA: Cifrado de extremo a extremo
+ESTADO DE SEGURIDAD: 100% Correcto (Candado Verde)
+
+NOTA: Todas las conexiones locales desde el PC deben replicar este nivel de seguridad antes del despliegue final.

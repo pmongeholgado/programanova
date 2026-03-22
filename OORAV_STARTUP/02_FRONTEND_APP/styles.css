@@ -1,0 +1,961 @@
+/* ============================================================
+   OORAV STARTUP - INTEGRACIÓN FINAL 1000X1000
+   Arquitectura Completa: Plantas 1 a 10 (Búnker Visual)
+   ESTADO: 100% Optimizado para Local y RED
+   ============================================================ */
+
+:root {
+    --gold-main: #d4af37;
+    --gold-glow: rgba(212, 175, 55, 0.4);
+    --blue-neon: #00f3ff;
+    --dark-deep: #050505;
+    --white-clean: #ffffff;
+}
+
+/* ==========================================
+   1. RESETEO Y BASE DEL EDIFICIO
+   ========================================== */
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+body { 
+    background: var(--dark-deep); 
+    color: var(--white-clean); 
+    font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; 
+    height: 100vh; 
+    overflow: hidden; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    /* Sensación de App Nativa: Evita selecciones de texto accidentales en móviles */
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+#app-container { 
+    width: 100%; 
+    height: 100%; 
+    position: relative; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    background: radial-gradient(circle, #1a1a1a 0%, #050505 100%); 
+}
+
+/* ==========================================
+   2. SISTEMA DE NAVEGACIÓN (LAS 10 PLANTAS)
+   ========================================== */
+.screen { 
+    display: none; 
+    width: 100%; 
+    height: 100%; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    opacity: 0; 
+    transition: opacity 0.6s ease-in-out; 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    z-index: 5; 
+}
+
+.screen.active { 
+    display: flex; 
+    opacity: 1; 
+}
+
+/* Transición suave inyectada por el app.js */
+.fade-in { 
+    animation: fadeIn 0.8s forwards; 
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================
+   3. ESTÉTICA PREMIUM: PLANTA 1 (PORTADA)
+   ========================================== */
+.content-wrapper {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
+.brand-name {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 3.5rem; 
+    letter-spacing: 14px;
+    color: var(--white-clean); 
+    margin-bottom: 40px;
+    font-weight: 300;
+    text-shadow: 0 5px 20px rgba(0, 0, 0, 0.9); 
+    margin-right: -14px; /* Centrado perfecto compensando el letter-spacing */
+}
+
+/* Botón de Ignición (Cápsula Oscura - Captura Replicada) */
+.btn-empezar {
+    background: rgba(10, 10, 12, 0.9);
+    border: 1px solid rgba(0, 243, 255, 0.5); 
+    color: var(--blue-neon);
+    padding: 16px 50px;
+    font-size: 1rem; 
+    letter-spacing: 5px;
+    border-radius: 40px; 
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 10px rgba(0, 243, 255, 0.1);
+    text-transform: uppercase; 
+    font-weight: 600;
+    transition: all 0.4s ease;
+}
+
+.btn-empezar:hover, .btn-empezar:focus {
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.4), inset 0 0 15px rgba(0, 243, 255, 0.2);
+    transform: translateY(-2px);
+    color: var(--white-clean);
+    border-color: var(--blue-neon);
+    outline: none;
+}
+
+/* ==========================================
+   4. ARQUITECTURA INTERIOR: PLANTAS 2-10
+   ========================================== */
+.report-center { 
+    text-align: center; 
+    width: 90%; 
+    max-width: 400px; 
+    z-index: 10;
+}
+
+/* Corazón de la IA (Aceleración por Hardware y Drop Shadow) */
+.report-visual { 
+    width: 180px; 
+    margin: 20px auto; 
+    filter: drop-shadow(0 0 20px var(--blue-neon)); 
+    animation: pulse-report 4s infinite ease-in-out; 
+    will-change: transform, filter;
+}
+
+.data-box { 
+    display: flex; 
+    justify-content: space-between; 
+    width: 100%; 
+    margin: 20px 0; 
+    gap: 10px; 
+}
+
+/* Cajas de datos con efecto cristal (blur premium) */
+.data-tag { 
+    background: rgba(0,0,0,0.6); 
+    border: 1px solid rgba(212,175,55,0.4); 
+    padding: 15px 10px; 
+    border-radius: 12px; 
+    flex: 1; 
+    backdrop-filter: blur(5px); 
+}
+
+.data-label { 
+    font-size: 0.5rem; 
+    color: #aaa; 
+    letter-spacing: 1px; 
+    display: block; 
+    margin-bottom: 5px; 
+}
+
+.data-number { 
+    color: var(--gold-main); 
+    font-weight: bold; 
+    font-size: 1.2rem; 
+    text-shadow: 0 0 10px var(--gold-glow);
+}
+
+.efimero-notice { 
+    font-size: 0.55rem; 
+    color: #666; 
+    letter-spacing: 1px; 
+    margin-top: 20px; 
+    text-transform: uppercase; 
+}
+
+/* Botón de Descarga PRO (Planta 10) */
+.btn-download-pro {
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(0,0,0,0.8));
+    border: 2px solid var(--gold-main);
+    color: var(--gold-main);
+    padding: 15px 30px;
+    border-radius: 12px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    box-shadow: 0 0 20px var(--gold-glow);
+    transition: 0.4s;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 0.8rem;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.btn-download-pro:hover, .btn-download-pro:focus { 
+    box-shadow: 0 0 40px var(--gold-main); 
+    transform: scale(1.02); 
+    background: rgba(212, 175, 55, 0.1);
+    outline: none;
+}
+
+@keyframes pulse-report {
+    0%, 100% { transform: scale(1); filter: brightness(1) drop-shadow(0 0 15px var(--blue-neon)); }
+    50% { transform: scale(1.05); filter: brightness(1.2) drop-shadow(0 0 30px var(--gold-main)); }
+}
+
+/* ==========================================
+   5. ADAPTACIÓN MÓVIL (RESPONSIVE)
+   ========================================== */
+@media (max-width: 380px) {
+    .brand-name { font-size: 2.5rem; letter-spacing: 10px; }
+    .btn-empezar { padding: 12px 35px; font-size: 0.9rem; }
+    .report-visual { width: 140px; }
+    .btn-download-pro { font-size: 0.7rem; padding: 12px 20px; }
+}
+
+/* ==========================================
+   ESTILOS EXCLUSIVOS PLANTA 2 (AVATARES)
+   ========================================== */
+.avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    width: 80%;
+    max-width: 300px;
+}
+
+/* BLINDAJE PRO DE LOS CÍRCULOS DE AVATARES */
+.avatar-circle {
+    position: relative;
+    border-radius: 50%;
+    overflow: hidden; /* Cirugía pura: recorta cualquier esquina cuadrada de la foto */
+    background-color: #050505 !important; /* Fondo negro puro para que el PNG destaque */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 1;
+    border: 2px solid #00f3ff;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 243, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* BLINDAJE DE LA IMAGEN INTERNA */
+.avatar-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Magia técnica: llena el círculo sin aplastar ni estirar la cara */
+    object-position: center; /* Asegura que la cara quede en el centro exacto */
+    border-radius: 50%;
+    display: block;
+    z-index: 2;
+    transition: all 0.4s ease;
+    filter: brightness(0.9); /* Un poco más oscuro para que el brillo active destaque */
+}
+
+/* Punto 2: Cuando el avatar está activo, la imagen brilla al millón por millón */
+.avatar-circle.active img, 
+.avatar-circle:hover img {
+    filter: brightness(1.1) drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));
+    transform: scale(1.02);
+}
+
+.avatar-circle:hover, .avatar-circle.active {
+    border-color: #d4af37;
+    box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.2), 0 0 20px rgba(212, 175, 55, 0.4);
+    transform: scale(1.05);
+}
+
+.btn-confirmar {
+    font-size: 0.9rem;
+    padding: 14px 40px;
+    letter-spacing: 3px;
+    color: #888;
+}
+
+.btn-confirmar:hover {
+    color: #d4af37;
+    border-color: #d4af37;
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+}
+
+/* ==========================================
+   ESTILOS EXCLUSIVOS PLANTA 3 (PERFIL OMEGA)
+   ========================================== */
+
+/* Tarjeta de Cristal (Glassmorphism) */
+.omega-glass-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 85%;
+    max-width: 340px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.02);
+}
+
+/* Contenedor del Avatar y el Anillo */
+.omega-avatar-wrapper {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* El Anillo Dual: Oro a la izquierda, Cian a la derecha */
+.dual-neon-ring {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    background: linear-gradient(#050812, #050812) padding-box,
+                linear-gradient(90deg, #d4af37 50%, #00f3ff 50%) border-box;
+    box-shadow: -10px 0 20px rgba(212, 175, 55, 0.3), 10px 0 20px rgba(0, 243, 255, 0.3);
+    animation: pulse-ring 3s infinite alternate;
+}
+
+.omega-silhouette {
+    width: 70%;
+    height: 70%;
+    z-index: 2;
+    filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));
+}
+
+/* Tipografía del Perfil */
+.omega-title {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 4px;
+    color: #e0e0e0;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.omega-vibe {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: #888;
+    text-transform: uppercase;
+}
+
+/* Barra de Navegación Inferior (BLINDADA PARA RED Y Z-INDEX) */
+.bottom-nav-bar {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    padding-top: 20px;
+    border-top: 1px solid rgba(212, 175, 55, 0.2);
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 10000; /* Siempre por encima del widget de música y radar */
+}
+
+.nav-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-icon svg { width: 24px; height: 24px; }
+.nav-icon span { font-size: 0.6rem; letter-spacing: 1px; }
+
+.nav-icon.active, .nav-icon:hover {
+    color: #d4af37;
+    filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.6));
+}
+
+@keyframes pulse-ring {
+    0% { transform: scale(0.98); opacity: 0.8; }
+    100% { transform: scale(1.02); opacity: 1; }
+}
+
+/* ==========================================
+   ESTILOS EXCLUSIVOS PLANTA 4 (CONEXIÓN ESTABLECIDA)
+   ========================================== */
+
+/* Animación del Vórtice de Fondo */
+.vortex-bg {
+    animation: vortex-spin 20s linear infinite;
+    transform-origin: center;
+}
+
+@keyframes vortex-spin {
+    0% { transform: scale(1.5) rotate(0deg); }
+    100% { transform: scale(1.5) rotate(360deg); }
+}
+
+/* Módulo de Conexión Central */
+.connection-module {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 40px;
+    width: 200px;
+}
+
+/* Esferas de los Avatares */
+.conn-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(40,40,40,0.8) 0%, rgba(5,5,5,0.9) 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    backdrop-filter: blur(10px);
+}
+
+.conn-avatar svg { width: 40px; height: 40px; filter: drop-shadow(0 0 5px currentColor); }
+
+.avatar-cyan {
+    border: 2px solid #00f3ff;
+    box-shadow: inset 0 0 15px rgba(0, 243, 255, 0.3), 0 0 20px rgba(0, 243, 255, 0.4);
+    transform: translateX(15px); /* Solapamiento */
+}
+
+.avatar-gold {
+    border: 2px solid #d4af37;
+    box-shadow: inset 0 0 15px rgba(212, 175, 55, 0.3), 0 0 20px rgba(212, 175, 55, 0.4);
+    transform: translateX(-15px); /* Solapamiento */
+}
+
+/* Destello central de la unión */
+.conn-spark {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: #ffffff;
+    border-radius: 50%;
+    z-index: 3;
+    filter: blur(4px);
+    box-shadow: 0 0 20px #fff, 0 0 40px #00f3ff, 0 0 60px #d4af37;
+    animation: pulse-spark 2s infinite alternate;
+}
+
+@keyframes pulse-spark {
+    0% { transform: scale(0.8); opacity: 0.8; }
+    100% { transform: scale(1.2); opacity: 1; }
+}
+
+/* Tipografía de Conexión */
+.conn-title {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 5px;
+    color: #ffffff;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+.conn-vibe-match {
+    font-size: 0.75rem;
+    color: #aaaaaa;
+    letter-spacing: 2px;
+}
+
+/* Botón Especial de la Planta 4 (Borde Dorado) */
+.btn-gold-border {
+    border-color: rgba(212, 175, 55, 0.6) !important;
+    color: #d4af37 !important;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 10px rgba(212, 175, 55, 0.1) !important;
+}
+
+.btn-gold-border:hover {
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.4), inset 0 0 15px rgba(212, 175, 55, 0.2) !important;
+    border-color: #d4af37 !important;
+    color: #ffffff !important;
+}
+
+/* ==========================================
+   ESTILOS EXCLUSIVOS PLANTA 5 (CHAT EFÍMERO)
+   ========================================== */
+
+/* Cabecera limpia */
+.chat-header {
+    width: 85%;
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.4));
+}
+
+/* Tarjeta de Cristal del Chat (Blindada para RED y Móviles) */
+.chat-glass-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px; padding: 20px 15px; /* Padding ajustado */
+    display: flex; flex-direction: column;
+    width: 88%; max-width: 360px;
+    height: 60vh; /* Altura flexible pero acotada */
+    max-height: 500px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), inset 0 0 10px rgba(255, 255, 255, 0.01);
+}
+
+/* Barra de Info y Temporizador */
+.chat-info-bar {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    width: 100%; margin-bottom: 15px; padding-bottom: 10px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    flex-shrink: 0; /* Evita que se encoja */
+}
+
+.vibe-text h3 {
+    color: #d4af37; font-family: 'Segoe UI', sans-serif;
+    font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 3px;
+}
+.vibe-text p { color: #888; font-size: 0.65rem; letter-spacing: 1.5px; }
+
+.chat-timer {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 5px;
+}
+.mini-connected-avatars { display: flex; transform: translateX(-5px); }
+.mini-av { width: 12px; height: 12px; border-radius: 50%; border: 1px solid transparent; }
+.av-cyan { background: #00f3ff; border-color: #00f3ff; box-shadow: 0 0 5px #00f3ff; transform: translateX(4px); }
+.av-gold { background: #d4af37; border-color: #d4af37; box-shadow: 0 0 5px #d4af37; transform: translateX(-4px); }
+.chat-timer span { color: #fff; font-size: 1rem; font-weight: bold; letter-spacing: 1px; text-shadow: 0 0 5px #fff; }
+
+/* Burbujas de Chat (Ajuste para scroll nativo) */
+.messages-container {
+    display: flex; flex-direction: column; gap: 12px; width: 100%; 
+    flex-grow: 1; /* Ocupa el espacio restante */
+    overflow-y: auto; /* Scroll perfecto */
+    padding-right: 5px;
+    margin-bottom: 15px;
+}
+
+/* Ocultar barra de scroll para limpieza estética */
+.messages-container::-webkit-scrollbar { width: 4px; }
+.messages-container::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.5); border-radius: 4px; }
+
+.msg {
+    padding: 10px 15px; border-radius: 12px; max-width: 85%;
+    font-size: 0.8rem; letter-spacing: 0.5px; line-height: 1.4;
+    border: 1px solid transparent;
+}
+
+.msg-gold {
+    align-self: flex-start;
+    background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(10,10,10,0.8));
+    color: #e0e0e0; border-color: rgba(212,175,55,0.4);
+    border-radius: 12px 12px 12px 0;
+}
+
+.msg-cyan {
+    align-self: flex-end;
+    background: linear-gradient(135deg, rgba(0,243,255,0.1), rgba(10,10,10,0.8));
+    color: #e0e0e0; border-color: rgba(0,243,255,0.4);
+    border-radius: 12px 12px 0 12px;
+}
+
+/* Barra de Entrada y Botón de Envío */
+.input-bar {
+    width: 100%; display: flex; align-items: center; gap: 10px;
+    background: #0d111a; border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 30px; padding: 5px 15px;
+    flex-shrink: 0; /* Evita que se encoja */
+}
+
+.chat-input {
+    flex: 1; background: transparent; border: none; color: #aaa;
+    font-size: 0.75rem; letter-spacing: 1px; padding: 8px 0;
+}
+.chat-input:focus { outline: none; }
+
+.send-btn-circle {
+    width: 35px; height: 35px; border-radius: 50%;
+    background: #d4af37; display: flex; justify-content: center; align-items: center;
+    cursor: pointer; transition: 0.3s;
+    box-shadow: 0 0 10px rgba(212,175,55,0.3);
+}
+.send-btn-circle:hover { background: #e0c060; transform: scale(1.05); }
+.send-btn-circle svg { width: 18px; height: 18px; transform: translateX(1px); }
+
+/* ==========================================
+   ESTILOS EXCLUSIVOS PLANTA 6 (STREAMING MOMENT)
+   ========================================== */
+
+/* Tarjeta apaisada de cristal */
+.moment-glass-card {
+    position: relative;
+    width: 85%; max-width: 350px; height: 180px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 243, 255, 0.3); /* Borde dual sutil */
+    border-radius: 15px;
+    display: flex; justify-content: center; align-items: center;
+    margin-bottom: 25px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(212, 175, 55, 0.1);
+    overflow: hidden;
+}
+
+.vortex-bg-mini {
+    animation: vortex-spin 15s linear infinite;
+    transform-origin: center;
+}
+
+/* Tipografía de reproducción */
+.now-playing-text {
+    font-size: 0.55rem;
+    letter-spacing: 2px;
+    color: #aaaaaa;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    text-align: center;
+    width: 90%;
+    text-shadow: 0 0 5px rgba(255,255,255,0.2);
+}
+
+/* Onda de Audio Palpitante */
+.audio-waveform {
+    width: 80%; max-width: 280px;
+    margin-bottom: 35px;
+    filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.6));
+}
+
+.wave-anim {
+    animation: wave-pulse 1s infinite alternate ease-in-out;
+}
+
+@keyframes wave-pulse {
+    0% { opacity: 0.5; stroke-width: 2; }
+    100% { opacity: 1; stroke-width: 4; }
+}
+
+/* Barra de interacción OORAV */
+.reaction-bar {
+    width: 85%; max-width: 340px;
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(10, 10, 12, 0.8);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 30px; padding: 6px 15px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.6), inset 0 0 10px rgba(212,175,55,0.1);
+}
+
+.reaction-input {
+    flex: 1; background: transparent; border: none; color: #fff;
+    font-size: 0.8rem; letter-spacing: 1px; padding: 10px 0;
+}
+.reaction-input:focus { outline: none; }
+
+/* ==========================================
+   ESTILOS EXCLUSIVOS PLANTA 7 (REACCIÓN GENERADA)
+   ========================================== */
+
+/* Textos de la Reacción */
+.reaction-title {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    color: #ffffff;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+    text-align: center;
+}
+
+.reaction-vibe {
+    font-size: 0.65rem;
+    color: #aaaaaa;
+    letter-spacing: 2px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Animaciones del Emblema (Chispa Compartida) */
+@keyframes spin-slow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Reutilizamos y ajustamos la animación pulse-spark para el núcleo */
+.spark-emblem-container svg circle:last-child {
+    box-shadow: 0 0 20px #fff, 0 0 40px #00f3ff, 0 0 60px #d4af37;
+}
+
+/* ==========================================
+   ESTILOS EXCLUSIVOS PLANTA 8 (OORAV PRO)
+   ========================================== */
+
+.pro-title {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 4px;
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    line-height: 1.5;
+    text-shadow: 0 0 15px rgba(255,255,255,0.3);
+}
+
+/* Tarjeta de características (Borde Cian) */
+.pro-glass-card {
+    width: 85%; max-width: 340px;
+    background: linear-gradient(135deg, rgba(0, 243, 255, 0.05), rgba(0, 243, 255, 0.01));
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 243, 255, 0.4);
+    border-radius: 15px;
+    padding: 25px 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(0, 243, 255, 0.1);
+}
+
+.pro-features {
+    list-style: none;
+    padding: 0; margin: 0;
+    color: #e0e0e0;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    line-height: 2.2;
+}
+
+.pro-features li {
+    text-shadow: 0 0 5px rgba(0, 243, 255, 0.2);
+}
+
+/* Opciones de Suscripción (Grid de 3) */
+.pro-pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    width: 90%; max-width: 380px;
+}
+
+.pricing-tier {
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 10px;
+    padding: 12px 5px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(10, 10, 12, 0.8);
+}
+
+.pricing-tier:hover, .pricing-tier.active-tier {
+    border-color: #d4af37;
+    background: rgba(212, 175, 55, 0.1);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.3), inset 0 0 10px rgba(212, 175, 55, 0.2);
+    transform: translateY(-2px);
+}
+
+.tier-price { color: #fff; font-size: 0.55rem; font-weight: bold; margin-bottom: 5px; }
+.tier-name { color: #d4af37; font-size: 0.5rem; letter-spacing: 1px; text-transform: uppercase; }
+
+/* ==========================================
+   ESTILOS EXCLUSIVOS PLANTA 9 (MAPA GLOBAL)
+   ========================================== */
+
+.community-title {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 3px;
+    color: #aaaaaa;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(255,255,255,0.2);
+    line-height: 1.2;
+}
+
+.global-map-container {
+    position: relative;
+    width: 100%; max-width: 400px;
+    height: 250px;
+    margin-top: 20px;
+    display: flex; justify-content: center; align-items: center;
+}
+
+/* Estadísticas Flotantes sobre el Mapa */
+.stat-float {
+    position: absolute;
+    display: flex; flex-direction: column;
+    z-index: 5;
+}
+
+.stat-left { top: 20%; left: 10%; text-align: left; }
+.stat-right { top: 60%; right: 5%; text-align: right; }
+
+.stat-label {
+    font-size: 0.5rem; letter-spacing: 1px; color: #00f3ff;
+    text-transform: uppercase; margin-bottom: 2px;
+}
+
+.stat-value {
+    font-size: 1.1rem; font-weight: bold; color: #d4af37;
+    text-shadow: 0 0 10px rgba(212,175,55,0.5);
+}
+
+/* Animación del flujo de datos en las líneas */
+.pulse-line {
+    stroke-dasharray: 10;
+    animation: dash-flow 20s linear infinite;
+}
+
+.pulse-line-alt {
+    stroke-dasharray: 15;
+    animation: dash-flow 25s linear infinite reverse;
+}
+
+@keyframes dash-flow {
+    to { stroke-dashoffset: 1000; }
+}
+
+/* Candado PRO de Estadísticas */
+.pro-locked-stats {
+    margin-top: 10px;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    color: #888888;
+    text-transform: uppercase;
+}
+
+/* ==========================================
+   ESTILOS EXCLUSIVOS PLANTA 10 (INFORME PRO)
+   ========================================== */
+
+.report-title {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    color: #aaaaaa;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    line-height: 1.4;
+    text-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.report-emblem-container {
+    position: relative;
+    width: 100%; max-width: 350px;
+    height: 180px;
+    display: flex; justify-content: center; align-items: center;
+    margin-bottom: 25px;
+}
+
+/* Estadísticas abrazando el emblema */
+.stat-float-report {
+    position: absolute;
+    z-index: 5;
+    text-align: center;
+}
+
+.stat-left-report { left: -10px; top: 35%; text-align: right; }
+.stat-right-report { right: -10px; top: 65%; text-align: left; }
+
+.stat-label-report {
+    display: block; font-size: 0.45rem; letter-spacing: 1px; color: #888;
+    text-transform: uppercase; margin-bottom: 3px;
+}
+
+.stat-value-report {
+    display: block; font-size: 1rem; font-weight: bold; color: #d4af37;
+    text-shadow: 0 0 10px rgba(212,175,55,0.6);
+}
+
+.generating-text {
+    font-size: 0.6rem; letter-spacing: 2px; color: #888;
+    text-transform: uppercase; margin-bottom: 10px;
+}
+
+.footer-warning {
+    font-size: 0.5rem; letter-spacing: 1.5px; color: #555;
+    text-transform: uppercase; margin-top: 25px;
+}
+
+/* ==========================================
+   OORAV - CONTROL DE AUDIO Y MÚSICA GLOBAL
+   ========================================== */
+
+/* 2. ESTILO DEL PUENTE DE MÚSICA (Widget Spotify) - BLINDADO PARA RED */
+#external-music-bridge {
+    position: fixed;
+    bottom: 90px; 
+    right: 20px;
+    z-index: 9999;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(212, 175, 55, 0.2);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(10px); 
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0; 
+}
+
+/* CLASE FANTASMA PARA SPOTIFY EN LA PORTADA 5 
+   Mantiene el aspecto, pero deja que los clics pasen al radar 
+*/
+.spotify-fantasma {
+    pointer-events: none !important;
+}
+
+/* Asegura que los controles del reproductor de Spotify siempre funcionen */
+#external-music-bridge iframe {
+    pointer-events: auto !important; 
+}
+
+#external-music-bridge:hover {
+    transform: scale(1.05);
+    border-color: #00f3ff;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 243, 255, 0.4);
+}
+
+/* 3. RESPONSIVE MÓVIL (Ajuste de Ingeniería) */
+@media (max-width: 768px) {
+    #external-music-bridge {
+        width: 200px; 
+        bottom: 85px; 
+        right: 15px;
+    }
+    
+    #external-music-bridge iframe {
+        width: 100% !important;
+        height: 70px !important; 
+    }
+
+    .brand-name {
+        font-size: 2.8rem !important;
+        margin-bottom: 20px !important;
+    }
+}
+
+/* 4. ANIMACIÓN DE ONDA DE AUDIO (Planta 6) */
+@keyframes audio-vibe {
+    0% { transform: scaleY(0.5); opacity: 0.4; }
+    100% { transform: scaleY(1.5); opacity: 1; stroke: #00f3ff; }
+}
