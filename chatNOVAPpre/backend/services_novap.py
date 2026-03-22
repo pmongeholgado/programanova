@@ -143,9 +143,7 @@ Devuelve SIEMPRE texto con saltos de línea reales y markdown válido.
         if chunk.choices[0].delta.content:
             token = chunk.choices[0].delta.content
             reply_full += token
-
-            formatted = fix_format(reply_full)
-            yield formatted
+            yield token
 
     # 🔹 NORMALIZACIÓN FINAL (CLAVE)
     reply_full = fix_format(reply_full)
