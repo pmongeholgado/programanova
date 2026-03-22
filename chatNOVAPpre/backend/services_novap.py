@@ -9,23 +9,26 @@ from backend.config_novap import OPENAI_API_KEY, DEFAULT_MODEL, DEFAULT_TEMPERAT
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 
-# 🔹 NORMALIZADOR FINAL (NO ROMPE NADA)
+# 🔥 NORMALIZADOR MEJORADO (CLAVE REAL)
 def fix_format(text: str) -> str:
     import re
 
-    t = text
+    t = text.strip()
 
-    # Forzar saltos antes de listas numeradas
-    t = re.sub(r'(\d+\.\s)', r'\n\1', t)
+    # 🔥 Separar frases en párrafos reales
+    t = re.sub(r'([a-z0-9])\.\s+(?=[A-ZÁÉÍÓÚÑ])', r'\1.\n\n', t)
 
-    # Forzar saltos en listas con guiones
+    # 🔥 Convertir " - " en lista vertical
     t = re.sub(r'\s-\s', '\n- ', t)
 
-    # Forzar separación de títulos ###
-    t = re.sub(r'(###\s*)', r'\n\n### ', t)
+    # 🔥 Separar listas numeradas
+    t = re.sub(r'(\d+\.\s)', r'\n\1', t)
 
-    # Limpiar saltos duplicados
-    t = re.sub(r'\n{2,}', '\n\n', t)
+    # 🔥 Separar títulos si vienen pegados
+    t = re.sub(r'(#{1,6}\s*)', r'\n\n\1', t)
+
+    # 🔥 Limpiar saltos duplicados
+    t = re.sub(r'\n{3,}', '\n\n', t)
 
     return t.strip()
 
@@ -79,7 +82,7 @@ Devuelve SIEMPRE texto con saltos de línea reales y markdown válido.
 
         reply = response.choices[0].message.content.strip()
 
-        # 🔹 Aplicar normalización (NO rompe nada)
+        # 🔹 Aplicar normalización mejorada
         reply = fix_format(reply)
 
         append_message(chat_id, "assistant", reply)
@@ -145,7 +148,7 @@ Devuelve SIEMPRE texto con saltos de línea reales y markdown válido.
             reply_full += token
             yield token
 
-    # 🔹 NORMALIZACIÓN FINAL (CLAVE)
+    # 🔹 NORMALIZACIÓN FINAL (CLAVE REAL)
     reply_full = fix_format(reply_full)
     
-    append_message(chat_id, "assistant", reply_full) 
+    append_message(chat_id, "assistant", reply_full)
