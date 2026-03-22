@@ -45,18 +45,28 @@ def generate_reply(chat_id: str, message: str) -> str:
                 "role": "system",
                 "content": NOVA_SYSTEM_PROMPT + """
 
-FORMATO OBLIGATORIO:
+FORMATO ESTRICTO OBLIGATORIO (MARKDOWN REAL):
 
-- Usa saltos de línea reales entre cada punto
-- Cada elemento de lista debe ir en su propia línea
-- Separa párrafos con líneas en blanco
-- No escribas múltiples puntos en una sola línea
-- Usa markdown limpio (listas, negritas, títulos)
+- Cada título en su propia línea
+- Cada subtítulo en su propia línea
+- Cada punto de lista en una línea nueva
+- Usa listas reales con guiones:
 
-IMPORTANTE:
-Nunca devuelvas texto en bloque continuo.
-Siempre estructura la respuesta en líneas separadas.
+    - punto uno
+    - punto dos
+    - punto tres
+
+- Separa párrafos con una línea en blanco
+
+PROHIBIDO:
+- usar " - " en la misma línea para separar ideas
+- escribir texto continuo con símbolos
+- juntar títulos y texto en la misma línea
+
+RESPUESTA:
+Devuelve SIEMPRE texto con saltos de línea reales y markdown válido.
 """
+                
             },
             *history
         ]
@@ -94,18 +104,28 @@ def generate_reply_stream(chat_id: str, message: str):
             "role": "system",
             "content": NOVA_SYSTEM_PROMPT + """
 
-FORMATO OBLIGATORIO:
+FORMATO ESTRICTO OBLIGATORIO (MARKDOWN REAL):
 
-- Usa saltos de línea reales entre cada punto
-- Cada elemento de lista debe ir en su propia línea
-- Separa párrafos con líneas en blanco
-- No escribas múltiples puntos en una sola línea
-- Usa markdown limpio (listas, negritas, títulos)
+- Cada título en su propia línea
+- Cada subtítulo en su propia línea
+- Cada punto de lista en una línea nueva
+- Usa listas reales con guiones:
 
-IMPORTANTE:
-Nunca devuelvas texto en bloque continuo.
-Siempre estructura la respuesta en líneas separadas.
+  - punto uno
+  - punto dos
+  - punto tres
+
+- Separa párrafos con una línea en blanco
+
+PROHIBIDO:
+- usar " - " en la misma línea para separar ideas
+- escribir texto continuo con símbolos
+- juntar títulos y texto en la misma línea
+
+RESPUESTA:
+Devuelve SIEMPRE texto con saltos de línea reales y markdown válido.
 """
+
         },
         *history
     ]
