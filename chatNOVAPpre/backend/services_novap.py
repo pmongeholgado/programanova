@@ -128,4 +128,7 @@ Siempre estructura la respuesta en líneas separadas.
     # 🔹 NORMALIZACIÓN FINAL (CLAVE)
     reply_full = fix_format(reply_full)
 
-    append_message(chat_id, "assistant", reply_full)
+    reply_full = reply_full.replace(" - ", "\n- ")
+    reply_full = reply_full.replace("###", "\n\n### ")
+
+    append_message(chat_id, "assistant", reply_full) 
