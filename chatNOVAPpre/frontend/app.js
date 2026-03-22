@@ -94,7 +94,12 @@ function scrollMessagesToBottom() {
 function addMessageToDOM(text, sender) {
   const div = document.createElement("div");
   div.classList.add("message", sender);
-  div.innerHTML = marked.parse(normalizeText(text));
+  const fixedText = normalizeText(text)
+    .replace(/---/g, "\n\n")
+    .replace(/###/g, "\n\n### ")
+    .replace(/- /g, "\n- ");
+  
+  div.innerHTML = formatText(fixedText);
 
   messagesEl.appendChild(div);
   scrollMessagesToBottom();
@@ -265,7 +270,12 @@ async function sendMessage() {
         typingStopped = true;
       }
 
-      messageDiv.innerHTML = formatText(normalizeText(resultText));
+      const fixedStreamText = normalizeText(resultText)
+        .replace(/---/g, "\n\n")
+        .replace(/###/g, "\n\n### ")
+        .replace(/- /g, "\n- ");
+
+      messageDiv.innerHTML = formatText(fixedStreamText);
       messageDiv.style.opacity = "1";
       scrollMessagesToBottom();
     }
