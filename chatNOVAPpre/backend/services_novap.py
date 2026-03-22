@@ -123,7 +123,9 @@ Siempre estructura la respuesta en líneas separadas.
         if chunk.choices[0].delta.content:
             token = chunk.choices[0].delta.content
             reply_full += token
-            yield token
+
+            formatted = fix_format(reply_full)
+            yield formatted
 
     # 🔹 NORMALIZACIÓN FINAL (CLAVE)
     reply_full = fix_format(reply_full)
