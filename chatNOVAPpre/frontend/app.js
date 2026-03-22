@@ -94,7 +94,7 @@ function scrollMessagesToBottom() {
 function addMessageToDOM(text, sender) {
   const div = document.createElement("div");
   div.classList.add("message", sender);
-  div.innerHTML = formatText(normalizeText(text));
+  div.innerHTML = marked.parse(normalizeText(text));
 
   messagesEl.appendChild(div);
   scrollMessagesToBottom();
