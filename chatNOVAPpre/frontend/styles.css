@@ -108,6 +108,22 @@ body {
   overflow-wrap: anywhere;
 }
 
+.message h1,
+.message h2,
+.message h3 {
+  margin-top: 12px;
+  margin-bottom: 6px;
+}
+
+.message ul {
+  margin-left: 16px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.message li {
+  margin-bottom: 4px;
+}
 /* BOT */
 .bot {
   background: #1f2a44;
