@@ -54,12 +54,10 @@ function loadState() {
 function formatText(text) {
   if (!text) return "";
 
-  // Usa marked si está disponible
   if (window.marked && typeof window.marked.parse === "function") {
     return window.marked.parse(text);
   }
 
-  // Fallback seguro y simple si marked no cargó
   return text
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -72,17 +70,13 @@ function normalizeText(text) {
 
   let t = text;
 
-  // separar listas tipo "1. texto 2. texto"
   t = t.replace(/(\d+\.\s)/g, "\n$1");
-
-  // separar frases largas pegadas
   t = t.replace(/([a-zA-Z0-9])\.\s+(?=[A-ZÁÉÍÓÚÑ0-9])/g, "$1.\n");
-
-  // limpiar dobles saltos
   t = t.replace(/\n{2,}/g, "\n\n");
 
   return t.trim();
 }
+
 /* ---------- UI ---------- */
 
 function scrollMessagesToBottom() {
@@ -91,15 +85,12 @@ function scrollMessagesToBottom() {
   });
 }
 
+/* 🔥 CAMBIO 1 — render limpio */
 function addMessageToDOM(text, sender) {
   const div = document.createElement("div");
   div.classList.add("message", sender);
-  const fixedText = normalizeText(text)
-    .replace(/---/g, "\n\n")
-    .replace(/###/g, "\n\n### ")
-    .replace(/- /g, "\n- ");
-  
-  div.innerHTML = formatText(fixedText);
+
+  div.innerHTML = formatText(text); // 🔥 SIN normalize
 
   messagesEl.appendChild(div);
   scrollMessagesToBottom();
@@ -219,10 +210,7 @@ async function sendMessage() {
 
   isSending = true;
 
-  chat.messages.push({
-    text,
-    sender: "user"
-  });
+  chat.messages.push({ text, sender: "user" });
 
   if (chat.title === "Nueva conversación") {
     chat.title = text.substring(0, 30);
@@ -270,22 +258,17 @@ async function sendMessage() {
         typingStopped = true;
       }
 
-      const fixedStreamText = normalizeText(resultText)
-        .replace(/---/g, "\n\n")
-        .replace(/###/g, "\n\n### ")
-        .replace(/- /g, "\n- ");
+      /* 🔥 CAMBIO 2 — render limpio streaming */
+      messageDiv.innerHTML = formatText(resultText);
 
-      messageDiv.innerHTML = formatText(fixedStreamText);
       messageDiv.style.opacity = "1";
       scrollMessagesToBottom();
     }
 
     clearInterval(typingInterval);
 
-    chat.messages.push({
-      text: resultText,
-      sender: "bot"
-    });
+    chat.messages.push({ text: resultText, sender: "bot" });
+
   } catch (err) {
     clearInterval(typingInterval);
     messageDiv.textContent = "❌ Error conectando con NOVA";
