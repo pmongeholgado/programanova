@@ -4,7 +4,7 @@ from openai import OpenAI
 from backend.nova_identity import NOVA_SYSTEM_PROMPT
 from backend.memory_store import get_history, append_message
 from backend.config_novap import OPENAI_API_KEY, DEFAULT_MODEL, DEFAULT_TEMPERATURE
-
+    
 # 🔹 crear cliente IA
 client = OpenAI(api_key=OPENAI_API_KEY)
 
@@ -127,8 +127,5 @@ Siempre estructura la respuesta en líneas separadas.
 
     # 🔹 NORMALIZACIÓN FINAL (CLAVE)
     reply_full = fix_format(reply_full)
-
-    reply_full = reply_full.replace(" - ", "\n- ")
-    reply_full = reply_full.replace("###", "\n\n### ")
-
+    
     append_message(chat_id, "assistant", reply_full) 
