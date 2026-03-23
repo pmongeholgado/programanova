@@ -246,29 +246,31 @@ async function sendMessage() {
     let resultText = "";
     let typingStopped = false;
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
 
-      const chunk = decoder.decode(value, { stream: true });
-      resultText += chunk;
+  const chunk = decoder.decode(value, { stream: true });
+  resultText += chunk;
 
-      if (!typingStopped) {
-        clearInterval(typingInterval);
-        typingStopped = true;
-      }
-
-      /* 🔥 CAMBIO 2 — render limpio streaming */
-      messageDiv.innerHTML = formatText(resultText);
-
-      messageDiv.style.opacity = "1";
-      scrollMessagesToBottom();
-    }
-
+  if (!typingStopped) {
     clearInterval(typingInterval);
+    typingStopped = true;
+  }
+}
 
-    chat.messages.push({ text: resultText, sender: "bot" });
+// 👉 AQUÍ YA FUERA DEL WHILE (IMPORTANTE)
 
+messageDiv.innerHTML = formatText(resultText);
+messageDiv.style.opacity = "1";
+scrollMessagesToBottom();
+
+clearInterval(typingInterval);
+
+chat.messages.push({
+  text: resultText,
+  sender: "bot"
+});  
   } catch (err) {
     clearInterval(typingInterval);
     messageDiv.textContent = "❌ Error conectando con NOVA";
