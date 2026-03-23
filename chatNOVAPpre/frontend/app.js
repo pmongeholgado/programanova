@@ -90,7 +90,7 @@ function addMessageToDOM(text, sender) {
   const div = document.createElement("div");
   div.classList.add("message", sender);
 
-  div.textContent = text;
+  div.innerHTML = formatText(text);
 
   messagesEl.appendChild(div);
   scrollMessagesToBottom();
@@ -261,7 +261,9 @@ while (true) {
 
 // 👉 AQUÍ YA FUERA DEL WHILE (IMPORTANTE)
 
-messageDiv.textContent = resultText;
+const html = formatText(resultText);   // 🔥 USAMOS MARKED
+messageDiv.innerHTML = html;           // 🔥 RENDER HTML REAL
+
 messageDiv.style.opacity = "1";
 scrollMessagesToBottom();
 
@@ -270,7 +272,8 @@ clearInterval(typingInterval);
 chat.messages.push({
   text: resultText,
   sender: "bot"
-});  
+});
+    
   } catch (err) {
     clearInterval(typingInterval);
     messageDiv.textContent = "❌ Error conectando con NOVA";
