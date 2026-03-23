@@ -82,6 +82,9 @@ Devuelve SIEMPRE texto con saltos de línea reales y markdown válido.
 
         reply = response.choices[0].message.content.strip()
 
+        reply = reply.replace(" - ", "\n- ")
+        reply = reply.replace(". ", ".\n\n")
+
         # 🔹 Aplicar normalización mejorada
         reply = fix_format(reply)
 
@@ -146,7 +149,7 @@ Devuelve SIEMPRE texto con saltos de línea reales y markdown válido.
         if chunk.choices[0].delta.content:
             token = chunk.choices[0].delta.content
             reply_full += token
-            formatted = fix_format(reply_full)
+            
             yield formatted
 
     # 🔹 NORMALIZACIÓN FINAL (CLAVE REAL)
