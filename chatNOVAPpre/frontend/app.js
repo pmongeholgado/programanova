@@ -90,7 +90,7 @@ function addMessageToDOM(text, sender) {
   const div = document.createElement("div");
   div.classList.add("message", sender);
 
-  div.innerHTML = formatText(text); // 🔥 SIN normalize
+  div.textContent = text;
 
   messagesEl.appendChild(div);
   scrollMessagesToBottom();
@@ -261,7 +261,7 @@ while (true) {
 
 // 👉 AQUÍ YA FUERA DEL WHILE (IMPORTANTE)
 
-messageDiv.innerHTML = formatText(resultText);
+messageDiv.textContent = resultText;
 messageDiv.style.opacity = "1";
 scrollMessagesToBottom();
 
