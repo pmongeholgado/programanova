@@ -171,3 +171,111 @@ body {
 .input-area button:hover {
   background: #3b7cff;
 }
+/* ================= MARKDOWN AVANZADO ================= */
+
+/* Párrafos */
+.message p {
+  margin-bottom: 12px;
+  line-height: 1.6;
+  color: #d1d1e0;
+}
+
+/* Negritas */
+.message strong {
+  color: #00d2ff;
+  font-weight: 700;
+}
+
+/* Listas mejoradas */
+.message ul,
+.message ol {
+  margin-left: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.message li {
+  margin-bottom: 6px;
+}
+
+/* Citas */
+.message blockquote {
+  border-left: 4px solid #00d2ff;
+  background-color: rgba(0, 210, 255, 0.05);
+  padding: 10px 14px;
+  margin: 12px 0;
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  color: #a0a0b0;
+}
+
+/* Código */
+.message code {
+  background-color: #2a2a3c;
+  color: #ff79c6;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+/* ================= MARKDOWN PRO (NOVA&PABLO FINAL) ================= */
+
+/* 👉 SOLO BOT (IA) — más control visual */
+.message.bot p {
+  margin-bottom: 14px;
+  line-height: 1.7;
+}
+
+.message.bot h1,
+.message.bot h2,
+.message.bot h3 {
+  color: #ffffff;
+  margin-top: 18px;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.message.bot ul,
+.message.bot ol {
+  margin-left: 22px;
+  margin-top: 10px;
+  margin-bottom: 14px;
+}
+
+.message.bot li {
+  margin-bottom: 6px;
+}
+
+/* 👉 Espaciado entre bloques Markdown */
+.message.bot > * + * {
+  margin-top: 8px;
+}
+
+/* 👉 Mejor lectura de párrafos largos */
+.message.bot {
+  line-height: 1.65;
+}
+
+/* 👉 Código más visible */
+.message.bot code {
+  background-color: #2a2a3c;
+  color: #ff79c6;
+  padding: 3px 7px;
+  border-radius: 5px;
+}
+
+/* 👉 Bloques de código (si aparecen) */
+.message.bot pre {
+  background-color: #1a1a2e;
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 12px 0;
+}
+
+/* 👉 Separación visual natural */
+.message.bot br {
+  display: block;
+  margin-top: 6px;
+}
