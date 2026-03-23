@@ -1,42 +1,14 @@
-# backend/services_novap.py
-
 from openai import OpenAI
 from backend.nova_identity import NOVA_SYSTEM_PROMPT
 from backend.memory_store import get_history, append_message
 from backend.config_novap import OPENAI_API_KEY, DEFAULT_MODEL, DEFAULT_TEMPERATURE
-    
-# 🔹 crear cliente IA
+
 client = OpenAI(api_key=OPENAI_API_KEY)
 
-
-# 🔥 NORMALIZADOR MEJORADO (CLAVE REAL)
-def fix_format(text: str) -> str:
-    import re
-
-    t = text.strip()
-
-    # 🔥 Separar frases en párrafos reales
-    t = re.sub(r'([a-z0-9])\.\s+(?=[A-ZÁÉÍÓÚÑ])', r'\1.\n\n', t)
-
-    # 🔥 Convertir " - " en lista vertical
-    t = re.sub(r'\s-\s', '\n- ', t)
-
-    # 🔥 Separar listas numeradas
-    t = re.sub(r'(\d+\.\s)', r'\n\1', t)
-
-    # 🔥 Separar títulos si vienen pegados
-    t = re.sub(r'(#{1,6}\s*)', r'\n\n\1', t)
-
-    # 🔥 Limpiar saltos duplicados
-    t = re.sub(r'\n{3,}', '\n\n', t)
-
-    return t.strip()
-
+# 🔥 HEMOS ELIMINADO LA FUNCIÓN fix_format POR COMPLETO.
+# Ya no machacamos el texto, dejamos que OpenAI envíe el Markdown puro.
 
 def generate_reply(chat_id: str, message: str) -> str:
-    """
-    Genera respuesta de NOVA usando memoria persistente.
-    """
 
     try:
         append_message(chat_id, "user", message)
@@ -48,28 +20,28 @@ def generate_reply(chat_id: str, message: str) -> str:
                 "role": "system",
                 "content": NOVA_SYSTEM_PROMPT + """
 
-FORMATO ESTRICTO OBLIGATORIO (MARKDOWN REAL):
+FORMATO OBLIGATORIO (ESTRICTO):
 
-- Cada título en su propia línea
-- Cada subtítulo en su propia línea
-- Cada punto de lista en una línea nueva
-- Usa listas reales con guiones:
+Responde SIEMPRE en Markdown real.
 
-    - punto uno
-    - punto dos
-    - punto tres
+Ejemplo de estructura obligatoria:
 
-- Separa párrafos con una línea en blanco
+### Título principal
 
-PROHIBIDO:
-- usar " - " en la misma línea para separar ideas
-- escribir texto continuo con símbolos
-- juntar títulos y texto en la misma línea
+Texto del párrafo.
 
-RESPUESTA:
-Devuelve SIEMPRE texto con saltos de línea reales y markdown válido.
+### Sección
+
+- Punto uno
+- Punto dos
+- Punto tres
+
+Reglas obligatorias:
+- Usa saltos de línea reales (\n)
+- Usa listas con "-"
+- Separa párrafos con línea en blanco
+- NO escribas texto en una sola línea
 """
-                
             },
             *history
         ]
@@ -82,12 +54,7 @@ Devuelve SIEMPRE texto con saltos de línea reales y markdown válido.
 
         reply = response.choices[0].message.content.strip()
 
-        reply = reply.replace(" - ", "\n- ")
-        reply = reply.replace(". ", ".\n\n")
-
-        # 🔹 Aplicar normalización mejorada
-        reply = fix_format(reply)
-
+        # 🔥 El texto va puro. Ya no hay fix_format.
         append_message(chat_id, "assistant", reply)
 
         return reply
@@ -97,9 +64,6 @@ Devuelve SIEMPRE texto con saltos de línea reales y markdown válido.
 
 
 def generate_reply_stream(chat_id: str, message: str):
-    """
-    Genera respuesta de NOVA en streaming.
-    """
 
     append_message(chat_id, "user", message)
 
@@ -110,28 +74,23 @@ def generate_reply_stream(chat_id: str, message: str):
             "role": "system",
             "content": NOVA_SYSTEM_PROMPT + """
 
-FORMATO ESTRICTO OBLIGATORIO (MARKDOWN REAL):
+FORMATO OBLIGATORIO (ESTRICTO):
 
-- Cada título en su propia línea
-- Cada subtítulo en su propia línea
-- Cada punto de lista en una línea nueva
-- Usa listas reales con guiones:
+Responde SIEMPRE en Markdown real.
 
-  - punto uno
-  - punto dos
-  - punto tres
+Ejemplo:
 
-- Separa párrafos con una línea en blanco
+### Título
 
-PROHIBIDO:
-- usar " - " en la misma línea para separar ideas
-- escribir texto continuo con símbolos
-- juntar títulos y texto en la misma línea
+Texto.
 
-RESPUESTA:
-Devuelve SIEMPRE texto con saltos de línea reales y markdown válido.
+- Punto uno
+- Punto dos
+
+Reglas:
+- Saltos de línea reales
+- Nada en una sola línea
 """
-
         },
         *history
     ]
@@ -149,10 +108,7 @@ Devuelve SIEMPRE texto con saltos de línea reales y markdown válido.
         if chunk.choices[0].delta.content:
             token = chunk.choices[0].delta.content
             reply_full += token
-            
-            yield formatted
+            yield token  # 🔥 streaming limpio
 
-    # 🔹 NORMALIZACIÓN FINAL (CLAVE REAL)
-    reply_full = fix_format(reply_full)
-    
+    # 🔥 El texto se guarda en la memoria puro. Ya no hay fix_format.
     append_message(chat_id, "assistant", reply_full)
