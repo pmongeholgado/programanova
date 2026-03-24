@@ -1,1 +1,2 @@
-A
+[project.scripts]
+app = "backend.services_novap:app"
