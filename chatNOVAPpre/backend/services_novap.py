@@ -5,8 +5,23 @@ from backend.config_novap import OPENAI_API_KEY, DEFAULT_MODEL, DEFAULT_TEMPERAT
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
-# 🔥 HEMOS ELIMINADO LA FUNCIÓN fix_format POR COMPLETO.
-# Ya no machacamos el texto, dejamos que OpenAI envíe el Markdown puro.
+# 🔥 NUEVA CAPA SUAVE (NO ROMPE NADA)
+def enforce_structure_soft(text: str) -> str:
+    import re
+
+    t = text.strip()
+
+    # 👉 listas en vertical si vienen mal
+    t = re.sub(r'\s-\s', '\n- ', t)
+
+    # 👉 asegurar salto antes de títulos
+    t = re.sub(r'(#{1,6}\s)', r'\n\n\1', t)
+
+    # 👉 limpiar saltos excesivos
+    t = re.sub(r'\n{3,}', '\n\n', t)
+
+    return t.strip()
+
 
 def generate_reply(chat_id: str, message: str) -> str:
 
@@ -54,7 +69,9 @@ Reglas obligatorias:
 
         reply = response.choices[0].message.content.strip()
 
-        # 🔥 El texto va puro. Ya no hay fix_format.
+        # 🔥 SOLO AÑADIMOS CONTROL SUAVE (NO ROMPE NADA)
+        reply = enforce_structure_soft(reply)
+
         append_message(chat_id, "assistant", reply)
 
         return reply
@@ -110,5 +127,7 @@ Reglas:
             reply_full += token
             yield token  # 🔥 streaming limpio
 
-    # 🔥 El texto se guarda en la memoria puro. Ya no hay fix_format.
+    # 🔥 SOLO AQUÍ AL FINAL (NO TOCA STREAMING)
+    reply_full = enforce_structure_soft(reply_full)
+
     append_message(chat_id, "assistant", reply_full)
