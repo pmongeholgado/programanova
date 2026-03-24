@@ -49,32 +49,44 @@ function loadState() {
   }
 }
 
-/* ---------- FORMATEO REAL DE TEXTO ---------- */
+/* ---------- MARKDOWN / FORMATEO REAL (CIRUGÍA PRO) ---------- */
+
+if (window.marked && typeof window.marked.setOptions === "function") {
+  window.marked.setOptions({
+    gfm: true,
+    breaks: true,
+    // Aquí es donde la magia del color ocurre de forma nativa y eficiente
+    highlight: function (code, lang) {
+      if (window.hljs) {
+        const language = window.hljs.getLanguage(lang) ? lang : 'plaintext';
+        return window.hljs.highlight(code, { language }).value;
+      }
+      return code;
+    }
+  });
+}
 
 function formatText(text) {
   if (!text) return "";
 
-  if (window.marked && typeof window.marked.parse === "function") {
-    return window.marked.parse(text);
+  // Si marked no está cargado, fallback seguro
+  if (!window.marked || typeof window.marked.parse !== "function") {
+    return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\n/g, "<br>");
   }
 
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/\n/g, "<br>");
-}
+  // 1. Markdown -> HTML con Highlight integrado
+  let html = window.marked.parse(text);
 
-function normalizeText(text) {
-  if (!text) return "";
+  // 2. Sanitizar para máxima seguridad en PLATAFORMA NOVA
+  if (window.DOMPurify && typeof window.DOMPurify.sanitize === "function") {
+    html = window.DOMPurify.sanitize(html);
+  }
 
-  let t = text;
-
-  t = t.replace(/(\d+\.\s)/g, "\n$1");
-  t = t.replace(/([a-zA-Z0-9])\.\s+(?=[A-ZÁÉÍÓÚÑ0-9])/g, "$1.\n");
-  t = t.replace(/\n{2,}/g, "\n\n");
-
-  return t.trim();
+  return html;
 }
 
 /* ---------- UI ---------- */
@@ -85,12 +97,17 @@ function scrollMessagesToBottom() {
   });
 }
 
-/* 🔥 CAMBIO 1 — render limpio */
 function addMessageToDOM(text, sender) {
   const div = document.createElement("div");
   div.classList.add("message", sender);
 
-  div.innerHTML = formatText(text);
+  // Usuario = texto plano
+  if (sender === "user") {
+    div.textContent = text;
+  } else {
+    // Bot = markdown renderizado
+    div.innerHTML = formatText(text);
+  }
 
   messagesEl.appendChild(div);
   scrollMessagesToBottom();
@@ -197,7 +214,7 @@ function deleteChat(id) {
   renderMessages();
 }
 
-/* ---------- ENVÍO ---------- */
+/* ---------- ENVÍO Y STREAMING REAL (CIRUGÍA PRO) ---------- */
 
 async function sendMessage() {
   if (isSending) return;
@@ -246,34 +263,31 @@ async function sendMessage() {
     let resultText = "";
     let typingStopped = false;
 
-while (true) {
-  const { done, value } = await reader.read();
-  if (done) break;
+    // AQUI ESTA LA MAGIA DEL STREAMING
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
 
-  const chunk = decoder.decode(value, { stream: true });
-  resultText += chunk;
+      // En cuanto llega el primer paquete, paramos la animación de espera
+      if (!typingStopped) {
+        clearInterval(typingInterval);
+        typingStopped = true;
+        messageDiv.style.opacity = "1";
+      }
 
-  if (!typingStopped) {
-    clearInterval(typingInterval);
-    typingStopped = true;
-  }
-}
+      const chunk = decoder.decode(value, { stream: true });
+      resultText += chunk;
 
-// 👉 AQUÍ YA FUERA DEL WHILE (IMPORTANTE)
+      // ACTUALIZAMOS EL DOM LETRA A LETRA EN TIEMPO REAL
+      messageDiv.innerHTML = formatText(resultText);
+      scrollMessagesToBottom();
+    }
 
-const html = formatText(resultText);   // 🔥 USAMOS MARKED
-messageDiv.innerHTML = html;           // 🔥 RENDER HTML REAL
-
-messageDiv.style.opacity = "1";
-scrollMessagesToBottom();
-
-clearInterval(typingInterval);
-
-chat.messages.push({
-  text: resultText,
-  sender: "bot"
-});
-    
+    // Guardamos el mensaje final en el historial
+    chat.messages.push({
+      text: resultText,
+      sender: "bot"
+    });
   } catch (err) {
     clearInterval(typingInterval);
     messageDiv.textContent = "❌ Error conectando con NOVA";
@@ -293,7 +307,8 @@ sendBtn.addEventListener("click", (e) => {
 });
 
 inputEl.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
+  // Permite saltos de línea con Shift+Enter. Solo envía con Enter solo.
+  if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
     sendMessage();
   }
