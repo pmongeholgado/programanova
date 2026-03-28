@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OORAV | La Exclusiva Anti-Red Social</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        /* MOVIMIENTO DE LAS ONDAS DE FONDO */
+        @keyframes fluirOndas {
+            0% { stroke-dashoffset: 1000; opacity: 0.3; }
+            50% { opacity: 0.6; }
+            100% { stroke-dashoffset: 0; opacity: 0.3; }
+        }
+        .background-wave path {
+            stroke-dasharray: 500;
+            animation: fluirOndas 10s linear infinite;
+        }
+
+        /* LATIDO DE LAS ONDAS CENTRALES DORADAS Y CIAN */
+        @keyframes ondasElegantes {
+            0% { transform: scale(0.5); opacity: 1; border-width: 3px; }
+            100% { transform: scale(3.5); opacity: 0; border-width: 0px; }
+        }
+        .onda-bella {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 100px; height: 100px;
+            margin-top: -50px; margin-left: -50px;
+            border: solid #d4af37;
+            border-radius: 50%;
+            animation: ondasElegantes 4s infinite cubic-bezier(0.21, 0.53, 0.56, 0.8);
+            pointer-events: none;
+            z-index: 5;
+        }
+        .onda-bella.cyan { border-color: #00f3ff; }
+        .onda-bella.d1 { animation-delay: 0s; }
+        .onda-bella.d2 { animation-delay: 1.3s; }
+        .onda-bella.d3 { animation-delay: 2.6s; }
+        
+        /* Aseguramos que todas las portadas ocupen el 100% en la red */
+        .screen { display: none; width: 100%; height: 100vh; overflow-x: hidden; background: #050505; color: #fff; font-family: 'Segoe UI', sans-serif; }
+        .screen.active { display: block; }
+
+        /* Estilos base OORAV */
+        .content-wrapper { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-align: center; width: 100%; }
+        .btn-empezar { background: rgba(10, 10, 12, 0.9); border: 1px solid #d4af37; color: #d4af37; padding: 16px 40px; font-size: 1rem; letter-spacing: 3px; border-radius: 40px; cursor: pointer; box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); text-transform: uppercase; font-weight: 600; transition: all 0.3s; }
+        .btn-empezar.cyan { border-color: #00f3ff; color: #00f3ff; box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); }
+        .omega-glass-card { background: rgba(20, 20, 25, 0.8); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 20px; padding: 30px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px); }
+        .avatar-circle { position: relative; border-radius: 50%; width: 100%; aspect-ratio: 1; border: 2px solid #555; cursor: pointer; overflow: hidden; transition: 0.3s; }
+        .avatar-circle.active { border-color: #00f3ff; box-shadow: 0 0 15px rgba(0, 243, 255, 0.5); }
+        .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-circle:not(.active) img { filter: brightness(0.6); }
+    </style>
+</head>
+<body>
+    <main id="app-container">
+        
+        <audio id="audio-engine" loop preload="auto" style="display:none;">
+            <source src="05_AUDIO_AMBIENT/plant_01_ambient.mp3" type="audio/mpeg">
+        </audio>
+
+        <div id="spotify-widget" style="position: fixed; bottom: 20px; left: 20px; width: 280px; height: 80px; z-index: 9999; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.8); border: 1px solid rgba(212,175,55,0.3);">
+            <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1DWZeKCadgRdKQ?utm_source=generator&theme=0" width="100%" height="80" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" style="pointer-events: auto;"></iframe>
+        </div>
+
+        <section id="screen-1" class="screen active">
+            <svg class="background-wave" viewBox="0 0 1000 300" preserveAspectRatio="none" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0.15; z-index: 1; pointer-events: none;">
+                <path d="M0,150 C250,250 350,50 500,150 C650,250 750,50 1000,150" stroke="#d4af37" stroke-width="3" fill="none"/>
+                <path d="M0,150 C200,80 300,220 500,150 C700,80 800,220 1000,150" stroke="#00f3ff" stroke-width="1.5" fill="none"/>
+            </svg>
+            <div class="content-wrapper">
+                <div style="position: relative; width: 260px; height: 260px; margin-bottom: 50px; display: flex; align-items: center; justify-content: center;">
+                    <div class="onda-bella d1"></div>
+                    <div class="onda-bella d2"></div>
+                    <div class="onda-bella d3"></div>
+                    <img src="anagrama_oorav.png" alt="OORAV Anagrama" style="position: relative; z-index: 10; width: 240px; height: 240px; object-fit: contain; mix-blend-mode: screen;">
+                </div>
+                <button onclick="iniciarOORAV()" class="btn-empezar">EMPEZAR</button>
+            </div>
+        </section>
+
+        <section id="screen-2" class="screen">
+            <div class="content-wrapper" style="padding-top: 50px; justify-content: flex-start;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 40px; margin-top: 40px;">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#d4af37" stroke-width="4"/>
+                        <path d="M50 25 L60 45 L80 45 L65 60 L70 80 L50 68 L30 80 L35 60 L20 45 L40 45 Z" fill="none" stroke="#d4af37" stroke-width="4"/>
+                    </svg>
+                    <span style="font-size: 1.5rem; letter-spacing: 6px; color: #d4af37;">OORAV</span>
+                </div>
+                <h2 style="font-size: 1rem; letter-spacing: 3px; color: #fff; margin-bottom: 30px; text-transform: uppercase;">SELECCIONA TU PERFIL</h2>
+                
+                <div class="avatar-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; width: 80%; max-width: 320px;">
+                    <div class="avatar-circle active" onclick="selectAvatar(this, 'm1')">
+                        <img src="./avatar_m1.png" alt="Avatar M1">
+                    </div>
+                    <div class="avatar-circle" onclick="selectAvatar(this, 'm2')">
+                        <img src="./avatar_m2.png" alt="Avatar M2">
+                    </div>
+                    <div class="avatar-circle" onclick="selectAvatar(this, 'm3')">
+                        <img src="./avatar_m3.png" alt="Avatar M3">
+                    </div>
+                    <div class="avatar-circle" onclick="selectAvatar(this, 'm4')">
+                        <img src="./avatar_m4.png" alt="Avatar M4">
+                    </div>
+                </div>
+                
+                <button onclick="navigate(3)" class="btn-empezar cyan" style="margin-top: 60px;">CONFIRMAR PERFIL</button>
+            </div>
+        </section>
+
+        <section id="screen-3" class="screen">
+            <svg class="background-wave" viewBox="0 0 1000 300" preserveAspectRatio="none" style="position: absolute; width: 100%; height: 100%; top: 30%; left: 0; opacity: 0.15; z-index: 1; pointer-events: none;">
+                <path d="M0,150 C300,50 400,250 600,150 C800,50 900,250 1000,150" stroke="#00f3ff" stroke-width="4" fill="none"/>
+            </svg>
+            <div class="content-wrapper">
+                <div class="omega-glass-card" style="width: 85%; max-width: 350px; text-align: center;">
+                    <div style="position: relative; width: 120px; height: 120px; margin: 0 auto 30px auto; border-radius: 50%; padding: 5px; background: linear-gradient(45deg, #d4af37, #00f3ff);">
+                        <img id="display-avatar-3" src="./avatar_m1.png" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 3px solid #111;">
+                    </div>
+                    <h2 style="color: #fff; letter-spacing: 3px; font-size: 1.2rem; margin-bottom: 10px;">USUARIO_OMEGA</h2>
+                    <p style="color: #00f3ff; font-size: 0.8rem; letter-spacing: 2px;">🎧 TECHNO CHILL VIBE</p>
+                </div>
+                <button onclick="navigate(4)" class="btn-empezar" style="margin-top: 40px;">ACTIVAR VORTEX</button>
+            </div>
+        </section>
+
+        <section id="screen-4" class="screen">
+            <div class="content-wrapper">
+                <div style="position: relative; width: 280px; height: 150px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 50px;">
+                    <div style="width: 90px; height: 90px; border-radius: 50%; border: 2px solid #00f3ff; overflow: hidden; box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);">
+                        <img id="display-avatar-4" src="./avatar_m1.png" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div style="flex: 1; height: 2px; background: linear-gradient(90deg, #00f3ff, #d4af37); margin: 0 15px; position: relative;">
+                        <div style="position: absolute; top: -4px; left: 50%; width: 10px; height: 10px; background: #fff; border-radius: 50%; box-shadow: 0 0 10px #fff;"></div>
+                    </div>
+                    <div style="width: 90px; height: 90px; border-radius: 50%; border: 2px solid #d4af37; overflow: hidden; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); background: #222;">
+                        <img src="anagrama_oorav.png" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.7;">
+                    </div>
+                </div>
+                <h2 style="color: #fff; font-size: 1.4rem; letter-spacing: 4px; margin-bottom: 15px;">CONEXIÓN ESTABLECIDA</h2>
+                <p style="color: #00f3ff; font-size: 0.85rem; letter-spacing: 2px;">Vibe Match: Techno Chill (1 Hora Activa)</p>
+                <button onclick="navigate(5)" class="btn-empezar" style="margin-top: 50px;">ENVIAR MENSAJE</button>
+            </div>
+        </section>
+
+        <section id="screen-5" class="screen">
+            <div class="content-wrapper" style="justify-content: flex-start; padding-top: 30px;">
+                <div class="omega-glass-card" style="display: flex; flex-direction: column; width: 90%; max-width: 400px; height: 65vh; padding: 0; overflow: hidden;">
+                    <div style="padding: 15px 20px; border-bottom: 1px solid rgba(212, 175, 55, 0.2); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5);">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <img id="display-avatar-5" src="./avatar_m1.png" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid #00f3ff;">
+                            <div style="text-align: left;">
+                                <h3 style="font-size: 0.9rem; color: #fff; margin: 0; letter-spacing: 1px;">CHAT OORAV</h3>
+                                <span style="font-size: 0.6rem; color: #d4af37; letter-spacing: 1px;">[1 Hora Activa]</span>
+                            </div>
+                        </div>
+                        <span id="oorav-timer" style="color: #00f3ff; font-size: 1.2rem; font-weight: bold; letter-spacing: 2px;">60:00</span>
+                    </div>
+                    
+                    <div id="oorav-chat-box" style="flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px;">
+                        <div style="align-self: flex-start; background: rgba(0, 243, 255, 0.1); border-left: 2px solid #00f3ff; padding: 10px 15px; border-radius: 8px 8px 8px 0; max-width: 80%; text-align: left; font-size: 0.85rem;">
+                            Conexión OORAV iniciada. El Vibe está sincronizado.
+                        </div>
+                    </div>
+                    
+                    <div style="padding: 15px; border-top: 1px solid rgba(212, 175, 55, 0.2); display: flex; gap: 10px; background: rgba(0,0,0,0.3);">
+                        <input type="text" id="oorav-chat-input" placeholder="Escribe tu mensaje..." onkeypress="verificarEnterChat(event)" style="flex: 1; background: transparent; border: 1px solid #555; color: #fff; padding: 12px 15px; border-radius: 20px; outline: none; font-family: 'Segoe UI', sans-serif;">
+                        <button onclick="enviarMensajeOORAV()" style="background: #d4af37; border: none; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer;">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="#000"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <button onclick="navigate(6)" class="btn-empezar cyan" style="margin-top: 30px; font-size: 0.8rem; padding: 12px 30px;">CREAR NUEVO VIBE</button>
+            </div>
+        </section>
+
+        <section id="screen-6" class="screen">
+            <div class="content-wrapper">
+                <div class="omega-glass-card" style="width: 85%; max-width: 350px;">
+                    <h2 style="color: #d4af37; letter-spacing: 3px; font-size: 1.3rem; margin-bottom: 40px;">CREA TU VIBE</h2>
+                    <div style="width: 100%; text-align: left;">
+                        <div style="margin-bottom: 30px;">
+                            <label style="color: #fff; font-size: 0.75rem; letter-spacing: 2px; display: block; margin-bottom: 10px;">AURA</label>
+                            <input type="range" min="1" max="100" value="70" style="width: 100%; accent-color: #d4af37;">
+                        </div>
+                        <div style="margin-bottom: 30px;">
+                            <label style="color: #fff; font-size: 0.75rem; letter-spacing: 2px; display: block; margin-bottom: 10px;">ENERGÍA</label>
+                            <input type="range" min="1" max="100" value="85" style="width: 100%; accent-color: #00f3ff;">
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <label style="color: #fff; font-size: 0.75rem; letter-spacing: 2px; display: block; margin-bottom: 10px;">SINTONÍA</label>
+                            <input type="range" min="1" max="100" value="40" style="width: 100%; accent-color: #d4af37;">
+                        </div>
+                    </div>
+                </div>
+                <button onclick="navigate(7)" class="btn-empezar" style="margin-top: 50px;">SINCRO OMEGA</button>
+            </div>
+        </section>
+
+        <section id="screen-7" class="screen">
+            <div class="content-wrapper">
+                <h2 style="color: #fff; font-size: 1.2rem; letter-spacing: 4px; margin-bottom: 60px;">VIBE ESTABLECIDO</h2>
+                <div style="position: relative; width: 220px; height: 220px; display: flex; align-items: center; justify-content: center; margin-bottom: 50px;">
+                    <div class="onda-bella cyan d1" style="width: 180px; height: 180px; margin-top: -90px; margin-left: -90px;"></div>
+                    <div class="onda-bella cyan d2" style="width: 180px; height: 180px; margin-top: -90px; margin-left: -90px;"></div>
+                    <span style="font-size: 4.5rem; color: #d4af37; font-weight: bold; text-shadow: 0 0 20px rgba(212, 175, 55, 0.6);">98%</span>
+                </div>
+                <p style="color: #00f3ff; font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase;">Sincronía Omega Detectada</p>
+                <button onclick="navigate(8)" class="btn-empezar cyan" style="margin-top: 60px;">ACCEDER AL VORTEX</button>
+            </div>
+        </section>
+
+        <section id="screen-8" class="screen">
+            <div class="content-wrapper" style="padding: 20px;">
+                <h1 style="color: #d4af37; font-size: 1.8rem; letter-spacing: 3px; margin-bottom: 30px; text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);">HAZTE OORAV PRO</h1>
+                
+                <div class="omega-glass-card" style="width: 90%; max-width: 380px; padding: 25px 20px; margin-bottom: 30px; border-color: #00f3ff; text-align: left;">
+                    <ul style="list-style: none; padding: 0; margin: 0; color: #fff; font-size: 0.9rem; line-height: 2.2;">
+                        <li style="letter-spacing: 1px;">• Vibe Persistente (24h+)</li>
+                        <li style="letter-spacing: 1px;">• IA Creativa Ilimitada (Badges Únicos)</li>
+                        <li style="letter-spacing: 1px;">• Modo Ghost y Boost Visual</li>
+                        <li style="letter-spacing: 1px;">• Chats Multitarea Ilimitados</li>
+                    </ul>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 380px;">
+                    <button onclick="navigate(9)" style="background: rgba(0,0,0,0.6); border: 1px solid #d4af37; border-radius: 15px; padding: 15px; color: #fff; cursor: pointer; display: flex; flex-direction: column; align-items: center; box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);">
+                        <span style="font-size: 0.95rem; font-weight: bold; letter-spacing: 2px;">PASE 24H - 0,99€</span>
+                        <span style="font-size: 0.7rem; color: #aaa; margin-top: 5px;">(Micro-Boost)</span>
+                    </button>
+                    <button onclick="navigate(9)" style="background: rgba(0,0,0,0.6); border: 1px solid #d4af37; border-radius: 15px; padding: 15px; color: #fff; cursor: pointer; display: flex; flex-direction: column; align-items: center; box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);">
+                        <span style="font-size: 0.95rem; font-weight: bold; letter-spacing: 2px;">MENSUAL - 4,99€</span>
+                        <span style="font-size: 0.7rem; color: #aaa; margin-top: 5px;">(Vibe Pro Flexible)</span>
+                    </button>
+                    <button onclick="navigate(9)" style="background: rgba(0,0,0,0.6); border: 2px solid #d4af37; border-radius: 15px; padding: 18px; color: #fff; cursor: pointer; display: flex; flex-direction: column; align-items: center; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);">
+                        <span style="font-size: 1rem; font-weight: bold; letter-spacing: 2px;">ANUAL - 39,99€</span>
+                        <span style="font-size: 0.7rem; color: #aaa; margin-top: 5px;">(Ahorro Máximo Pro)</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-9" class="screen">
+            <div class="content-wrapper">
+                <h2 style="color: #00f3ff; font-size: 1.5rem; letter-spacing: 4px; margin-bottom: 50px; text-transform: uppercase;">COMUNIDAD GLOBAL</h2>
+                
+                <div style="position: relative; width: 100%; max-width: 400px; height: 300px; margin-bottom: 40px;">
+                    <svg viewBox="0 0 400 300" style="width: 100%; height: 100%; opacity: 0.4;">
+                        <path d="M50,150 Q150,50 250,180 T380,100" fill="none" stroke="#d4af37" stroke-width="2"/>
+                        <circle cx="150" cy="95" r="5" fill="#00f3ff"/>
+                        <circle cx="280" cy="160" r="5" fill="#d4af37"/>
+                    </svg>
+                    
+                    <div style="position: absolute; top: 10%; left: 10%; text-align: left;">
+                        <span style="font-size: 0.6rem; color: #fff; letter-spacing: 2px; display: block;">CÁPSULAS</span>
+                        <span style="font-size: 2.2rem; color: #d4af37; font-weight: bold; text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);">14.2K</span>
+                    </div>
+                    <div style="position: absolute; bottom: 15%; right: 10%; text-align: right;">
+                        <span style="font-size: 0.6rem; color: #fff; letter-spacing: 2px; display: block;">VIBES</span>
+                        <span style="font-size: 2.2rem; color: #00f3ff; font-weight: bold; text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);">892</span>
+                    </div>
+                </div>
+
+                <button onclick="navigate(10)" class="btn-empezar">GENERAR INFORME FINAL</button>
+            </div>
+        </section>
+
+        <section id="screen-10" class="screen">
+            <div class="content-wrapper">
+                <div class="omega-glass-card" style="width: 85%; max-width: 380px; padding: 50px 30px; text-align: center; border: 2px solid #d4af37; box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);">
+                    <h2 style="color: #d4af37; font-size: 1.8rem; letter-spacing: 5px; margin-bottom: 10px;">DESTINO: ÉLITE</h2>
+                    <p style="color: #888; font-size: 0.75rem; letter-spacing: 3px; margin-bottom: 40px; text-transform: uppercase;">ID: #777-ALPHA</p>
+                    
+                    <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px;">
+                        <span style="display: block; color: #fff; font-size: 1.1rem; letter-spacing: 3px; margin-bottom: 10px;">MATCH DE ALMA</span>
+                        <span style="display: block; color: #00f3ff; font-size: 3rem; font-weight: bold; text-shadow: 0 0 20px rgba(0, 243, 255, 0.6);">99%</span>
+                    </div>
+                    
+                    <div style="margin-top: 30px; display: flex; justify-content: center;">
+                         <img id="display-avatar-10" src="./avatar_m1.png" style="width: 60px; height: 60px; border-radius: 50%; border: 2px solid #d4af37;">
+                    </div>
+                </div>
+                
+                <button onclick="navigate(1)" class="btn-empezar cyan" style="margin-top: 50px; padding: 12px 30px; font-size: 0.8rem;">REINICIAR BÚNKER</button>
+            </div>
+        </section>
+
+    </main>
+    
+    <script src="app.js"></script>
+    <script>
+        let intervaloRelojOORAV;
+        let selectedAvatarSrc = './avatar_m1.png';
+
+        function iniciarOORAV() {
+            const audio = document.getElementById('audio-engine');
+            if (audio) {
+                audio.volume = 0.5;
+                audio.play().catch(e => console.log("Audio play prevented by browser policy", e));
+            }
+            navigate(2);
+        }
+
+        function navigate(screenNum) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById('screen-' + screenNum);
+            if(target) target.classList.add('active');
+
+            if (screenNum === 5) {
+                activarRelojEfimeroOORAV(3600);
+            } else {
+                clearInterval(intervaloRelojOORAV);
+            }
+        }
+
+        function selectAvatar(element, avatarId) {
+            document.querySelectorAll('.avatar-circle').forEach(a => a.classList.remove('active'));
+            element.classList.add('active');
+            
+            selectedAvatarSrc = `./avatar_${avatarId}.png`;
+            
+            const avatarDisplays = [
+                document.getElementById('display-avatar-3'),
+                document.getElementById('display-avatar-4'),
+                document.getElementById('display-avatar-5'),
+                document.getElementById('display-avatar-10')
+            ];
+            
+            avatarDisplays.forEach(img => {
+                if(img) img.src = selectedAvatarSrc;
+            });
+        }
+
+        function activarRelojEfimeroOORAV(duracionSegundos) {
+            let tiempoRestante = duracionSegundos;
+            const displayReloj = document.getElementById('oorav-timer');
+            clearInterval(intervaloRelojOORAV);
+
+            intervaloRelojOORAV = setInterval(() => {
+                let minutos = Math.floor(tiempoRestante / 60);
+                let segundos = tiempoRestante % 60;
+                minutos = minutos < 10 ? "0" + minutos : minutos;
+                segundos = segundos < 10 ? "0" + segundos : segundos;
+                if(displayReloj) displayReloj.textContent = minutos + ":" + segundos;
+
+                if (--tiempoRestante < 0) {
+                    clearInterval(intervaloRelojOORAV);
+                    if(displayReloj) displayReloj.textContent = "00:00";
+                }
+            }, 1000);
+        }
+
+        function enviarMensajeOORAV() {
+            const input = document.getElementById('oorav-chat-input');
+            const chatBox = document.getElementById('oorav-chat-box');
+            if (!input || !chatBox) return;
+            
+            const texto = input.value.trim();
+            if (texto !== "") {
+                const userMsg = document.createElement('div');
+                userMsg.style.cssText = "align-self: flex-end; background: rgba(212, 175, 55, 0.1); border-right: 2px solid #d4af37; padding: 10px 15px; border-radius: 8px 8px 0 8px; max-width: 80%; text-align: right; font-size: 0.85rem; color: #fff;";
+                userMsg.textContent = texto;
+                chatBox.appendChild(userMsg);
+                input.value = "";
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+                setTimeout(() => {
+                    const iaMsg = document.createElement('div');
+                    iaMsg.style.cssText = "align-self: flex-start; background: rgba(0, 243, 255, 0.1); border-left: 2px solid #00f3ff; padding: 10px 15px; border-radius: 8px 8px 8px 0; max-width: 80%; text-align: left; font-size: 0.85rem; color: #fff;";
+                    iaMsg.textContent = "Mensaje procesado por OORAV. Vibe actualizado.";
+                    chatBox.appendChild(iaMsg);
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }, 1000);
+            }
+        }
+
+        function verificarEnterChat(event) {
+            if (event.key === "Enter") enviarMensajeOORAV();
+        }
+    </script>
+</body>
+</html>
