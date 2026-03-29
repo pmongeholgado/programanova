@@ -1,0 +1,16 @@
+services:
+  boots-duplicativos:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+    container_name: altegrios_core
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./brain/modelos:/app/brain/modelos
+      - ./memory/chroma_db:/app/memory/chroma_db
+      - ./data:/app/data
+      - ./static:/app/static  # 🔥 Conexión vital para que tu imagen se vea en la red
+    env_file:
+      - .env
+    restart: always
