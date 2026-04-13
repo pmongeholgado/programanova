@@ -1,9 +1,29 @@
 from openai import OpenAI
 from backend.nova_identity import NOVA_SYSTEM_PROMPT
 from backend.memory_store import get_history, append_message
-from backend.config_novap import OPENAI_API_KEY, DEFAULT_MODEL, DEFAULT_TEMPERATURE
+from backend.config_novap import OPENAI_API_KEY, DEFAULT_MODEL, DEFAULT_TEMPERATURE, GENESIOS_URL
+import requests
 
 client = OpenAI(api_key=OPENAI_API_KEY)
+
+def generate_reply_with_genesios(message: str) -> str:
+    try:
+        response = requests.post(
+            GENESIOS_URL,
+            json={"mensaje": message},
+            timeout=60
+        )
+        response.raise_for_status()
+        data = response.json()
+
+        reply = data.get("respuesta", "").strip()
+        if reply:
+            return reply
+
+        return "No se pudo obtener una respuesta válida de GENESIOS."
+
+    except Exception as e:
+        return f"Error IA: {str(e)}"
 
 # 🔥 NUEVA CAPA SUAVE (NO ROMPE NADA)
 def enforce_structure_soft(text: str) -> str:
