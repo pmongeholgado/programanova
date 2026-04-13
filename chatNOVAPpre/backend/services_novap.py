@@ -6,6 +6,7 @@ import requests
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
+
 def generate_reply_with_genesios(message: str) -> str:
     try:
         response = requests.post(
@@ -24,6 +25,7 @@ def generate_reply_with_genesios(message: str) -> str:
 
     except Exception as e:
         return f"Error IA: {str(e)}"
+
 
 # 🔥 NUEVA CAPA SUAVE (NO ROMPE NADA)
 def enforce_structure_soft(text: str) -> str:
@@ -44,10 +46,19 @@ def enforce_structure_soft(text: str) -> str:
 
 
 def generate_reply(chat_id: str, message: str) -> str:
-
     try:
         append_message(chat_id, "user", message)
 
+        # 1. Intentar primero con GENESIOS
+        reply = generate_reply_with_genesios(message)
+
+        # 2. Si GENESIOS responde bien, usar esa respuesta
+        if reply and not reply.startswith("Error IA:") and "No se pudo obtener una respuesta válida de GENESIOS." not in reply:
+            reply = enforce_structure_soft(reply)
+            append_message(chat_id, "assistant", reply)
+            return reply
+
+        # 3. Respaldo actual de chatNOVAP (no se pierde nada)
         history = get_history(chat_id)
 
         messages = [
@@ -88,8 +99,6 @@ Reglas obligatorias:
         )
 
         reply = response.choices[0].message.content.strip()
-
-        # 🔥 SOLO AÑADIMOS CONTROL SUAVE (NO ROMPE NADA)
         reply = enforce_structure_soft(reply)
 
         append_message(chat_id, "assistant", reply)
@@ -101,7 +110,6 @@ Reglas obligatorias:
 
 
 def generate_reply_stream(chat_id: str, message: str):
-
     append_message(chat_id, "user", message)
 
     history = get_history(chat_id)
