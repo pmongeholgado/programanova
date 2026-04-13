@@ -14,3 +14,4 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 # 🔹 Configuración modelo IA
 DEFAULT_MODEL = "gpt-4.1-mini"
 DEFAULT_TEMPERATURE = 0.7
+GENESIOS_URL = os.getenv("GENESIOS_URL", "https://genesios.online/interactuar")
