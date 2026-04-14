@@ -280,3 +280,21 @@ body {
   margin-top: 12px;
   display: block;
 }
+
+/* ================= BOTÓN VOZ MANUAL NOVA ================= */
+
+#readLastBtn {
+  margin-left: 12px;
+  padding: 14px 18px;
+  border-radius: 8px;
+  border: none;
+  background: #1f2a44;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  height: 50px;
+}
+
+#readLastBtn:hover {
+  background: #2b3a5e;
+}
