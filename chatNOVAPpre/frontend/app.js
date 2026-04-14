@@ -6,7 +6,7 @@ const chatListEl = document.getElementById("chatList");
 
 /* ---------- API LOCAL / RED DEFINITIVA ---------- */
 
-function getApiUrl() {
+function getApiBaseUrl() {
   const host = location.hostname;
 
   const isLocal =
@@ -21,7 +21,7 @@ function getApiUrl() {
   return "https://programanova-production.up.railway.app/stream";
 }
 
-const API_URL = getApiUrl();
+const API_BASE_URL = getApiBaseUrl();
 
 /* ---------- ESTADO ---------- */
 
@@ -49,16 +49,15 @@ function loadState() {
   }
 }
 
-/* ---------- MARKDOWN / FORMATEO REAL (CIRUGÍA PRO) ---------- */
+/* ---------- MARKDOWN / FORMATEO REAL ---------- */
 
 if (window.marked && typeof window.marked.setOptions === "function") {
   window.marked.setOptions({
     gfm: true,
     breaks: true,
-    // Aquí es donde la magia del color ocurre de forma nativa y eficiente
     highlight: function (code, lang) {
       if (window.hljs) {
-        const language = window.hljs.getLanguage(lang) ? lang : 'plaintext';
+        const language = window.hljs.getLanguage(lang) ? lang : "plaintext";
         return window.hljs.highlight(code, { language }).value;
       }
       return code;
@@ -69,7 +68,6 @@ if (window.marked && typeof window.marked.setOptions === "function") {
 function formatText(text) {
   if (!text) return "";
 
-  // Si marked no está cargado, fallback seguro
   if (!window.marked || typeof window.marked.parse !== "function") {
     return text
       .replace(/&/g, "&amp;")
@@ -78,12 +76,38 @@ function formatText(text) {
       .replace(/\n/g, "<br>");
   }
 
-  // 1. Markdown -> HTML con Highlight integrado
   let html = window.marked.parse(text);
 
-  // 2. Sanitizar para máxima seguridad en PLATAFORMA NOVA
   if (window.DOMPurify && typeof window.DOMPurify.sanitize === "function") {
     html = window.DOMPurify.sanitize(html);
+  }
+
+  return html;
+}
+
+/* ---------- RENDER RICO DE BOT ---------- */
+
+function buildBotContentHtml(text, imageUrl = null, audioUrl = null) {
+  let html = formatText(text || "");
+
+  if (imageUrl) {
+    html += `
+      <div style="margin-top:12px;">
+        <img
+          src="${imageUrl}"
+          alt="Imagen generada por chatNOVAP"
+          style="max-width:100%; border-radius:12px; display:block;"
+        >
+      </div>
+    `;
+  }
+
+  if (audioUrl) {
+    html += `
+      <div style="margin-top:12px;">
+        <audio controls src="${audioUrl}" style="width:100%;"></audio>
+      </div>
+    `;
   }
 
   return html;
@@ -97,16 +121,34 @@ function scrollMessagesToBottom() {
   });
 }
 
-function addMessageToDOM(text, sender) {
-  const div = document.createElement("div");
-  div.classList.add("message", sender);
+function normalizeMessage(messageOrText, sender) {
+  if (typeof messageOrText === "string") {
+    return {
+      text: messageOrText,
+      sender,
+      imageUrl: null,
+      audioUrl: null
+    };
+  }
 
-  // Usuario = texto plano
-  if (sender === "user") {
-    div.textContent = text;
+  return {
+    text: messageOrText.text || "",
+    sender: messageOrText.sender || sender || "bot",
+    imageUrl: messageOrText.imageUrl || null,
+    audioUrl: messageOrText.audioUrl || null
+  };
+}
+
+function addMessageToDOM(messageOrText, sender) {
+  const message = normalizeMessage(messageOrText, sender);
+
+  const div = document.createElement("div");
+  div.classList.add("message", message.sender);
+
+  if (message.sender === "user") {
+    div.textContent = message.text;
   } else {
-    // Bot = markdown renderizado
-    div.innerHTML = formatText(text);
+    div.innerHTML = buildBotContentHtml(message.text, message.imageUrl, message.audioUrl);
   }
 
   messagesEl.appendChild(div);
@@ -121,7 +163,7 @@ function renderMessages() {
   const chat = chats.find(c => c.id === activeChatId);
   if (!chat) return;
 
-  chat.messages.forEach(m => addMessageToDOM(m.text, m.sender));
+  chat.messages.forEach(m => addMessageToDOM(m, m.sender));
 }
 
 function renderChatList() {
@@ -185,7 +227,9 @@ function createNewChat() {
     messages: [
       {
         text: "Hola 👋 Bienvenido a chatNOVAP",
-        sender: "bot"
+        sender: "bot",
+        imageUrl: null,
+        audioUrl: null
       }
     ]
   });
@@ -214,7 +258,7 @@ function deleteChat(id) {
   renderMessages();
 }
 
-/* ---------- ENVÍO Y STREAMING REAL (CIRUGÍA PRO) ---------- */
+/* ---------- ENVÍO RICO CON APOYO EN GENESIOS ---------- */
 
 async function sendMessage() {
   if (isSending) return;
@@ -227,7 +271,12 @@ async function sendMessage() {
 
   isSending = true;
 
-  chat.messages.push({ text, sender: "user" });
+  chat.messages.push({
+    text,
+    sender: "user",
+    imageUrl: null,
+    audioUrl: null
+  });
 
   if (chat.title === "Nueva conversación") {
     chat.title = text.substring(0, 30);
@@ -240,54 +289,61 @@ async function sendMessage() {
   renderChatList();
   renderMessages();
 
-  const messageDiv = addMessageToDOM("", "bot");
-  messageDiv.textContent = "NOVA está escribiendo...";
+  const messageDiv = addMessageToDOM(
+    {
+      text: "NOVA está escribiendo...",
+      sender: "bot",
+      imageUrl: null,
+      audioUrl: null
+    },
+    "bot"
+  );
   messageDiv.style.opacity = "0.7";
 
   let dots = 0;
   const typingInterval = setInterval(() => {
     dots = (dots + 1) % 4;
-    messageDiv.textContent = "NOVA está escribiendo" + ".".repeat(dots);
+    messageDiv.innerHTML = buildBotContentHtml(
+      "NOVA está escribiendo" + ".".repeat(dots),
+      null,
+      null
+    );
   }, 400);
 
   try {
-    const url = `${API_URL}?chat_id=${activeChatId}&message=${encodeURIComponent(text)}`;
-    const res = await fetch(url);
+    const url = `${API_BASE_URL}/rich-reply?chat_id=${encodeURIComponent(activeChatId)}&message=${encodeURIComponent(text)}`;
+    const res = await fetch(url, {
+      method: "POST"
+    });
 
-    if (!res.ok || !res.body) {
+    if (!res.ok) {
       throw new Error("Respuesta no válida del servidor");
     }
 
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let resultText = "";
-    let typingStopped = false;
+    const data = await res.json();
 
-    // AQUI ESTA LA MAGIA DEL STREAMING
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
+    clearInterval(typingInterval);
+    messageDiv.style.opacity = "1";
 
-      // En cuanto llega el primer paquete, paramos la animación de espera
-      if (!typingStopped) {
-        clearInterval(typingInterval);
-        typingStopped = true;
-        messageDiv.style.opacity = "1";
-      }
+    const finalText = data.reply || "No se pudo obtener respuesta.";
+    const imageUrl = data.image_url || null;
+    const audioUrl = data.audio_url || null;
 
-      const chunk = decoder.decode(value, { stream: true });
-      resultText += chunk;
+    messageDiv.innerHTML = buildBotContentHtml(finalText, imageUrl, audioUrl);
 
-      // ACTUALIZAMOS EL DOM LETRA A LETRA EN TIEMPO REAL
-      messageDiv.innerHTML = formatText(resultText);
-      scrollMessagesToBottom();
-    }
-
-    // Guardamos el mensaje final en el historial
     chat.messages.push({
-      text: resultText,
-      sender: "bot"
+      text: finalText,
+      sender: "bot",
+      imageUrl,
+      audioUrl
     });
+
+    if (audioUrl) {
+      try {
+        const audio = new Audio(audioUrl);
+        audio.play().catch(() => {});
+      } catch (_) {}
+    }
   } catch (err) {
     clearInterval(typingInterval);
     messageDiv.textContent = "❌ Error conectando con NOVA";
@@ -297,6 +353,7 @@ async function sendMessage() {
 
   isSending = false;
   saveState();
+  scrollMessagesToBottom();
 }
 
 /* ---------- EVENTOS ---------- */
@@ -307,7 +364,6 @@ sendBtn.addEventListener("click", (e) => {
 });
 
 inputEl.addEventListener("keydown", (e) => {
-  // Permite saltos de línea con Shift+Enter. Solo envía con Enter solo.
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
     sendMessage();
