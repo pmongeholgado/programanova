@@ -1,6 +1,7 @@
 const messagesEl = document.getElementById("messages");
 const inputEl = document.getElementById("inputMessage");
 const sendBtn = document.getElementById("sendBtn");
+const readLastBtn = document.getElementById("readLastBtn");
 const newChatBtn = document.getElementById("newChatBtn");
 const chatListEl = document.getElementById("chatList");
 
@@ -119,6 +120,32 @@ function scrollMessagesToBottom() {
   requestAnimationFrame(() => {
     messagesEl.scrollTop = messagesEl.scrollHeight;
   });
+}
+
+function readLastBotMessage() {
+  const chat = chats.find(c => c.id === activeChatId);
+  if (!chat) return;
+
+  const botMessages = chat.messages.filter(
+    m => m.sender === "bot" && m.text && m.text.trim()
+  );
+  if (!botMessages.length) return;
+
+  const lastBotMessage = botMessages[botMessages.length - 1].text;
+
+  if (!("speechSynthesis" in window)) {
+    alert("Tu navegador no soporta lectura por voz.");
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(lastBotMessage);
+  utterance.lang = "es-ES";
+  utterance.rate = 1;
+  utterance.pitch = 1;
+
+  window.speechSynthesis.speak(utterance);
 }
 
 function normalizeMessage(messageOrText, sender) {
@@ -361,6 +388,11 @@ async function sendMessage() {
 sendBtn.addEventListener("click", (e) => {
   e.preventDefault();
   sendMessage();
+});
+
+readLastBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  readLastBotMessage();
 });
 
 inputEl.addEventListener("keydown", (e) => {
