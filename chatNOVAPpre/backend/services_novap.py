@@ -7,7 +7,7 @@ import requests
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 
-def generate_reply_with_genesios(message: str) -> str:
+def generate_reply_with_genesios(message: str) -> dict:
     try:
         response = requests.post(
             GENESIOS_URL,
@@ -18,13 +18,31 @@ def generate_reply_with_genesios(message: str) -> str:
         data = response.json()
 
         reply = data.get("respuesta", "").strip()
-        if reply:
-            return reply
+        image_url = data.get("image_url")
+        audio_url = data.get("audio_url")
 
-        return "No se pudo obtener una respuesta válida de GENESIOS."
+        if reply or image_url or audio_url:
+            return {
+                "reply": reply or "Respuesta recibida desde GENESIOS.",
+                "image_url": image_url,
+                "audio_url": audio_url,
+                "error": None
+            }
+
+        return {
+            "reply": "No se pudo obtener una respuesta válida de GENESIOS.",
+            "image_url": None,
+            "audio_url": None,
+            "error": "No se pudo obtener una respuesta válida de GENESIOS."
+        }
 
     except Exception as e:
-        return f"Error IA: {str(e)}"
+        return {
+            "reply": "",
+            "image_url": None,
+            "audio_url": None,
+            "error": f"Error IA: {str(e)}"
+        }
 
 
 # 🔥 NUEVA CAPA SUAVE (NO ROMPE NADA)
@@ -45,18 +63,26 @@ def enforce_structure_soft(text: str) -> str:
     return t.strip()
 
 
-def generate_reply(chat_id: str, message: str) -> str:
+def generate_reply(chat_id: str, message: str):
     try:
         append_message(chat_id, "user", message)
 
         # 1. Intentar primero con GENESIOS
-        reply = generate_reply_with_genesios(message)
+        genesios_result = generate_reply_with_genesios(message)
 
-        # 2. Si GENESIOS responde bien, usar esa respuesta
-        if reply and not reply.startswith("Error IA:") and "No se pudo obtener una respuesta válida de GENESIOS." not in reply:
-            reply = enforce_structure_soft(reply)
-            append_message(chat_id, "assistant", reply)
-            return reply
+        # 2. Si GENESIOS responde bien, usar esa respuesta completa
+        if not genesios_result.get("error"):
+            reply = enforce_structure_soft(genesios_result.get("reply", ""))
+
+            result = {
+                "reply": reply,
+                "image_url": genesios_result.get("image_url"),
+                "audio_url": genesios_result.get("audio_url"),
+                "error": None
+            }
+
+            append_message(chat_id, "assistant", result["reply"])
+            return result
 
         # 3. Respaldo actual de chatNOVAP (no se pierde nada)
         history = get_history(chat_id)
@@ -103,10 +129,20 @@ Reglas obligatorias:
 
         append_message(chat_id, "assistant", reply)
 
-        return reply
+        return {
+            "reply": reply,
+            "image_url": None,
+            "audio_url": None,
+            "error": None
+        }
 
     except Exception as e:
-        return f"Error IA: {str(e)}"
+        return {
+            "reply": "",
+            "image_url": None,
+            "audio_url": None,
+            "error": f"Error IA: {str(e)}"
+        }
 
 
 def generate_reply_stream(chat_id: str, message: str):
