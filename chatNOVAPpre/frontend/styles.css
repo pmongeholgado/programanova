@@ -235,3 +235,48 @@ body {
   font-size: 14px;
   line-height: 1.5;
 }
+
+/* ================= AMPLIACIÓN RICA NOVA (NO ROMPE NADA) ================= */
+
+/* 👉 Tablas renderizadas dentro del mensaje del bot */
+.message.bot table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  background: #0f172a;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.message.bot th,
+.message.bot td {
+  border: 1px solid #334155;
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.message.bot th {
+  background: #1e293b;
+  color: #00d2ff;
+  font-weight: 700;
+}
+
+.message.bot td {
+  color: #e5e7eb;
+}
+
+/* 👉 Imágenes generadas dentro del mensaje */
+.message.bot img {
+  max-width: 100%;
+  display: block;
+  margin-top: 12px;
+  border-radius: 12px;
+}
+
+/* 👉 Audio dentro del mensaje */
+.message.bot audio {
+  width: 100%;
+  margin-top: 12px;
+  display: block;
+}
