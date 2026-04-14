@@ -30,9 +30,17 @@ def chat_endpoint(data: ChatRequest):
                 detail="chat_id y message son obligatorios"
             )
 
-        reply = generate_reply(data.chat_id, data.message)
+        result = generate_reply(data.chat_id, data.message)
 
-        return ChatResponse(reply=reply)
+        if isinstance(result, dict):
+            return ChatResponse(
+                reply=result.get("reply", ""),
+                error=result.get("error"),
+                image_url=result.get("image_url"),
+                audio_url=result.get("audio_url")
+            )
+
+        return ChatResponse(reply=result)
 
     except Exception as e:
         raise HTTPException(
