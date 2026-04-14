@@ -12,3 +12,5 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     reply: str = Field(..., description="Respuesta generada por NOVA")
     error: Optional[str] = Field(None, description="Mensaje de error si ocurre algún problema")
+    image_url: Optional[str] = Field(None, description="URL de imagen generada si aplica")
+    audio_url: Optional[str] = Field(None, description="URL de audio generado si aplica")
