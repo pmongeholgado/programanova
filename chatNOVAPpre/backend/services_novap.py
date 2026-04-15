@@ -6,9 +6,6 @@ import requests
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
-# URL directa de respaldo de GENESIOS (no toca config, solo refuerza el puente)
-GENESIOS_FALLBACK_URL = "http://82.223.115.253:8000/interactuar"
-
 
 def is_special_genesios_request(message: str) -> bool:
     m = (message or "").lower()
@@ -68,7 +65,7 @@ def call_genesios_once(endpoint_url: str, message: str) -> dict:
         endpoint_url,
         json={"mensaje": message},
         headers={"Content-Type": "application/json"},
-        timeout=(10, 90)
+        timeout=180
     )
     response.raise_for_status()
     data = response.json()
@@ -99,34 +96,36 @@ def call_genesios_once(endpoint_url: str, message: str) -> dict:
 
 
 def generate_reply_with_genesios(message: str) -> dict:
-    endpoints = [GENESIOS_URL, GENESIOS_FALLBACK_URL]
-    last_error = None
+    try:
+        result = call_genesios_once(GENESIOS_URL, message)
 
-    for endpoint in endpoints:
-        try:
-            result = call_genesios_once(endpoint, message)
+        # Si pide imagen, exigir image_url real
+        if wants_image(message) and not result.get("image_url"):
+            return {
+                "reply": "",
+                "image_url": None,
+                "audio_url": None,
+                "error": "GENESIOS respondió sin image_url."
+            }
 
-            # Si pide imagen, exigir image_url real
-            if wants_image(message) and not result.get("image_url"):
-                last_error = f"GENESIOS respondió sin image_url desde {endpoint}"
-                continue
+        # Si pide audio, exigir audio_url real
+        if wants_audio(message) and not result.get("audio_url"):
+            return {
+                "reply": "",
+                "image_url": None,
+                "audio_url": None,
+                "error": "GENESIOS respondió sin audio_url."
+            }
 
-            # Si pide audio, exigir audio_url real
-            if wants_audio(message) and not result.get("audio_url"):
-                last_error = f"GENESIOS respondió sin audio_url desde {endpoint}"
-                continue
+        return result
 
-            return result
-
-        except Exception as e:
-            last_error = f"{endpoint} -> {str(e)}"
-
-    return {
-        "reply": "",
-        "image_url": None,
-        "audio_url": None,
-        "error": last_error or "Error al conectar con GENESIOS."
-    }
+    except Exception as e:
+        return {
+            "reply": "",
+            "image_url": None,
+            "audio_url": None,
+            "error": f"{GENESIOS_URL} -> {str(e)}"
+        }
 
 
 # 🔥 NUEVA CAPA SUAVE (NO ROMPE NADA)
