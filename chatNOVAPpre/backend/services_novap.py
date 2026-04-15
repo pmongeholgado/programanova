@@ -7,17 +7,35 @@ import requests
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 
+def is_special_genesios_request(message: str) -> bool:
+    m = (message or "").lower()
+
+    image_words = [
+        "imagen", "imágenes", "image", "images",
+        "dibuja", "dibujar", "crea una imagen", "genera una imagen",
+        "render", "foto", "picture", "illustration"
+    ]
+
+    audio_words = [
+        "voz", "audio", "habla", "leer", "léelo", "leelo",
+        "pronuncia", "reproduce", "escuchar"
+    ]
+
+    return any(word in m for word in image_words + audio_words)
+
+
 def generate_reply_with_genesios(message: str) -> dict:
     try:
         response = requests.post(
             GENESIOS_URL,
             json={"mensaje": message},
-            timeout=60
+            headers={"Content-Type": "application/json"},
+            timeout=(10, 90)
         )
         response.raise_for_status()
         data = response.json()
 
-        reply = data.get("respuesta", "").strip()
+        reply = (data.get("respuesta") or "").strip()
         image_url = data.get("image_url")
         audio_url = data.get("audio_url")
 
@@ -84,7 +102,16 @@ def generate_reply(chat_id: str, message: str):
             append_message(chat_id, "assistant", result["reply"])
             return result
 
-        # 3. Respaldo actual de chatNOVAP (no se pierde nada)
+        # 3. Si es una petición especial (imagen/voz), NO tapar el fallo con fallback
+        if is_special_genesios_request(message):
+            return {
+                "reply": "No se pudo completar correctamente la petición especial en GENESIOS.",
+                "image_url": None,
+                "audio_url": None,
+                "error": genesios_result.get("error") or "Error al conectar con GENESIOS."
+            }
+
+        # 4. Respaldo actual de chatNOVAP solo para texto normal
         history = get_history(chat_id)
 
         messages = [
