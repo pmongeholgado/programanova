@@ -6,6 +6,9 @@ import requests
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
+# URL directa de respaldo de GENESIOS (no toca config, solo refuerza el puente)
+GENESIOS_FALLBACK_URL = "http://82.223.115.253:8000/interactuar"
+
 
 def is_special_genesios_request(message: str) -> bool:
     m = (message or "").lower()
@@ -24,43 +27,106 @@ def is_special_genesios_request(message: str) -> bool:
     return any(word in m for word in image_words + audio_words)
 
 
+def wants_image(message: str) -> bool:
+    m = (message or "").lower()
+    image_words = [
+        "imagen", "imágenes", "image", "images",
+        "dibuja", "dibujar", "crea una imagen", "genera una imagen",
+        "render", "foto", "picture", "illustration"
+    ]
+    return any(word in m for word in image_words)
+
+
+def wants_audio(message: str) -> bool:
+    m = (message or "").lower()
+    audio_words = [
+        "voz", "audio", "habla", "leer", "léelo", "leelo",
+        "pronuncia", "reproduce", "escuchar"
+    ]
+    return any(word in m for word in audio_words)
+
+
+def absolutize_url(base_url: str, maybe_relative: str | None) -> str | None:
+    if not maybe_relative:
+        return None
+
+    if maybe_relative.startswith("http://") or maybe_relative.startswith("https://"):
+        return maybe_relative
+
+    if maybe_relative.startswith("/"):
+        if "://" in base_url:
+            origin = base_url.split("://", 1)
+            scheme = origin[0]
+            host = origin[1].split("/", 1)[0]
+            return f"{scheme}://{host}{maybe_relative}"
+
+    return maybe_relative
+
+
+def call_genesios_once(endpoint_url: str, message: str) -> dict:
+    response = requests.post(
+        endpoint_url,
+        json={"mensaje": message},
+        headers={"Content-Type": "application/json"},
+        timeout=(10, 90)
+    )
+    response.raise_for_status()
+    data = response.json()
+
+    reply = (data.get("respuesta") or "").strip()
+
+    # GENESIOS puede devolver image_url o visual
+    image_url = data.get("image_url") or data.get("visual")
+    audio_url = data.get("audio_url")
+
+    image_url = absolutize_url(endpoint_url, image_url)
+    audio_url = absolutize_url(endpoint_url, audio_url)
+
+    if reply or image_url or audio_url:
+        return {
+            "reply": reply or "Respuesta recibida desde GENESIOS.",
+            "image_url": image_url,
+            "audio_url": audio_url,
+            "error": None
+        }
+
+    return {
+        "reply": "No se pudo obtener una respuesta válida de GENESIOS.",
+        "image_url": None,
+        "audio_url": None,
+        "error": "No se pudo obtener una respuesta válida de GENESIOS."
+    }
+
+
 def generate_reply_with_genesios(message: str) -> dict:
-    try:
-        response = requests.post(
-            GENESIOS_URL,
-            json={"mensaje": message},
-            headers={"Content-Type": "application/json"},
-            timeout=(10, 90)
-        )
-        response.raise_for_status()
-        data = response.json()
+    endpoints = [GENESIOS_URL, GENESIOS_FALLBACK_URL]
+    last_error = None
 
-        reply = (data.get("respuesta") or "").strip()
-        image_url = data.get("image_url")
-        audio_url = data.get("audio_url")
+    for endpoint in endpoints:
+        try:
+            result = call_genesios_once(endpoint, message)
 
-        if reply or image_url or audio_url:
-            return {
-                "reply": reply or "Respuesta recibida desde GENESIOS.",
-                "image_url": image_url,
-                "audio_url": audio_url,
-                "error": None
-            }
+            # Si pide imagen, exigir image_url real
+            if wants_image(message) and not result.get("image_url"):
+                last_error = f"GENESIOS respondió sin image_url desde {endpoint}"
+                continue
 
-        return {
-            "reply": "No se pudo obtener una respuesta válida de GENESIOS.",
-            "image_url": None,
-            "audio_url": None,
-            "error": "No se pudo obtener una respuesta válida de GENESIOS."
-        }
+            # Si pide audio, exigir audio_url real
+            if wants_audio(message) and not result.get("audio_url"):
+                last_error = f"GENESIOS respondió sin audio_url desde {endpoint}"
+                continue
 
-    except Exception as e:
-        return {
-            "reply": "",
-            "image_url": None,
-            "audio_url": None,
-            "error": f"Error IA: {str(e)}"
-        }
+            return result
+
+        except Exception as e:
+            last_error = f"{endpoint} -> {str(e)}"
+
+    return {
+        "reply": "",
+        "image_url": None,
+        "audio_url": None,
+        "error": last_error or "Error al conectar con GENESIOS."
+    }
 
 
 # 🔥 NUEVA CAPA SUAVE (NO ROMPE NADA)
