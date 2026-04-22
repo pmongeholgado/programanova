@@ -1,7 +1,8 @@
 # backend/schemas_novap.py
 
-from pydantic import BaseModel, Field
 from typing import Optional
+
+from pydantic import BaseModel, Field
 
 
 class ChatRequest(BaseModel):
@@ -14,3 +15,4 @@ class ChatResponse(BaseModel):
     error: Optional[str] = Field(None, description="Mensaje de error si ocurre algún problema")
     image_url: Optional[str] = Field(None, description="URL de imagen generada si aplica")
     audio_url: Optional[str] = Field(None, description="URL de audio generado si aplica")
+    chart_url: Optional[str] = Field(None, description="URL de gráfico generado si aplica")
