@@ -16,32 +16,52 @@ def health():
     }
 
 
+def normalize_reply_result(result):
+    """
+    Normaliza la respuesta del servicio para que siempre salga
+    con una estructura coherente hacia el frontend.
+    """
+    if isinstance(result, dict):
+        return ChatResponse(
+            reply=result.get("reply", "") or "",
+            error=result.get("error"),
+            image_url=result.get("image_url"),
+            audio_url=result.get("audio_url"),
+            chart_url=result.get("chart_url")
+        )
+
+    return ChatResponse(
+        reply=str(result) if result is not None else "",
+        error=None,
+        image_url=None,
+        audio_url=None,
+        chart_url=None
+    )
+
+
 @router.post("/chat", response_model=ChatResponse)
 def chat_endpoint(data: ChatRequest):
     """
     Endpoint principal del chat.
-    Recibe chat_id y mensaje.
+    Recibe chat_id y message.
     Devuelve respuesta generada por NOVA.
     """
     try:
-        if not data.chat_id or not data.message:
+        chat_id = (data.chat_id or "").strip()
+        message = (data.message or "").strip()
+
+        if not chat_id or not message:
             raise HTTPException(
                 status_code=400,
                 detail="chat_id y message son obligatorios"
             )
 
-        result = generate_reply(data.chat_id, data.message)
+        result = generate_reply(chat_id, message)
 
-        if isinstance(result, dict):
-            return ChatResponse(
-                reply=result.get("reply", ""),
-                error=result.get("error"),
-                image_url=result.get("image_url"),
-                audio_url=result.get("audio_url")
-            )
+        return normalize_reply_result(result)
 
-        return ChatResponse(reply=result)
-
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=500,
