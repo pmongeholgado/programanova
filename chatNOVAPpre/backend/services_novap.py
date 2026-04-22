@@ -1,5 +1,6 @@
 from openai import OpenAI
 import requests
+import re
 
 from backend.nova_identity import NOVA_SYSTEM_PROMPT
 from backend.config_novap import (
@@ -106,7 +107,7 @@ def generate_reply_with_genesios(message: str) -> dict:
 
         if wants_image(message) and not result.get("image_url"):
             return {
-                "reply": "",
+                "reply": result.get("reply", ""),
                 "image_url": None,
                 "audio_url": None,
                 "chart_url": None,
@@ -115,7 +116,7 @@ def generate_reply_with_genesios(message: str) -> dict:
 
         if wants_audio(message) and not result.get("audio_url"):
             return {
-                "reply": "",
+                "reply": result.get("reply", ""),
                 "image_url": None,
                 "audio_url": None,
                 "chart_url": None,
@@ -124,7 +125,7 @@ def generate_reply_with_genesios(message: str) -> dict:
 
         if wants_chart(message) and not result.get("chart_url"):
             return {
-                "reply": "",
+                "reply": result.get("reply", ""),
                 "image_url": None,
                 "audio_url": None,
                 "chart_url": None,
@@ -144,8 +145,6 @@ def generate_reply_with_genesios(message: str) -> dict:
 
 
 def enforce_structure_soft(text: str) -> str:
-    import re
-
     t = (text or "").strip()
 
     t = re.sub(r"\s-\s", "\n- ", t)
@@ -161,6 +160,8 @@ def build_system_prompt() -> str:
 FORMATO OBLIGATORIO (ESTRICTO):
 
 Responde SIEMPRE en Markdown real.
+Responde SIEMPRE en español correcto y natural.
+No inventes códigos raros, cadenas extrañas ni texto corrupto.
 
 Ejemplo de estructura obligatoria:
 
@@ -175,70 +176,164 @@ Texto del párrafo.
 - Punto tres
 
 Reglas obligatorias:
-- Usa saltos de línea reales (\n)
+- Usa saltos de línea reales (\\n)
 - Usa listas con "-"
 - Separa párrafos con línea en blanco
 - NO escribas texto en una sola línea
 """
 
 
+def is_bad_genesios_text(reply: str) -> bool:
+    text = (reply or "").strip()
+    if not text:
+        return True
+
+    lower = text.lower()
+
+    bad_markers = [
+        "quer och",
+        "undefined",
+        "null",
+        "[object object]",
+    ]
+    if any(marker in lower for marker in bad_markers):
+        return True
+
+    if text.count("|") >= 2:
+        return True
+
+    if len(text) < 3:
+        return True
+
+    segments = [seg.strip() for seg in re.split(r"[|\n]+", text) if seg.strip()]
+    normalized_segments = [
+        re.sub(r"^\d+[\.\)\-:\s]*", "", seg.lower())
+        for seg in segments
+    ]
+
+    if len(normalized_segments) >= 3 and len(set(normalized_segments)) <= 1:
+        return True
+
+    letters = sum(ch.isalpha() for ch in text)
+    if letters == 0:
+        return True
+
+    letters_ratio = letters / max(len(text), 1)
+    if letters_ratio < 0.45:
+        return True
+
+    return False
+
+
+def generate_text_with_openai(chat_id: str) -> str:
+    history = get_history(chat_id)
+
+    messages = [
+        {
+            "role": "system",
+            "content": build_system_prompt(),
+        },
+        *history,
+    ]
+
+    response = client.chat.completions.create(
+        model=DEFAULT_MODEL,
+        messages=messages,
+        temperature=DEFAULT_TEMPERATURE,
+    )
+
+    reply = response.choices[0].message.content.strip()
+    reply = enforce_structure_soft(reply)
+    return reply
+
+
+def build_special_success_result(chat_id: str, message: str, genesios_result: dict) -> dict:
+    genesios_reply = enforce_structure_soft(genesios_result.get("reply", ""))
+
+    if is_bad_genesios_text(genesios_reply):
+        try:
+            final_reply = generate_text_with_openai(chat_id)
+        except Exception:
+            final_reply = "Solicitud completada correctamente."
+    else:
+        final_reply = genesios_reply
+
+    result = {
+        "reply": final_reply,
+        "image_url": genesios_result.get("image_url"),
+        "audio_url": genesios_result.get("audio_url"),
+        "chart_url": genesios_result.get("chart_url"),
+        "error": None,
+    }
+
+    append_message(chat_id, "assistant", result["reply"])
+    return result
+
+
+def build_text_success_result(chat_id: str, genesios_result: dict) -> dict:
+    genesios_reply = enforce_structure_soft(genesios_result.get("reply", ""))
+
+    if not is_bad_genesios_text(genesios_reply):
+        result = {
+            "reply": genesios_reply,
+            "image_url": None,
+            "audio_url": None,
+            "chart_url": None,
+            "error": None,
+        }
+        append_message(chat_id, "assistant", result["reply"])
+        return result
+
+    reply = generate_text_with_openai(chat_id)
+
+    result = {
+        "reply": reply,
+        "image_url": None,
+        "audio_url": None,
+        "chart_url": None,
+        "error": None,
+    }
+
+    append_message(chat_id, "assistant", result["reply"])
+    return result
+
+
 def generate_reply(chat_id: str, message: str):
     try:
         append_message(chat_id, "user", message)
 
+        special_request = is_special_genesios_request(message)
         genesios_result = generate_reply_with_genesios(message)
 
+        if special_request:
+            if genesios_result.get("error"):
+                reply = "No se pudo completar correctamente la petición especial en GENESIOS."
+                append_message(chat_id, "assistant", reply)
+                return {
+                    "reply": reply,
+                    "image_url": None,
+                    "audio_url": None,
+                    "chart_url": None,
+                    "error": genesios_result.get("error") or "Error al conectar con GENESIOS.",
+                }
+
+            return build_special_success_result(chat_id, message, genesios_result)
+
         if not genesios_result.get("error"):
-            reply = enforce_structure_soft(genesios_result.get("reply", ""))
+            return build_text_success_result(chat_id, genesios_result)
 
-            result = {
-                "reply": reply,
-                "image_url": genesios_result.get("image_url"),
-                "audio_url": genesios_result.get("audio_url"),
-                "chart_url": genesios_result.get("chart_url"),
-                "error": None,
-            }
+        reply = generate_text_with_openai(chat_id)
 
-            append_message(chat_id, "assistant", result["reply"])
-            return result
-
-        if is_special_genesios_request(message):
-            return {
-                "reply": "No se pudo completar correctamente la petición especial en GENESIOS.",
-                "image_url": None,
-                "audio_url": None,
-                "chart_url": None,
-                "error": genesios_result.get("error") or "Error al conectar con GENESIOS.",
-            }
-
-        history = get_history(chat_id)
-
-        messages = [
-            {
-                "role": "system",
-                "content": build_system_prompt(),
-            },
-            *history,
-        ]
-
-        response = client.chat.completions.create(
-            model=DEFAULT_MODEL,
-            messages=messages,
-            temperature=DEFAULT_TEMPERATURE,
-        )
-
-        reply = response.choices[0].message.content.strip()
-        reply = enforce_structure_soft(reply)
-
-        append_message(chat_id, "assistant", reply)
-
-        return {
+        result = {
             "reply": reply,
             "image_url": None,
             "audio_url": None,
             "chart_url": None,
             "error": None,
         }
+
+        append_message(chat_id, "assistant", result["reply"])
+        return result
 
     except Exception as e:
         return {
