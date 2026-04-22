@@ -3,12 +3,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.routes_novap import router as novap_router
+from backend.rutas_novap import router as novap_router
 from backend.routes_auth import router as auth_router
-from backend.routes_chats import router as chats_router
-from backend.routes_users import router as users_router
+from backend.rutas_chats import router as chats_router
+from backend.rutas_usuarios import router as users_router
 from backend.routes_messages import router as messages_router
-from backend.routes_stream import router as stream_router
+from backend.rutas_stream import router as stream_router
 
 from backend.db import engine, Base
 
@@ -22,15 +22,17 @@ app = FastAPI(
     version="2.0",
 )
 
-# CORS para desarrollo + Netlify + dominio final
+# CORS correcto para local + Netlify + dominio final
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://127.0.0.1:5500",
         "http://localhost:5500",
         "https://gentle-puffpuff-4753cf.netlify.app",
-        "https://chatnovap.online"
+        "https://chatnovap.online",
+        "https://www.chatnovap.online",
     ],
+    allow_origin_regex=r"https://.*\.netlify\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -54,5 +56,14 @@ def root():
         "status": "ok",
         "service": "chatNOVAP",
         "version": "v2",
-        "mode": "railway"
+        "mode": "railway",
+    }
+
+
+# Healthcheck simple
+@app.get("/health")
+def health():
+    return {
+        "status": "ok",
+        "service": "chatNOVAP",
     }
