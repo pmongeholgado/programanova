@@ -1,27 +1,21 @@
 from openai import OpenAI
-from backend.nova_identity import NOVA_SYSTEM_PROMPT
-from backend.memory_store import get_history, append_message
-from backend.config_novap import OPENAI_API_KEY, DEFAULT_MODEL, DEFAULT_TEMPERATURE, GENESIOS_URL
 import requests
+
+from backend.nova_identity import NOVA_SYSTEM_PROMPT
+from backend.config_novap import (
+    OPENAI_API_KEY,
+    DEFAULT_MODEL,
+    DEFAULT_TEMPERATURE,
+    GENESIOS_URL,
+)
+from backend.memory_store import get_history, append_message
+
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 
 def is_special_genesios_request(message: str) -> bool:
-    m = (message or "").lower()
-
-    image_words = [
-        "imagen", "imágenes", "image", "images",
-        "dibuja", "dibujar", "crea una imagen", "genera una imagen",
-        "render", "foto", "picture", "illustration"
-    ]
-
-    audio_words = [
-        "voz", "audio", "habla", "leer", "léelo", "leelo",
-        "pronuncia", "reproduce", "escuchar"
-    ]
-
-    return any(word in m for word in image_words + audio_words)
+    return wants_image(message) or wants_audio(message) or wants_chart(message)
 
 
 def wants_image(message: str) -> bool:
@@ -38,9 +32,18 @@ def wants_audio(message: str) -> bool:
     m = (message or "").lower()
     audio_words = [
         "voz", "audio", "habla", "leer", "léelo", "leelo",
-        "pronuncia", "reproduce", "escuchar"
+        "pronuncia", "reproduce", "escuchar", "escúchalo", "escuchalo"
     ]
     return any(word in m for word in audio_words)
+
+
+def wants_chart(message: str) -> bool:
+    m = (message or "").lower()
+    chart_words = [
+        "gráfico", "grafico", "chart", "charts", "gráfica", "grafica",
+        "barras", "líneas", "lineas", "pie", "circular", "comparativa"
+    ]
+    return any(word in m for word in chart_words)
 
 
 def absolutize_url(base_url: str, maybe_relative: str | None) -> str | None:
@@ -50,12 +53,10 @@ def absolutize_url(base_url: str, maybe_relative: str | None) -> str | None:
     if maybe_relative.startswith("http://") or maybe_relative.startswith("https://"):
         return maybe_relative
 
-    if maybe_relative.startswith("/"):
-        if "://" in base_url:
-            origin = base_url.split("://", 1)
-            scheme = origin[0]
-            host = origin[1].split("/", 1)[0]
-            return f"{scheme}://{host}{maybe_relative}"
+    if maybe_relative.startswith("/") and "://" in base_url:
+        scheme, rest = base_url.split("://", 1)
+        host = rest.split("/", 1)[0]
+        return f"{scheme}://{host}{maybe_relative}"
 
     return maybe_relative
 
@@ -65,33 +66,37 @@ def call_genesios_once(endpoint_url: str, message: str) -> dict:
         endpoint_url,
         json={"mensaje": message},
         headers={"Content-Type": "application/json"},
-        timeout=180
+        timeout=180,
     )
     response.raise_for_status()
+
     data = response.json()
 
-    reply = (data.get("respuesta") or "").strip()
+    reply = (data.get("respuesta") or data.get("reply") or "").strip()
 
-    # GENESIOS puede devolver image_url o visual
     image_url = data.get("image_url") or data.get("visual")
     audio_url = data.get("audio_url")
+    chart_url = data.get("chart_url") or data.get("graph_url") or data.get("grafico_url")
 
     image_url = absolutize_url(endpoint_url, image_url)
     audio_url = absolutize_url(endpoint_url, audio_url)
+    chart_url = absolutize_url(endpoint_url, chart_url)
 
-    if reply or image_url or audio_url:
+    if reply or image_url or audio_url or chart_url:
         return {
             "reply": reply or "Respuesta recibida desde GENESIOS.",
             "image_url": image_url,
             "audio_url": audio_url,
-            "error": None
+            "chart_url": chart_url,
+            "error": None,
         }
 
     return {
         "reply": "No se pudo obtener una respuesta válida de GENESIOS.",
         "image_url": None,
         "audio_url": None,
-        "error": "No se pudo obtener una respuesta válida de GENESIOS."
+        "chart_url": None,
+        "error": "No se pudo obtener una respuesta válida de GENESIOS.",
     }
 
 
@@ -99,22 +104,31 @@ def generate_reply_with_genesios(message: str) -> dict:
     try:
         result = call_genesios_once(GENESIOS_URL, message)
 
-        # Si pide imagen, exigir image_url real
         if wants_image(message) and not result.get("image_url"):
             return {
                 "reply": "",
                 "image_url": None,
                 "audio_url": None,
-                "error": "GENESIOS respondió sin image_url."
+                "chart_url": None,
+                "error": "GENESIOS respondió sin image_url.",
             }
 
-        # Si pide audio, exigir audio_url real
         if wants_audio(message) and not result.get("audio_url"):
             return {
                 "reply": "",
                 "image_url": None,
                 "audio_url": None,
-                "error": "GENESIOS respondió sin audio_url."
+                "chart_url": None,
+                "error": "GENESIOS respondió sin audio_url.",
+            }
+
+        if wants_chart(message) and not result.get("chart_url"):
+            return {
+                "reply": "",
+                "image_url": None,
+                "audio_url": None,
+                "chart_url": None,
+                "error": "GENESIOS respondió sin chart_url.",
             }
 
         return result
@@ -124,65 +138,25 @@ def generate_reply_with_genesios(message: str) -> dict:
             "reply": "",
             "image_url": None,
             "audio_url": None,
-            "error": f"{GENESIOS_URL} -> {str(e)}"
+            "chart_url": None,
+            "error": f"{GENESIOS_URL} -> {str(e)}",
         }
 
 
-# 🔥 NUEVA CAPA SUAVE (NO ROMPE NADA)
 def enforce_structure_soft(text: str) -> str:
     import re
 
-    t = text.strip()
+    t = (text or "").strip()
 
-    # 👉 listas en vertical si vienen mal
-    t = re.sub(r'\s-\s', '\n- ', t)
-
-    # 👉 asegurar salto antes de títulos
-    t = re.sub(r'(#{1,6}\s)', r'\n\n\1', t)
-
-    # 👉 limpiar saltos excesivos
-    t = re.sub(r'\n{3,}', '\n\n', t)
+    t = re.sub(r"\s-\s", "\n- ", t)
+    t = re.sub(r"(#{1,6}\s)", r"\n\n\1", t)
+    t = re.sub(r"\n{3,}", "\n\n", t)
 
     return t.strip()
 
 
-def generate_reply(chat_id: str, message: str):
-    try:
-        append_message(chat_id, "user", message)
-
-        # 1. Intentar primero con GENESIOS
-        genesios_result = generate_reply_with_genesios(message)
-
-        # 2. Si GENESIOS responde bien, usar esa respuesta completa
-        if not genesios_result.get("error"):
-            reply = enforce_structure_soft(genesios_result.get("reply", ""))
-
-            result = {
-                "reply": reply,
-                "image_url": genesios_result.get("image_url"),
-                "audio_url": genesios_result.get("audio_url"),
-                "error": None
-            }
-
-            append_message(chat_id, "assistant", result["reply"])
-            return result
-
-        # 3. Si es una petición especial (imagen/voz), NO tapar el fallo con fallback
-        if is_special_genesios_request(message):
-            return {
-                "reply": "No se pudo completar correctamente la petición especial en GENESIOS.",
-                "image_url": None,
-                "audio_url": None,
-                "error": genesios_result.get("error") or "Error al conectar con GENESIOS."
-            }
-
-        # 4. Respaldo actual de chatNOVAP solo para texto normal
-        history = get_history(chat_id)
-
-        messages = [
-            {
-                "role": "system",
-                "content": NOVA_SYSTEM_PROMPT + """
+def build_system_prompt() -> str:
+    return NOVA_SYSTEM_PROMPT + """
 
 FORMATO OBLIGATORIO (ESTRICTO):
 
@@ -206,8 +180,45 @@ Reglas obligatorias:
 - Separa párrafos con línea en blanco
 - NO escribas texto en una sola línea
 """
+
+
+def generate_reply(chat_id: str, message: str):
+    try:
+        append_message(chat_id, "user", message)
+
+        genesios_result = generate_reply_with_genesios(message)
+
+        if not genesios_result.get("error"):
+            reply = enforce_structure_soft(genesios_result.get("reply", ""))
+
+            result = {
+                "reply": reply,
+                "image_url": genesios_result.get("image_url"),
+                "audio_url": genesios_result.get("audio_url"),
+                "chart_url": genesios_result.get("chart_url"),
+                "error": None,
+            }
+
+            append_message(chat_id, "assistant", result["reply"])
+            return result
+
+        if is_special_genesios_request(message):
+            return {
+                "reply": "No se pudo completar correctamente la petición especial en GENESIOS.",
+                "image_url": None,
+                "audio_url": None,
+                "chart_url": None,
+                "error": genesios_result.get("error") or "Error al conectar con GENESIOS.",
+            }
+
+        history = get_history(chat_id)
+
+        messages = [
+            {
+                "role": "system",
+                "content": build_system_prompt(),
             },
-            *history
+            *history,
         ]
 
         response = client.chat.completions.create(
@@ -225,7 +236,8 @@ Reglas obligatorias:
             "reply": reply,
             "image_url": None,
             "audio_url": None,
-            "error": None
+            "chart_url": None,
+            "error": None,
         }
 
     except Exception as e:
@@ -233,7 +245,8 @@ Reglas obligatorias:
             "reply": "",
             "image_url": None,
             "audio_url": None,
-            "error": f"Error IA: {str(e)}"
+            "chart_url": None,
+            "error": f"Error IA: {str(e)}",
         }
 
 
@@ -245,45 +258,25 @@ def generate_reply_stream(chat_id: str, message: str):
     messages = [
         {
             "role": "system",
-            "content": NOVA_SYSTEM_PROMPT + """
-
-FORMATO OBLIGATORIO (ESTRICTO):
-
-Responde SIEMPRE en Markdown real.
-
-Ejemplo:
-
-### Título
-
-Texto.
-
-- Punto uno
-- Punto dos
-
-Reglas:
-- Saltos de línea reales
-- Nada en una sola línea
-"""
+            "content": build_system_prompt(),
         },
-        *history
+        *history,
     ]
 
     stream = client.chat.completions.create(
         model=DEFAULT_MODEL,
         messages=messages,
         temperature=DEFAULT_TEMPERATURE,
-        stream=True
+        stream=True,
     )
 
     reply_full = ""
 
     for chunk in stream:
-        if chunk.choices[0].delta.content:
+        if chunk.choices and chunk.choices[0].delta.content:
             token = chunk.choices[0].delta.content
             reply_full += token
-            yield token  # 🔥 streaming limpio
+            yield token
 
-    # 🔥 SOLO AQUÍ AL FINAL (NO TOCA STREAMING)
     reply_full = enforce_structure_soft(reply_full)
-
     append_message(chat_id, "assistant", reply_full)
