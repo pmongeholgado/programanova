@@ -3,12 +3,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.rutas_novap import router as novap_router
+from backend.routes_novap import router as novap_router
 from backend.routes_auth import router as auth_router
-from backend.rutas_chats import router as chats_router
-from backend.rutas_usuarios import router as users_router
+from backend.routes_chats import router as chats_router
+from backend.routes_users import router as users_router
 from backend.routes_messages import router as messages_router
-from backend.rutas_stream import router as stream_router
+from backend.routes_stream import router as stream_router
 
 from backend.db import engine, Base
 
