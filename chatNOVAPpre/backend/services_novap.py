@@ -290,16 +290,38 @@ def generate_text_with_openai(chat_id: str) -> str:
     return reply
 
 
-def build_special_success_result(chat_id: str, genesios_result: dict) -> dict:
+def build_special_reply(message: str, genesios_result: dict) -> str:
     genesios_reply = enforce_structure_soft(genesios_result.get("reply", ""))
 
-    if is_bad_genesios_text(genesios_reply):
-        try:
-            final_reply = generate_text_with_openai(chat_id)
-        except Exception:
-            final_reply = "Solicitud completada correctamente."
-    else:
-        final_reply = genesios_reply
+    if wants_image(message):
+        if genesios_result.get("image_url"):
+            if genesios_reply and not is_bad_genesios_text(genesios_reply):
+                return genesios_reply
+            return "Aquí tienes la imagen generada correctamente."
+        return "No se pudo generar la imagen correctamente."
+
+    if wants_audio(message):
+        if genesios_result.get("audio_url"):
+            if genesios_reply and not is_bad_genesios_text(genesios_reply):
+                return genesios_reply
+            return "Aquí tienes el audio generado correctamente."
+        return "No se pudo generar el audio correctamente."
+
+    if wants_chart(message):
+        if genesios_result.get("chart_url"):
+            if genesios_reply and not is_bad_genesios_text(genesios_reply):
+                return genesios_reply
+            return "Aquí tienes el gráfico generado correctamente."
+        return "No se pudo generar el gráfico correctamente."
+
+    if genesios_reply and not is_bad_genesios_text(genesios_reply):
+        return genesios_reply
+
+    return "Solicitud completada correctamente."
+
+
+def build_special_success_result(chat_id: str, message: str, genesios_result: dict) -> dict:
+    final_reply = build_special_reply(message, genesios_result)
 
     result = {
         "reply": final_reply,
@@ -360,7 +382,7 @@ def generate_reply(chat_id: str, message: str):
                     "error": genesios_result.get("error") or "Error al conectar con GENESIOS.",
                 }
 
-            return build_special_success_result(chat_id, genesios_result)
+            return build_special_success_result(chat_id, message, genesios_result)
 
         if not genesios_result.get("error"):
             return build_text_success_result(chat_id, genesios_result)
