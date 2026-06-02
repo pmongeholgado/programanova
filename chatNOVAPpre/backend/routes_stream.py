@@ -90,3 +90,33 @@ def rich_reply(chat_id: str, message: str):
             status_code=500,
             detail=f"Error interno en stream chatNOVAP: {str(e)}"
         )
+
+# >>> NOVA&PABLO CHATNOVAP PREMIUM TOTAL OVERRIDE
+
+def normalize_reply_result(result):
+    if isinstance(result, dict):
+        resource_urls = result.get("resource_urls") or result.get("resourceUrls") or []
+        video_job_id = result.get("video_job_id") or result.get("videoJobId")
+        video_status_url = result.get("video_status_url") or result.get("videoStatusUrl")
+
+        return ChatResponse(
+            reply=result.get("reply", "") or "",
+            error=result.get("error"),
+            image_url=result.get("image_url"),
+            audio_url=result.get("audio_url"),
+            chart_url=result.get("chart_url"),
+            visual=result.get("visual"),
+            autor=result.get("autor"),
+            tecnologia=result.get("tecnologia"),
+            video_job_id=video_job_id,
+            video_status_url=video_status_url,
+            videoJobId=video_job_id,
+            videoStatusUrl=video_status_url,
+            resource_urls=resource_urls,
+            resourceUrls=resource_urls,
+            raw=result.get("raw") or result,
+        )
+
+    return ChatResponse(reply=str(result) if result is not None else "")
+
+# <<< NOVA&PABLO CHATNOVAP PREMIUM TOTAL OVERRIDE

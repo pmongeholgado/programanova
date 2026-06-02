@@ -16,3 +16,24 @@ class ChatResponse(BaseModel):
     image_url: Optional[str] = Field(None, description="URL de imagen generada si aplica")
     audio_url: Optional[str] = Field(None, description="URL de audio generado si aplica")
     chart_url: Optional[str] = Field(None, description="URL de gráfico generado si aplica")
+
+# >>> NOVA&PABLO CHATNOVAP PREMIUM TOTAL OVERRIDE
+
+class ChatResponse(BaseModel):
+    reply: str = ""
+    error: str | None = None
+    image_url: str | None = None
+    audio_url: str | None = None
+    chart_url: str | None = None
+    visual: str | None = None
+    autor: str | None = None
+    tecnologia: str | None = None
+    video_job_id: str | None = None
+    video_status_url: str | None = None
+    videoJobId: str | None = None
+    videoStatusUrl: str | None = None
+    resource_urls: list[str] | None = None
+    resourceUrls: list[str] | None = None
+    raw: dict | None = None
+
+# <<< NOVA&PABLO CHATNOVAP PREMIUM TOTAL OVERRIDE

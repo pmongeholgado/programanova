@@ -545,3 +545,198 @@ def generate_reply_stream(chat_id: str, message: str):
 
     if reply_full:
         append_message(chat_id, "assistant", reply_full)
+
+# >>> NOVA&PABLO CHATNOVAP PREMIUM TOTAL OVERRIDE
+
+def wants_premium_total(message: str) -> bool:
+    m = (message or "").lower()
+    premium_words = [
+        "premium", "video", "vídeo", "videos", "vídeos",
+        "mp4", "zip", "panel", "html", "markdown", "json",
+        "descargable", "descargar", "recurso", "recursos",
+        "paquete", "documento", "tabla", "grafico", "gráfico",
+        "audio", "imagen", "imagenes", "imágenes"
+    ]
+    return any(word in m for word in premium_words)
+
+
+def is_special_genesios_request(message: str) -> bool:
+    return wants_premium_total(message) or wants_image(message) or wants_audio(message) or wants_chart(message)
+
+
+def _np_abs_url(endpoint_url: str, url):
+    if not url:
+        return None
+
+    if not isinstance(url, str):
+        return None
+
+    clean = url.strip()
+    if not clean:
+        return None
+
+    if clean.startswith("http://") or clean.startswith("https://"):
+        return clean
+
+    from urllib.parse import urljoin
+    return urljoin(endpoint_url, clean)
+
+
+def extract_resource_urls_from_text(text: str) -> list[str]:
+    import re
+
+    raw = text or ""
+    found = set()
+
+    patterns = [
+        r"https?://[^\s)\]}'\"<>|]+",
+        r"/static/[^\s)\]}'\"<>|]+",
+        r"/video-status/[^\s)\]}'\"<>|]+",
+        r"/download/[^\s)\]}'\"<>|]+",
+    ]
+
+    for pattern in patterns:
+        for item in re.findall(pattern, raw):
+            clean = item.strip().rstrip(".,;")
+            if clean:
+                found.add(clean)
+
+    return list(found)
+
+
+def _np_collect_urls_from_value(endpoint_url: str, value, bucket: set):
+    if not value:
+        return
+
+    if isinstance(value, str):
+        full = _np_abs_url(endpoint_url, value)
+        if full:
+            bucket.add(full)
+        return
+
+    if isinstance(value, list):
+        for item in value:
+            _np_collect_urls_from_value(endpoint_url, item, bucket)
+        return
+
+    if isinstance(value, dict):
+        for item in value.values():
+            _np_collect_urls_from_value(endpoint_url, item, bucket)
+
+
+def call_genesios_once(endpoint_url: str, message: str) -> dict:
+    import requests
+
+    response = requests.post(
+        endpoint_url,
+        json={"mensaje": message},
+        headers={"Content-Type": "application/json"},
+        timeout=260,
+    )
+    response.raise_for_status()
+
+    data = response.json()
+    reply = (data.get("respuesta") or data.get("reply") or data.get("text") or "").strip()
+
+    image_url = _np_abs_url(endpoint_url, data.get("image_url") or data.get("visual"))
+    audio_url = _np_abs_url(endpoint_url, data.get("audio_url"))
+    chart_url = _np_abs_url(endpoint_url, data.get("chart_url") or data.get("graph_url") or data.get("grafico_url"))
+    visual = _np_abs_url(endpoint_url, data.get("visual"))
+
+    video_job_id = data.get("video_job_id") or data.get("videoJobId") or data.get("job_id")
+    video_status_url = _np_abs_url(endpoint_url, data.get("video_status_url") or data.get("videoStatusUrl"))
+
+    resource_urls = set()
+
+    for url in extract_resource_urls_from_text(reply):
+        full = _np_abs_url(endpoint_url, url) or url
+        if full:
+            resource_urls.add(full)
+
+    for key in [
+        "resource_urls", "resourceUrls", "resources", "recursos",
+        "download_url", "download_urls", "downloadUrl", "downloadUrls",
+        "zip_url", "zipUrl", "html_url", "htmlUrl", "panel_url", "panelUrl",
+        "video_url", "videoUrl", "mp4_url", "mp4Url"
+    ]:
+        _np_collect_urls_from_value(endpoint_url, data.get(key), resource_urls)
+
+    for url in [image_url, audio_url, chart_url, visual, video_status_url]:
+        if url:
+            resource_urls.add(url)
+
+    resource_urls = list(resource_urls)
+
+    return {
+        "reply": reply or "",
+        "image_url": image_url,
+        "audio_url": audio_url,
+        "chart_url": chart_url,
+        "visual": visual,
+        "autor": data.get("autor"),
+        "tecnologia": data.get("tecnologia"),
+        "video_job_id": video_job_id,
+        "video_status_url": video_status_url,
+        "videoJobId": video_job_id,
+        "videoStatusUrl": video_status_url,
+        "resource_urls": resource_urls,
+        "resourceUrls": resource_urls,
+        "raw": data,
+        "error": None,
+    }
+
+
+def generate_reply_with_genesios(message: str) -> dict:
+    try:
+        return call_genesios_once(GENESIOS_URL, message)
+    except Exception as e:
+        return {
+            "reply": "",
+            "image_url": None,
+            "audio_url": None,
+            "chart_url": None,
+            "visual": None,
+            "autor": None,
+            "tecnologia": None,
+            "video_job_id": None,
+            "video_status_url": None,
+            "videoJobId": None,
+            "videoStatusUrl": None,
+            "resource_urls": [],
+            "resourceUrls": [],
+            "raw": None,
+            "error": f"{GENESIOS_URL} -> {str(e)}",
+        }
+
+
+def build_special_success_result(chat_id: str, message: str, genesios_result: dict) -> dict:
+    resource_urls = genesios_result.get("resource_urls") or genesios_result.get("resourceUrls") or []
+    video_job_id = genesios_result.get("video_job_id") or genesios_result.get("videoJobId")
+    video_status_url = genesios_result.get("video_status_url") or genesios_result.get("videoStatusUrl")
+
+    final_reply = genesios_result.get("reply") or build_special_reply(message, genesios_result)
+
+    result = {
+        "reply": final_reply,
+        "image_url": genesios_result.get("image_url"),
+        "audio_url": genesios_result.get("audio_url"),
+        "chart_url": genesios_result.get("chart_url"),
+        "visual": genesios_result.get("visual"),
+        "autor": genesios_result.get("autor"),
+        "tecnologia": genesios_result.get("tecnologia"),
+        "video_job_id": video_job_id,
+        "video_status_url": video_status_url,
+        "videoJobId": video_job_id,
+        "videoStatusUrl": video_status_url,
+        "resource_urls": resource_urls,
+        "resourceUrls": resource_urls,
+        "raw": genesios_result.get("raw"),
+        "error": None,
+    }
+
+    if result["reply"]:
+        append_message(chat_id, "assistant", result["reply"])
+
+    return result
+
+# <<< NOVA&PABLO CHATNOVAP PREMIUM TOTAL OVERRIDE
