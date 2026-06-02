@@ -1,6 +1,7 @@
 const messagesEl = document.getElementById("messages");
 const inputEl = document.getElementById("inputMessage");
 const sendBtn = document.getElementById("sendBtn");
+const speakBtn = document.getElementById("speakBtn");
 const readLastBtn = document.getElementById("readLastBtn");
 const newChatBtn = document.getElementById("newChatBtn");
 const chatListEl = document.getElementById("chatList");
@@ -279,6 +280,52 @@ function scrollMessagesToBottom() {
   });
 }
 
+
+function startVoiceInput() {
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    alert("Tu navegador no soporta dictado por voz.");
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = "es-ES";
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  if (speakBtn) {
+    speakBtn.disabled = true;
+    speakBtn.textContent = "🎙️ Escuchando...";
+  }
+
+  recognition.onresult = (event) => {
+    const transcript = event.results?.[0]?.[0]?.transcript || "";
+    const current = inputEl.value.trim();
+
+    inputEl.value = current
+      ? current + " " + transcript
+      : transcript;
+
+    inputEl.focus();
+  };
+
+  recognition.onerror = () => {
+    alert("No se pudo usar el micrófono. Revisa permisos del navegador.");
+  };
+
+  recognition.onend = () => {
+    if (speakBtn) {
+      speakBtn.disabled = false;
+      speakBtn.textContent = "🎤 Hablar";
+    }
+  };
+
+  recognition.start();
+}
+
+
 function readLastBotMessage() {
   const chat = chats.find(c => c.id === activeChatId);
   if (!chat) return;
@@ -554,6 +601,14 @@ sendBtn.addEventListener("click", (e) => {
   e.preventDefault();
   sendMessage();
 });
+
+
+if (speakBtn) {
+  speakBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    startVoiceInput();
+  });
+}
 
 readLastBtn.addEventListener("click", (e) => {
   e.preventDefault();
