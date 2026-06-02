@@ -114,6 +114,163 @@ function buildBotContentHtml(text, imageUrl = null, audioUrl = null) {
   return html;
 }
 
+
+function escapePremiumHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function absolutePremiumUrl(url) {
+  if (!url || typeof url !== "string") return null;
+  let clean = url.trim();
+  if (!clean) return null;
+
+  if (clean.startsWith("http://") || clean.startsWith("https://")) {
+    return clean;
+  }
+
+  if (clean.startsWith("/static/") || clean.startsWith("/video-status/")) {
+    return "https://genesios.online" + clean;
+  }
+
+  return clean;
+}
+
+function premiumResourceLabel(url) {
+  const lower = String(url || "").toLowerCase();
+
+  if (lower.includes("video-status")) return "Estado del vídeo";
+  if (lower.includes(".mp4")) return "Ver / descargar MP4";
+  if (lower.includes(".zip")) return "Descargar ZIP completo";
+  if (lower.includes("index.html") || lower.includes(".html")) return "Abrir página HTML";
+  if (lower.includes(".md")) return "Guion Markdown";
+  if (lower.includes(".txt")) return "Guion TXT";
+  if (lower.includes(".json")) return "JSON de escenas";
+  if (lower.includes(".mp3") || lower.includes(".wav")) return "Audio";
+  if (lower.match(/\.(png|jpg|jpeg|webp|gif)(\?|$)/)) return "Imagen";
+  return "Recurso premium";
+}
+
+function collectPremiumUrlsFromAny(value, set) {
+  if (value == null) return;
+
+  if (typeof value === "string") {
+    const direct = absolutePremiumUrl(value);
+    if (
+      direct &&
+      (
+        direct.startsWith("http") ||
+        direct.startsWith("/static/") ||
+        direct.startsWith("/video-status/") ||
+        direct.includes(".mp4") ||
+        direct.includes(".zip") ||
+        direct.includes(".html") ||
+        direct.includes(".md") ||
+        direct.includes(".txt") ||
+        direct.includes(".json") ||
+        direct.includes(".mp3") ||
+        direct.includes(".png") ||
+        direct.includes(".jpg") ||
+        direct.includes(".jpeg") ||
+        direct.includes(".webp")
+      )
+    ) {
+      set.add(direct);
+    }
+
+    const markdownLinks = value.matchAll(/\[[^\]]+\]\(([^)]+)\)/g);
+    for (const match of markdownLinks) {
+      const u = absolutePremiumUrl(match[1]);
+      if (u) set.add(u);
+    }
+
+    const rawUrls = value.matchAll(/https?:\/\/[^\s)"']+/g);
+    for (const match of rawUrls) {
+      const u = absolutePremiumUrl(match[0]);
+      if (u) set.add(u);
+    }
+
+    return;
+  }
+
+  if (Array.isArray(value)) {
+    value.forEach(v => collectPremiumUrlsFromAny(v, set));
+    return;
+  }
+
+  if (typeof value === "object") {
+    Object.values(value).forEach(v => collectPremiumUrlsFromAny(v, set));
+  }
+}
+
+function buildPremiumExtrasHtml(data) {
+  const urls = new Set();
+
+  collectPremiumUrlsFromAny(data.resource_urls, urls);
+  collectPremiumUrlsFromAny(data.resourceUrls, urls);
+  collectPremiumUrlsFromAny(data.video_status_url, urls);
+  collectPremiumUrlsFromAny(data.videoStatusUrl, urls);
+  collectPremiumUrlsFromAny(data.image_url, urls);
+  collectPremiumUrlsFromAny(data.audio_url, urls);
+  collectPremiumUrlsFromAny(data.chart_url, urls);
+  collectPremiumUrlsFromAny(data.visual, urls);
+  collectPremiumUrlsFromAny(data.reply, urls);
+  collectPremiumUrlsFromAny(data.raw, urls);
+
+  const list = Array.from(urls).filter(Boolean);
+
+  if (!list.length) return "";
+
+  const mp4 = list.find(u => String(u).toLowerCase().includes(".mp4"));
+
+  let html = "";
+
+  if (mp4) {
+    html += `
+      <div class="premium-video" style="margin-top:14px;">
+        <video controls src="${escapePremiumHtml(mp4)}" style="width:100%;max-height:420px;border-radius:14px;"></video>
+      </div>
+    `;
+  }
+
+  html += `
+    <div class="premium-resources" style="margin-top:16px;">
+      <strong>Recursos premium disponibles:</strong>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+  `;
+
+  list.forEach((url) => {
+    html += `
+      <a href="${escapePremiumHtml(url)}"
+         target="_blank"
+         rel="noopener noreferrer"
+         style="display:inline-block;padding:8px 10px;border-radius:10px;background:#2f66ff;color:white;text-decoration:none;font-weight:600;">
+        ${escapePremiumHtml(premiumResourceLabel(url))}
+      </a>
+    `;
+  });
+
+  html += `
+      </div>
+    </div>
+  `;
+
+  if (data.video_job_id || data.videoJobId || data.video_status_url || data.videoStatusUrl) {
+    html += `
+      <div style="margin-top:12px;font-size:0.95em;opacity:0.9;">
+        Vídeo premium detectado${data.video_job_id || data.videoJobId ? ": " + escapePremiumHtml(data.video_job_id || data.videoJobId) : ""}.
+      </div>
+    `;
+  }
+
+  return html;
+}
+
+
 /* ---------- UI ---------- */
 
 function scrollMessagesToBottom() {
@@ -149,149 +306,6 @@ function readLastBotMessage() {
 }
 
 
-function escapeHtml(value) {
-  return String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-function normalizeResourceUrl(url) {
-  if (!url || typeof url !== "string") return null;
-  const clean = url.trim();
-  if (!clean) return null;
-  return clean;
-}
-
-function getFileLabel(url) {
-  const clean = String(url || "");
-  const lower = clean.toLowerCase();
-
-  if (lower.includes("video-status")) return "Estado del vídeo";
-  if (lower.endsWith(".mp4") || lower.includes(".mp4")) return "Descargar / ver MP4";
-  if (lower.endsWith(".zip") || lower.includes(".zip")) return "Descargar ZIP completo";
-  if (lower.endsWith(".html") || lower.includes("index.html")) return "Abrir página HTML";
-  if (lower.endsWith(".md") || lower.includes(".md")) return "Guion Markdown";
-  if (lower.endsWith(".txt") || lower.includes(".txt")) return "Guion TXT";
-  if (lower.endsWith(".json") || lower.includes(".json")) return "JSON de escenas";
-  if (lower.endsWith(".mp3") || lower.includes(".mp3")) return "Audio";
-  if (lower.match(/\.(png|jpg|jpeg|webp|gif)(\?|$)/)) return "Imagen";
-  return "Recurso premium";
-}
-
-function collectPremiumUrls(message) {
-  const urls = new Set();
-
-  const add = (value) => {
-    const clean = normalizeResourceUrl(value);
-    if (clean) urls.add(clean);
-  };
-
-  add(message.imageUrl);
-  add(message.audioUrl);
-  add(message.chartUrl);
-  add(message.visual);
-  add(message.videoStatusUrl);
-
-  if (Array.isArray(message.resourceUrls)) {
-    message.resourceUrls.forEach(add);
-  }
-
-  if (message.raw && typeof message.raw === "object") {
-    [
-      "image_url", "audio_url", "chart_url", "visual",
-      "video_status_url", "videoStatusUrl",
-      "download_url", "zip_url", "html_url",
-      "video_url", "mp4_url"
-    ].forEach(k => add(message.raw[k]));
-  }
-
-  return Array.from(urls);
-}
-
-function markdownLinksToHtml(text) {
-  let safe = escapeHtml(text || "");
-
-  safe = safe.replace(
-    /\[([^\]]+)\]\(([^)]+)\)/g,
-    function(_, label, url) {
-      const cleanUrl = escapeHtml(url);
-      const cleanLabel = escapeHtml(label);
-      return `<a class="premium-link" href="${cleanUrl}" target="_blank" rel="noopener noreferrer">${cleanLabel}</a>`;
-    }
-  );
-
-  safe = safe.replace(/\n/g, "<br>");
-  return safe;
-}
-
-function buildPremiumBotContentHtml(message) {
-  const textHtml = markdownLinksToHtml(message.text || "");
-  const urls = collectPremiumUrls(message);
-
-  let html = `<div class="premium-text">${textHtml}</div>`;
-
-  const mainImage = message.imageUrl || message.visual;
-  if (mainImage) {
-    html += `
-      <div class="premium-media">
-        <img src="${escapeHtml(mainImage)}" alt="Recurso visual premium" style="max-width:100%;border-radius:14px;margin-top:14px;" />
-      </div>
-    `;
-  }
-
-  if (message.audioUrl) {
-    html += `
-      <div class="premium-audio" style="margin-top:14px;">
-        <audio controls src="${escapeHtml(message.audioUrl)}" style="width:100%;"></audio>
-      </div>
-    `;
-  }
-
-  const mp4 = urls.find(u => String(u).toLowerCase().includes(".mp4"));
-  if (mp4) {
-    html += `
-      <div class="premium-video" style="margin-top:14px;">
-        <video controls src="${escapeHtml(mp4)}" style="width:100%;max-height:420px;border-radius:14px;"></video>
-      </div>
-    `;
-  }
-
-  if (urls.length) {
-    html += `<div class="premium-resources" style="margin-top:16px;">`;
-    html += `<strong>Recursos premium disponibles:</strong>`;
-    html += `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">`;
-
-    urls.forEach((url) => {
-      html += `
-        <a href="${escapeHtml(url)}"
-           target="_blank"
-           rel="noopener noreferrer"
-           style="display:inline-block;padding:8px 10px;border-radius:10px;background:#2f66ff;color:white;text-decoration:none;font-weight:600;">
-          ${escapeHtml(getFileLabel(url))}
-        </a>
-      `;
-    });
-
-    html += `</div></div>`;
-  }
-
-  if (message.videoJobId || message.videoStatusUrl) {
-    html += `
-      <div class="premium-status" style="margin-top:14px;font-size:0.95em;opacity:0.9;">
-        Vídeo premium detectado.
-        ${message.videoJobId ? "ID: " + escapeHtml(message.videoJobId) : ""}
-      </div>
-    `;
-  }
-
-  return html;
-}
-
-
-
 function normalizeMessage(messageOrText, sender) {
   if (typeof messageOrText === "string") {
     return {
@@ -299,26 +313,16 @@ function normalizeMessage(messageOrText, sender) {
       sender,
       imageUrl: null,
       audioUrl: null,
-      chartUrl: null,
-      visual: null,
-      videoJobId: null,
-      videoStatusUrl: null,
-      resourceUrls: [],
-      raw: null
+      premiumHtml: ""
     };
   }
 
   return {
     text: messageOrText.text || "",
     sender: messageOrText.sender || sender || "bot",
-    imageUrl: messageOrText.imageUrl || messageOrText.image_url || null,
-    audioUrl: messageOrText.audioUrl || messageOrText.audio_url || null,
-    chartUrl: messageOrText.chartUrl || messageOrText.chart_url || null,
-    visual: messageOrText.visual || null,
-    videoJobId: messageOrText.videoJobId || messageOrText.video_job_id || null,
-    videoStatusUrl: messageOrText.videoStatusUrl || messageOrText.video_status_url || null,
-    resourceUrls: messageOrText.resourceUrls || messageOrText.resource_urls || [],
-    raw: messageOrText.raw || null
+    imageUrl: messageOrText.imageUrl || null,
+    audioUrl: messageOrText.audioUrl || null,
+    premiumHtml: messageOrText.premiumHtml || ""
   };
 }
 
@@ -333,7 +337,7 @@ function addMessageToDOM(messageOrText, sender) {
   if (message.sender === "user") {
     div.textContent = message.text;
   } else {
-    div.innerHTML = buildPremiumBotContentHtml(message);
+    div.innerHTML = buildBotContentHtml(message.text, message.imageUrl, message.audioUrl) + (message.premiumHtml || "");
   }
 
   messagesEl.appendChild(div);
@@ -446,7 +450,6 @@ function deleteChat(id) {
 
 /* ---------- ENVÍO RICO CON APOYO EN GENESIOS ---------- */
 
-async 
 async function sendMessage() {
   if (isSending) return;
 
@@ -462,13 +465,7 @@ async function sendMessage() {
     text,
     sender: "user",
     imageUrl: null,
-    audioUrl: null,
-    chartUrl: null,
-    visual: null,
-    videoJobId: null,
-    videoStatusUrl: null,
-    resourceUrls: [],
-    raw: null
+    audioUrl: null
   });
 
   if (chat.title === "Nueva conversación") {
@@ -476,6 +473,7 @@ async function sendMessage() {
   }
 
   inputEl.value = "";
+  inputEl.focus();
 
   saveState();
   renderChatList();
@@ -486,13 +484,7 @@ async function sendMessage() {
       text: "NOVA está escribiendo...",
       sender: "bot",
       imageUrl: null,
-      audioUrl: null,
-      chartUrl: null,
-      visual: null,
-      videoJobId: null,
-      videoStatusUrl: null,
-      resourceUrls: [],
-      raw: null
+      audioUrl: null
     },
     "bot"
   );
@@ -501,31 +493,21 @@ async function sendMessage() {
   let dots = 0;
   const typingInterval = setInterval(() => {
     dots = (dots + 1) % 4;
-    messageDiv.innerHTML = buildPremiumBotContentHtml({
-      text: "NOVA está escribiendo" + ".".repeat(dots),
-      sender: "bot",
-      imageUrl: null,
-      audioUrl: null,
-      chartUrl: null,
-      visual: null,
-      videoJobId: null,
-      videoStatusUrl: null,
-      resourceUrls: [],
-      raw: null
-    });
-  }, 500);
+    messageDiv.innerHTML = buildBotContentHtml(
+      "NOVA está escribiendo" + ".".repeat(dots),
+      null,
+      null
+    );
+  }, 400);
 
   try {
-    const url =
-      `${API_BASE_URL}/rich-reply?chat_id=${encodeURIComponent(activeChatId)}&message=${encodeURIComponent(text)}`;
-
+    const url = `${API_BASE_URL}/rich-reply?chat_id=${encodeURIComponent(activeChatId)}&message=${encodeURIComponent(text)}`;
     const res = await fetch(url, {
       method: "POST"
     });
 
     if (!res.ok) {
-      const errText = await res.text().catch(() => "");
-      throw new Error(`HTTP ${res.status} ${errText}`);
+      throw new Error("Respuesta no válida del servidor");
     }
 
     const data = await res.json();
@@ -533,26 +515,31 @@ async function sendMessage() {
     clearInterval(typingInterval);
     messageDiv.style.opacity = "1";
 
-    const finalMessage = {
-      text: data.reply || "No se pudo obtener respuesta.",
+    const finalText = data.reply || "No se pudo obtener respuesta.";
+    const imageUrl = data.image_url || null;
+    const audioUrl = data.audio_url || null;
+    const premiumHtml = buildPremiumExtrasHtml(data);
+
+    messageDiv.innerHTML = buildBotContentHtml(finalText, imageUrl, audioUrl) + premiumHtml;
+
+    chat.messages.push({
+      text: finalText,
       sender: "bot",
-      imageUrl: data.image_url || null,
-      audioUrl: data.audio_url || null,
-      chartUrl: data.chart_url || null,
-      visual: data.visual || null,
-      videoJobId: data.video_job_id || data.videoJobId || null,
-      videoStatusUrl: data.video_status_url || data.videoStatusUrl || null,
-      resourceUrls: data.resource_urls || data.resourceUrls || [],
-      raw: data.raw || null
-    };
+      imageUrl,
+      audioUrl,
+      premiumHtml
+    });
 
-    messageDiv.innerHTML = buildPremiumBotContentHtml(finalMessage);
-
-    chat.messages.push(finalMessage);
+    if (audioUrl) {
+      try {
+        const audio = new Audio(audioUrl);
+        audio.play().catch(() => {});
+      } catch (_) {}
+    }
   } catch (err) {
     clearInterval(typingInterval);
+    messageDiv.textContent = "❌ Error conectando con NOVA";
     messageDiv.style.opacity = "1";
-    messageDiv.textContent = "❌ Error conectando con NOVA: " + err.message;
     console.error("chatNOVAP error:", err);
   }
 
@@ -560,7 +547,6 @@ async function sendMessage() {
   saveState();
   scrollMessagesToBottom();
 }
-
 
 /* ---------- EVENTOS ---------- */
 
