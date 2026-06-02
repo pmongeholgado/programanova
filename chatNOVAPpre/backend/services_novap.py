@@ -19,7 +19,12 @@ MAX_HISTORY_MESSAGES = 20
 
 
 def is_special_genesios_request(message: str) -> bool:
-    return wants_image(message) or wants_audio(message) or wants_chart(message)
+    return (
+        wants_image(message)
+        or wants_audio(message)
+        or wants_chart(message)
+        or wants_premium_resource(message)
+    )
 
 
 def wants_image(message: str) -> bool:
@@ -67,6 +72,22 @@ def wants_chart(message: str) -> bool:
     ]
 
     return any(re.search(pattern, m_normalized) for pattern in chart_patterns)
+
+
+def wants_premium_resource(message: str) -> bool:
+    m = (message or "").lower()
+    m_normalized = "".join(
+        c for c in unicodedata.normalize("NFD", m)
+        if unicodedata.category(c) != "Mn"
+    )
+
+    premium_words = [
+        "video", "mp4", "zip", "panel", "html", "descargable",
+        "recurso", "recursos", "premium", "presentacion",
+        "documento", "archivo", "enlace", "enlaces"
+    ]
+
+    return any(re.search(r"\b" + re.escape(word) + r"\b", m_normalized) for word in premium_words)
 
 
 def absolutize_url(base_url: str, maybe_relative: str | None) -> str | None:
@@ -204,42 +225,118 @@ def build_model_history(chat_id: str):
     return clean_history
 
 
+def extract_resource_urls_from_text(text: str, endpoint_url: str) -> list:
+    if not text:
+        return []
+
+    found = []
+    pattern = r"https?://[^\s)\]\"']+|/(?:static|video-status)/[^\s)\]\"']+"
+
+    for raw_url in re.findall(pattern, text):
+        clean_url = raw_url.rstrip(".,;")
+        abs_url = absolutize_url(endpoint_url, clean_url)
+        if abs_url and abs_url not in found:
+            found.append(abs_url)
+
+    return found
+
+
 def call_genesios_once(endpoint_url: str, message: str) -> dict:
     response = requests.post(
         endpoint_url,
         json={"mensaje": message},
         headers={"Content-Type": "application/json"},
-        timeout=180,
+        timeout=220,
     )
     response.raise_for_status()
-
     data = response.json()
 
-    reply = (data.get("respuesta") or data.get("reply") or "").strip()
+    reply = (data.get("respuesta") or data.get("reply") or data.get("message") or "").strip()
 
-    image_url = data.get("image_url") or data.get("visual")
-    audio_url = data.get("audio_url")
-    chart_url = data.get("chart_url") or data.get("graph_url") or data.get("grafico_url")
+    image_url = absolutize_url(endpoint_url, data.get("image_url"))
+    audio_url = absolutize_url(endpoint_url, data.get("audio_url"))
+    chart_url = absolutize_url(
+        endpoint_url,
+        data.get("chart_url") or data.get("graph_url") or data.get("grafico_url")
+    )
+    visual = absolutize_url(endpoint_url, data.get("visual"))
 
-    image_url = absolutize_url(endpoint_url, image_url)
-    audio_url = absolutize_url(endpoint_url, audio_url)
-    chart_url = absolutize_url(endpoint_url, chart_url)
+    video_job_id = data.get("video_job_id") or data.get("videoJobId")
+    video_status_url = absolutize_url(
+        endpoint_url,
+        data.get("video_status_url") or data.get("videoStatusUrl")
+    )
 
-    if reply or image_url or audio_url or chart_url:
-        return {
-            "reply": reply or "",
-            "image_url": image_url,
-            "audio_url": audio_url,
-            "chart_url": chart_url,
-            "error": None,
-        }
+    resource_urls = extract_resource_urls_from_text(reply, endpoint_url)
+
+    direct_resource_keys = [
+        "panel_url", "html_url", "zip_url", "download_url", "file_url",
+        "video_url", "mp4_url", "document_url", "table_url", "csv_url",
+        "pdf_url", "markdown_url", "md_url", "json_url"
+    ]
+
+    for key in direct_resource_keys:
+        value = data.get(key)
+        if value:
+            abs_value = absolutize_url(endpoint_url, value)
+            if abs_value and abs_value not in resource_urls:
+                resource_urls.append(abs_value)
+
+    if video_status_url and video_status_url not in resource_urls:
+        resource_urls.append(video_status_url)
+
+    result = {
+        "reply": reply,
+        "image_url": image_url,
+        "audio_url": audio_url,
+        "chart_url": chart_url,
+        "visual": visual,
+        "video_job_id": video_job_id,
+        "videoJobId": video_job_id,
+        "video_status_url": video_status_url,
+        "videoStatusUrl": video_status_url,
+        "resource_urls": resource_urls,
+        "resourceUrls": resource_urls,
+        "bot_id": data.get("bot_id"),
+        "autor": data.get("autor"),
+        "tecnologia": data.get("tecnologia"),
+        "error": None,
+    }
+
+    for key, value in data.items():
+        if key not in result:
+            if isinstance(value, str) and (key.endswith("_url") or value.startswith("/static/") or value.startswith("/video-status/")):
+                result[key] = absolutize_url(endpoint_url, value)
+            else:
+                result[key] = value
+
+    has_content = any([
+        result.get("reply"),
+        result.get("image_url"),
+        result.get("audio_url"),
+        result.get("chart_url"),
+        result.get("visual"),
+        result.get("video_job_id"),
+        result.get("video_status_url"),
+        result.get("resource_urls"),
+    ])
+
+    if has_content:
+        return result
 
     return {
         "reply": "",
         "image_url": None,
         "audio_url": None,
         "chart_url": None,
-        "error": "No se pudo obtener una respuesta válida de GENESIOS.",
+        "visual": None,
+        "video_job_id": None,
+        "videoJobId": None,
+        "video_status_url": None,
+        "videoStatusUrl": None,
+        "resource_urls": [],
+        "resourceUrls": [],
+        "error": "No se pudo obtener una respuesta valida del motor premium.",
     }
 
 
@@ -247,32 +344,8 @@ def generate_reply_with_genesios(message: str) -> dict:
     try:
         result = call_genesios_once(GENESIOS_URL, message)
 
-        if wants_image(message) and not result.get("image_url"):
-            return {
-                "reply": result.get("reply", ""),
-                "image_url": None,
-                "audio_url": None,
-                "chart_url": None,
-                "error": "GENESIOS respondió sin image_url.",
-            }
-
-        if wants_audio(message) and not result.get("audio_url"):
-            return {
-                "reply": result.get("reply", ""),
-                "image_url": None,
-                "audio_url": None,
-                "chart_url": None,
-                "error": "GENESIOS respondió sin audio_url.",
-            }
-
-        if wants_chart(message) and not result.get("chart_url"):
-            return {
-                "reply": result.get("reply", ""),
-                "image_url": None,
-                "audio_url": None,
-                "chart_url": None,
-                "error": "GENESIOS respondió sin chart_url.",
-            }
+        if result.get("error"):
+            return result
 
         return result
 
@@ -282,6 +355,13 @@ def generate_reply_with_genesios(message: str) -> dict:
             "image_url": None,
             "audio_url": None,
             "chart_url": None,
+            "visual": None,
+            "video_job_id": None,
+            "videoJobId": None,
+            "video_status_url": None,
+            "videoStatusUrl": None,
+            "resource_urls": [],
+            "resourceUrls": [],
             "error": f"{GENESIOS_URL} -> {str(e)}",
         }
 
@@ -342,13 +422,15 @@ def build_special_reply(message: str, genesios_result: dict) -> str:
 def build_special_success_result(chat_id: str, message: str, genesios_result: dict) -> dict:
     final_reply = build_special_reply(message, genesios_result)
 
-    result = {
-        "reply": final_reply,
-        "image_url": genesios_result.get("image_url"),
-        "audio_url": genesios_result.get("audio_url"),
-        "chart_url": genesios_result.get("chart_url"),
-        "error": None,
-    }
+    result = dict(genesios_result)
+    result["reply"] = final_reply
+    result["error"] = None
+
+    if "resourceUrls" not in result and "resource_urls" in result:
+        result["resourceUrls"] = result.get("resource_urls") or []
+
+    if "resource_urls" not in result and "resourceUrls" in result:
+        result["resource_urls"] = result.get("resourceUrls") or []
 
     if result["reply"]:
         append_message(chat_id, "assistant", result["reply"])

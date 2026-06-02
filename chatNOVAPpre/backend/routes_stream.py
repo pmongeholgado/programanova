@@ -30,28 +30,36 @@ def stream_reply(chat_id: str, message: str):
 
 def normalize_reply_result(result):
     """
-    Normaliza la respuesta enriquecida para mantener una salida
-    estable y compatible con el frontend actual.
+    Normaliza sin perder campos premium.
+    Antes se devolvia ChatResponse y se filtraban claves extra.
+    Ahora chatNOVAP backend entrega todo lo recibido:
+    video_job_id, video_status_url, resourceUrls, ZIP, HTML, MP4, etc.
     """
     if isinstance(result, dict):
-        return ChatResponse(
-            reply=result.get("reply", "") or "",
-            error=result.get("error"),
-            image_url=result.get("image_url"),
-            audio_url=result.get("audio_url"),
-            chart_url=result.get("chart_url")
-        )
+        result.setdefault("reply", "")
+        result.setdefault("error", None)
+        result.setdefault("image_url", None)
+        result.setdefault("audio_url", None)
+        result.setdefault("chart_url", None)
 
-    return ChatResponse(
-        reply=str(result) if result is not None else "",
-        error=None,
-        image_url=None,
-        audio_url=None,
-        chart_url=None
-    )
+        if "resourceUrls" not in result and "resource_urls" in result:
+            result["resourceUrls"] = result.get("resource_urls") or []
+
+        if "resource_urls" not in result and "resourceUrls" in result:
+            result["resource_urls"] = result.get("resourceUrls") or []
+
+        return result
+
+    return {
+        "reply": str(result) if result is not None else "",
+        "error": None,
+        "image_url": None,
+        "audio_url": None,
+        "chart_url": None,
+    }
 
 
-@router.post("/rich-reply", response_model=ChatResponse)
+@router.post("/rich-reply")
 def rich_reply(chat_id: str, message: str):
     """
     Ruta enriquecida para soporte completo:
