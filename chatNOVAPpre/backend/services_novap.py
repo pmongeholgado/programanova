@@ -370,12 +370,17 @@ def generate_reply(chat_id: str, message: str):
         append_message(chat_id, "user", message)
 
         special_request = is_special_genesios_request(message)
-        genesios_result = generate_reply_with_genesios(message)
 
+        # NOVA&PABLO FIX MINIMO REAL:
+        # Texto normal va directo a OpenAI.
+        # Peticiones especiales van a GENESIOS.
+        # No se toca generate_reply_stream ni /stream/reply.
         if special_request:
+            genesios_result = generate_reply_with_genesios(message)
+
             if genesios_result.get("error"):
                 return {
-                    "reply": "No se pudo completar correctamente la petición especial en GENESIOS.",
+                    "reply": "No se pudo completar correctamente la peticion especial en GENESIOS.",
                     "image_url": None,
                     "audio_url": None,
                     "chart_url": None,
@@ -383,9 +388,6 @@ def generate_reply(chat_id: str, message: str):
                 }
 
             return build_special_success_result(chat_id, message, genesios_result)
-
-        if not genesios_result.get("error"):
-            return build_text_success_result(chat_id, genesios_result)
 
         reply = generate_text_with_openai(chat_id)
 
