@@ -1,6 +1,7 @@
 from openai import OpenAI
 import requests
 import re
+import unicodedata
 
 from backend.nova_identity import NOVA_SYSTEM_PROMPT
 from backend.config_novap import (
@@ -42,12 +43,30 @@ def wants_audio(message: str) -> bool:
 
 def wants_chart(message: str) -> bool:
     m = (message or "").lower()
-    chart_words = [
-        "gráfico", "grafico", "chart", "charts", "gráfica", "grafica",
-        "barras", "líneas", "lineas", "pie", "circular", "comparativa",
-        "tabla", "table"
+
+    # NOVA&PABLO FIX MINIMO REAL:
+    # Evita falso positivo: "grafica" dentro de "cinematografica".
+    # Conserva lo correcto: grafico/grafica/lineas con o sin acento.
+    m_normalized = "".join(
+        c for c in unicodedata.normalize("NFD", m)
+        if unicodedata.category(c) != "Mn"
+    )
+
+    chart_patterns = [
+        r"\bgrafico\b",
+        r"\bgrafica\b",
+        r"\bchart\b",
+        r"\bcharts\b",
+        r"\bbarras\b",
+        r"\blineas\b",
+        r"\bpie\b",
+        r"\bcircular\b",
+        r"\bcomparativa\b",
+        r"\btabla\b",
+        r"\btable\b",
     ]
-    return any(word in m for word in chart_words)
+
+    return any(re.search(pattern, m_normalized) for pattern in chart_patterns)
 
 
 def absolutize_url(base_url: str, maybe_relative: str | None) -> str | None:
