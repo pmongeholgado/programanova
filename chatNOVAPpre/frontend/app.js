@@ -272,6 +272,28 @@ function buildPremiumExtrasHtml(data) {
 }
 
 
+
+function firstPremiumValue(data, keys) {
+  if (!data || !keys || !Array.isArray(keys)) return null;
+
+  for (const key of keys) {
+    const parts = key.split(".");
+    let current = data;
+
+    for (const part of parts) {
+      if (current == null) break;
+      current = current[part];
+    }
+
+    if (current) {
+      return current;
+    }
+  }
+
+  return null;
+}
+
+
 function safePremiumJson(data) {
   try {
     return JSON.stringify(data, null, 2);
@@ -417,24 +439,19 @@ async function startPremiumVideoPolling(statusUrl, messageDiv, chat, messageReco
 
       const merged = mergePremiumResponses(initialData, statusData);
       const finalText =
-        statusData.respuesta ||
-        statusData.reply ||
-        initialData.reply ||
+        firstPremiumValue(statusData, ["respuesta", "reply", "result.respuesta", "result.reply", "raw.respuesta", "raw.reply"]) ||
+        firstPremiumValue(initialData, ["respuesta", "reply", "result.respuesta", "result.reply", "raw.respuesta", "raw.reply"]) ||
         "GENESIOS sigue procesando el recurso premium.";
 
-      const imageUrl =
-        statusData.image_url ||
-        statusData.imageUrl ||
-        initialData.image_url ||
-        initialData.imageUrl ||
-        null;
+      const imageUrl = absolutePremiumUrl(
+        firstPremiumValue(statusData, ["image_url", "imageUrl", "visual", "result.image_url", "result.imageUrl", "result.visual", "raw.image_url", "raw.visual"]) ||
+        firstPremiumValue(initialData, ["image_url", "imageUrl", "visual", "result.image_url", "result.imageUrl", "result.visual", "raw.image_url", "raw.visual"])
+      );
 
-      const audioUrl =
-        statusData.audio_url ||
-        statusData.audioUrl ||
-        initialData.audio_url ||
-        initialData.audioUrl ||
-        null;
+      const audioUrl = absolutePremiumUrl(
+        firstPremiumValue(statusData, ["audio_url", "audioUrl", "result.audio_url", "result.audioUrl", "raw.audio_url", "raw.audioUrl"]) ||
+        firstPremiumValue(initialData, ["audio_url", "audioUrl", "result.audio_url", "result.audioUrl", "raw.audio_url", "raw.audioUrl"])
+      );
 
       const updatedPremiumHtml = buildPremiumTotalHtml(merged);
 
