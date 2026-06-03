@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Query, HTTPException
 from fastapi.responses import StreamingResponse
 
 from backend.schemas_novap import ChatResponse
 from backend.services_novap import generate_reply_stream, generate_reply
+import requests
 
 router = APIRouter()
 
@@ -120,3 +121,79 @@ def normalize_reply_result(result):
     return ChatResponse(reply=str(result) if result is not None else "")
 
 # <<< NOVA&PABLO CHATNOVAP PREMIUM TOTAL OVERRIDE
+
+
+@router.get("/genesios-premium-bridge")
+def genesios_premium_bridge(url: str = Query(...)):
+    """
+    NOVA&PABLO · PUENTE PREMIUM TOTAL GENESIOS.
+
+    Objetivo:
+    que chatNOVAP pueda traer desde backend respuestas premium finales
+    de GENESIOS sin bloqueo CORS del navegador.
+
+    No es solo vídeo:
+    admite estados premium y recursos JSON/texto de GENESIOS cuando estén
+    bajo rutas permitidas de genesios.online.
+    """
+    allowed_prefixes = (
+        "https://genesios.online/video-status/",
+        "https://genesios.online/static/",
+        "https://genesios.online/download/",
+    )
+
+    if not url.startswith(allowed_prefixes):
+        return {
+            "status": "error_url_no_permitida",
+            "error": "Solo se permiten URLs premium controladas de genesios.online.",
+            "url": url,
+            "allowed_prefixes": allowed_prefixes,
+        }
+
+    try:
+        response = requests.get(
+            url,
+            headers={"Accept": "application/json, text/plain, */*"},
+            timeout=45,
+        )
+
+        content_type = response.headers.get("content-type", "")
+        text = response.text
+
+        if "application/json" in content_type:
+            data = response.json()
+        else:
+            try:
+                import json
+                data = json.loads(text)
+            except Exception:
+                data = {
+                    "status": "raw_text",
+                    "respuesta": text,
+                    "content_type": content_type,
+                }
+
+        if isinstance(data, dict):
+            data.setdefault("proxied_by", "programanova-chatnovap")
+            data.setdefault("source_url", url)
+            data.setdefault("premium_bridge", "NOVA&PABLO · PUENTE PREMIUM TOTAL GENESIOS")
+
+        return data
+
+    except Exception as exc:
+        return {
+            "status": "error_proxy_genesios_premium",
+            "url": url,
+            "error": str(exc),
+            "premium_bridge": "NOVA&PABLO · PUENTE PREMIUM TOTAL GENESIOS",
+        }
+
+
+@router.get("/genesios-video-status")
+def genesios_video_status_proxy(url: str = Query(...)):
+    """
+    Compatibilidad: ruta antigua de estado de vídeo.
+    Internamente usa el puente premium total.
+    """
+    return genesios_premium_bridge(url)
+

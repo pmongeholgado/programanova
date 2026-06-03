@@ -300,6 +300,23 @@ function buildPremiumTotalHtml(data) {
   return buildPremiumExtrasHtml(data) + buildGenesiosFullResponseHtml(data);
 }
 
+
+function proxyPremiumBridgeUrl(url) {
+  const clean = absolutePremiumUrl(url);
+  if (!clean) return null;
+
+  if (
+    clean.startsWith("https://genesios.online/video-status/") ||
+    clean.startsWith("https://genesios.online/static/") ||
+    clean.startsWith("https://genesios.online/download/")
+  ) {
+    return `${API_BASE}/stream/genesios-premium-bridge?url=${encodeURIComponent(clean)}`;
+  }
+
+  return clean;
+}
+
+
 function getPremiumVideoStatusUrl(data) {
   if (!data) return null;
 
@@ -765,7 +782,7 @@ async function sendMessage() {
 
     chat.messages.push(botMessageRecord);
 
-    const premiumStatusUrl = getPremiumVideoStatusUrl(data);
+    const premiumStatusUrl = proxyPremiumBridgeUrl(getPremiumVideoStatusUrl(data));
     if (premiumStatusUrl) {
       startPremiumVideoPolling(premiumStatusUrl, messageDiv, chat, botMessageRecord, data);
     }
