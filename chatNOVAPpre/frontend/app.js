@@ -272,6 +272,192 @@ function buildPremiumExtrasHtml(data) {
 }
 
 
+function safePremiumJson(data) {
+  try {
+    return JSON.stringify(data, null, 2);
+  } catch (error) {
+    return String(data ?? "");
+  }
+}
+
+function buildGenesiosFullResponseHtml(data) {
+  if (!data) return "";
+
+  const full = {
+    aviso: "Respuesta completa recibida por chatNOVAP desde GENESIOS/backend premium.",
+    datos: data
+  };
+
+  return `
+    <details class="genesios-full-response" style="margin-top:16px;border:1px solid rgba(255,255,255,0.18);border-radius:12px;padding:10px;background:rgba(0,0,0,0.22);">
+      <summary style="cursor:pointer;font-weight:700;">Respuesta completa GENESIOS</summary>
+      <pre style="white-space:pre-wrap;word-break:break-word;max-height:420px;overflow:auto;margin-top:10px;font-size:0.86em;">${escapePremiumHtml(safePremiumJson(full))}</pre>
+    </details>
+  `;
+}
+
+function buildPremiumTotalHtml(data) {
+  return buildPremiumExtrasHtml(data) + buildGenesiosFullResponseHtml(data);
+}
+
+function getPremiumVideoStatusUrl(data) {
+  if (!data) return null;
+
+  const direct =
+    data.video_status_url ||
+    data.videoStatusUrl ||
+    data.status_url ||
+    data.statusUrl ||
+    data.video?.status_url ||
+    data.video?.statusUrl ||
+    data.raw?.video_status_url ||
+    data.raw?.videoStatusUrl ||
+    data.raw?.status_url ||
+    data.raw?.statusUrl;
+
+  if (direct) return absolutePremiumUrl(direct);
+
+  const urls = new Set();
+  collectPremiumUrlsFromAny(data, urls);
+
+  return Array.from(urls).find((url) =>
+    String(url || "").toLowerCase().includes("video-status")
+  ) || null;
+}
+
+function isPremiumVideoFinished(data) {
+  const text = safePremiumJson(data).toLowerCase();
+
+  if (
+    text.includes('"status": "done"') ||
+    text.includes('"status":"done"') ||
+    text.includes('"status": "completed"') ||
+    text.includes('"status":"completed"') ||
+    text.includes('"status": "complete"') ||
+    text.includes('"status":"complete"') ||
+    text.includes('"status": "success"') ||
+    text.includes('"status":"success"') ||
+    text.includes('"estado": "terminado"') ||
+    text.includes('"estado":"terminado"') ||
+    text.includes('"estado": "completado"') ||
+    text.includes('"estado":"completado"')
+  ) {
+    return true;
+  }
+
+  return (
+    text.includes(".mp4") ||
+    text.includes(".zip") ||
+    text.includes("video_url") ||
+    text.includes("mp4_url")
+  );
+}
+
+function mergePremiumResponses(initialData, statusData) {
+  return {
+    ...initialData,
+    estado_actualizado_genesios: statusData,
+    raw: {
+      inicial: initialData,
+      estado_actualizado: statusData
+    }
+  };
+}
+
+async function startPremiumVideoPolling(statusUrl, messageDiv, chat, messageRecord, initialData) {
+  if (!statusUrl || !messageDiv || !messageRecord) return;
+
+  let attempts = 0;
+  const maxAttempts = 60;
+
+  async function checkStatus() {
+    attempts += 1;
+
+    try {
+      const response = await fetch(statusUrl, {
+        method: "GET",
+        headers: {
+          "Accept": "application/json, text/plain, */*"
+        }
+      });
+
+      const contentType = response.headers.get("content-type") || "";
+      let statusData;
+
+      if (contentType.includes("application/json")) {
+        statusData = await response.json();
+      } else {
+        const text = await response.text();
+        try {
+          statusData = JSON.parse(text);
+        } catch {
+          statusData = {
+            status: "raw_text",
+            respuesta: text
+          };
+        }
+      }
+
+      const merged = mergePremiumResponses(initialData, statusData);
+      const finalText =
+        statusData.respuesta ||
+        statusData.reply ||
+        initialData.reply ||
+        "GENESIOS sigue procesando el recurso premium.";
+
+      const imageUrl =
+        statusData.image_url ||
+        statusData.imageUrl ||
+        initialData.image_url ||
+        initialData.imageUrl ||
+        null;
+
+      const audioUrl =
+        statusData.audio_url ||
+        statusData.audioUrl ||
+        initialData.audio_url ||
+        initialData.audioUrl ||
+        null;
+
+      const updatedPremiumHtml = buildPremiumTotalHtml(merged);
+
+      messageRecord.text = finalText;
+      messageRecord.imageUrl = imageUrl;
+      messageRecord.audioUrl = audioUrl;
+      messageRecord.premiumHtml = updatedPremiumHtml;
+
+      messageDiv.innerHTML = buildBotContentHtml(finalText, imageUrl, audioUrl) + updatedPremiumHtml;
+      saveState();
+      scrollMessagesToBottom();
+
+      if (isPremiumVideoFinished(statusData)) {
+        return;
+      }
+
+      if (attempts < maxAttempts) {
+        setTimeout(checkStatus, 5000);
+      }
+    } catch (error) {
+      const errorData = {
+        status: "error_consultando_estado",
+        statusUrl,
+        error: String(error)
+      };
+
+      const merged = mergePremiumResponses(initialData, errorData);
+      const updatedPremiumHtml = buildPremiumTotalHtml(merged);
+
+      messageRecord.premiumHtml = updatedPremiumHtml;
+      messageDiv.innerHTML = buildBotContentHtml(messageRecord.text, messageRecord.imageUrl, messageRecord.audioUrl) + updatedPremiumHtml;
+      saveState();
+    }
+  }
+
+  setTimeout(checkStatus, 5000);
+}
+
+
+
 /* ---------- UI ---------- */
 
 function scrollMessagesToBottom() {
@@ -565,17 +751,24 @@ async function sendMessage() {
     const finalText = data.reply || "No se pudo obtener respuesta.";
     const imageUrl = data.image_url || null;
     const audioUrl = data.audio_url || null;
-    const premiumHtml = buildPremiumExtrasHtml(data);
+    const premiumHtml = buildPremiumTotalHtml(data);
 
     messageDiv.innerHTML = buildBotContentHtml(finalText, imageUrl, audioUrl) + premiumHtml;
 
-    chat.messages.push({
+    const botMessageRecord = {
       text: finalText,
       sender: "bot",
       imageUrl,
       audioUrl,
       premiumHtml
-    });
+    };
+
+    chat.messages.push(botMessageRecord);
+
+    const premiumStatusUrl = getPremiumVideoStatusUrl(data);
+    if (premiumStatusUrl) {
+      startPremiumVideoPolling(premiumStatusUrl, messageDiv, chat, botMessageRecord, data);
+    }
 
     if (audioUrl) {
       try {
