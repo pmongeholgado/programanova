@@ -597,7 +597,9 @@ def extract_resource_urls_from_text(text: str) -> list[str]:
 
     for pattern in patterns:
         for item in re.findall(pattern, raw):
-            clean = item.strip().rstrip(".,;")
+            clean = item.strip().rstrip(".,;`")
+            if clean.endswith("/") and not clean.startswith("/video-status/"):
+                continue
             if clean:
                 found.add(clean)
 
