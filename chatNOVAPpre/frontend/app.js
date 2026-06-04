@@ -332,7 +332,7 @@ function proxyPremiumBridgeUrl(url) {
     clean.startsWith("https://genesios.online/static/") ||
     clean.startsWith("https://genesios.online/download/")
   ) {
-    return `${API_BASE}/stream/genesios-premium-bridge?url=${encodeURIComponent(clean)}`;
+    return `${API_BASE_URL}/genesios-premium-bridge?url=${encodeURIComponent(clean)}`;
   }
 
   return clean;
