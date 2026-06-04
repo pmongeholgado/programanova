@@ -208,6 +208,89 @@ function collectPremiumUrlsFromAny(value, set) {
   }
 }
 
+
+function buildPremiumTableHtml(data) {
+  const table =
+    data?.table ||
+    data?.tabla ||
+    data?.raw?.table ||
+    data?.raw?.tabla ||
+    data?.raw?.result?.table ||
+    data?.raw?.result?.tabla ||
+    data?.raw?.datos?.table ||
+    data?.raw?.datos?.tabla;
+
+  if (!table) return "";
+
+  let headers = [];
+  let rows = [];
+
+  if (Array.isArray(table)) {
+    rows = table;
+  } else if (Array.isArray(table.rows)) {
+    rows = table.rows;
+    headers = table.headers || table.columns || table.cabeceras || [];
+  } else if (Array.isArray(table.filas)) {
+    rows = table.filas;
+    headers = table.headers || table.columns || table.cabeceras || [];
+  } else if (Array.isArray(table.data)) {
+    rows = table.data;
+    headers = table.headers || table.columns || table.cabeceras || [];
+  } else {
+    rows = [table];
+  }
+
+  if (!rows.length) return "";
+
+  if (!headers.length && rows.length && typeof rows[0] === "object" && !Array.isArray(rows[0])) {
+    headers = Object.keys(rows[0]);
+  }
+
+  if (!headers.length && Array.isArray(rows[0])) {
+    headers = rows[0].map((_, index) => `Columna ${index + 1}`);
+  }
+
+  const headHtml = headers.length
+    ? `<thead><tr>${headers.map(h => `<th style="padding:8px;border:1px solid rgba(255,255,255,0.22);text-align:left;">${escapePremiumHtml(h)}</th>`).join("")}</tr></thead>`
+    : "";
+
+  const bodyHtml = rows.map(row => {
+    const cells = Array.isArray(row)
+      ? row
+      : headers.map(h => row?.[h] ?? row?.[String(h)] ?? "");
+    return `<tr>${cells.map(c => `<td style="padding:8px;border:1px solid rgba(255,255,255,0.16);vertical-align:top;">${escapePremiumHtml(typeof c === "object" ? safePremiumJson(c) : c)}</td>`).join("")}</tr>`;
+  }).join("");
+
+  return `
+    <div class="premium-table" style="margin-top:16px;overflow:auto;">
+      <strong>Tabla premium GENESIOS:</strong>
+      <table style="width:100%;border-collapse:collapse;margin-top:10px;font-size:0.95em;">
+        ${headHtml}
+        <tbody>${bodyHtml}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function collectDirectPremiumFields(data, urls) {
+  collectPremiumUrlsFromAny(data?.download_url, urls);
+  collectPremiumUrlsFromAny(data?.downloadUrl, urls);
+  collectPremiumUrlsFromAny(data?.zip_url, urls);
+  collectPremiumUrlsFromAny(data?.zipUrl, urls);
+  collectPremiumUrlsFromAny(data?.video_url, urls);
+  collectPremiumUrlsFromAny(data?.videoUrl, urls);
+  collectPremiumUrlsFromAny(data?.mp4_url, urls);
+  collectPremiumUrlsFromAny(data?.mp4Url, urls);
+  collectPremiumUrlsFromAny(data?.resources, urls);
+  collectPremiumUrlsFromAny(data?.recursos, urls);
+  collectPremiumUrlsFromAny(data?.raw?.download_url, urls);
+  collectPremiumUrlsFromAny(data?.raw?.zip_url, urls);
+  collectPremiumUrlsFromAny(data?.raw?.video_url, urls);
+  collectPremiumUrlsFromAny(data?.raw?.resources, urls);
+  collectPremiumUrlsFromAny(data?.raw?.recursos, urls);
+}
+
+
 function buildPremiumExtrasHtml(data) {
   const urls = new Set();
 
@@ -219,6 +302,7 @@ function buildPremiumExtrasHtml(data) {
   collectPremiumUrlsFromAny(data.audio_url, urls);
   collectPremiumUrlsFromAny(data.chart_url, urls);
   collectPremiumUrlsFromAny(data.visual, urls);
+  collectDirectPremiumFields(data, urls);
   collectPremiumUrlsFromAny(data.reply, urls);
   collectPremiumUrlsFromAny(data.raw, urls);
 
@@ -229,6 +313,8 @@ function buildPremiumExtrasHtml(data) {
   const mp4 = list.find(u => String(u).toLowerCase().includes(".mp4"));
 
   let html = "";
+
+  html += buildPremiumTableHtml(data);
 
   if (mp4) {
     html += `

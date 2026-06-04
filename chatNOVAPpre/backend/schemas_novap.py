@@ -1,6 +1,6 @@
 # backend/schemas_novap.py
 
-from typing import Optional
+from typing import Optional, Any
 
 from pydantic import BaseModel, Field
 
@@ -34,6 +34,11 @@ class ChatResponse(BaseModel):
     videoStatusUrl: str | None = None
     resource_urls: list[str] | None = None
     resourceUrls: list[str] | None = None
+    download_url: str | None = None
+    zip_url: str | None = None
+    video_url: str | None = None
+    resources: list[dict[str, Any]] | None = None
+    table: dict[str, Any] | None = None
     raw: dict | None = None
 
 # <<< NOVA&PABLO CHATNOVAP PREMIUM TOTAL OVERRIDE

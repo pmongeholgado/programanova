@@ -115,6 +115,11 @@ def normalize_reply_result(result):
             videoStatusUrl=video_status_url,
             resource_urls=resource_urls,
             resourceUrls=resource_urls,
+            download_url=result.get("download_url"),
+            zip_url=result.get("zip_url"),
+            video_url=result.get("video_url"),
+            resources=result.get("resources") or [],
+            table=result.get("table"),
             raw=result.get("raw") or result,
         )
 
