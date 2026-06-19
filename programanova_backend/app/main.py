@@ -13,6 +13,7 @@ from pydantic import BaseModel
 
 from openai import OpenAI
 import stripe
+from app.ia_assets import generate_image_data_url
 
 # ============================
 # CONFIGURACIÓN OPENAI
@@ -80,7 +81,15 @@ class GenerarResponse(BaseModel):
     mensaje: str
     estructura: list
 
+class ImagenRequest(BaseModel):
+    titulo: Optional[str] = "Imagen Nova"
+    prompt: str
 
+
+class ImagenResponse(BaseModel):
+    ok: bool
+    dataUrl: str
+    
 # ============================
 # ENDPOINT RAÍZ
 # ============================
@@ -196,7 +205,26 @@ Devuelve una lista numerada con:
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+# ============================
+# GENERADOR DE IMÁGENES (IA REAL)
+# ============================
 
+@app.post("/generar-imagen", response_model=ImagenResponse)
+def generar_imagen(data: ImagenRequest):
+    try:
+        prompt_final = (data.prompt or "").strip()
+        if not prompt_final:
+            prompt_final = f"Imagen profesional sobre: {data.titulo}"
+
+        data_url = generate_image_data_url(prompt_final)
+
+        return ImagenResponse(
+            ok=True,
+            dataUrl=data_url
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 # ============================
 # STRIPE CHECKOUT PORTERO
 # ============================
