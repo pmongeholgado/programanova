@@ -578,11 +578,69 @@ select option:checked {
         if (Array.isArray(data.estructura)) {
           estructuraGenerada = data.estructura;
 
-          // Estructura limpia directa del backend
-          ultimaEstructuraLimpia = data.estructura.map(x => ({
-            title: (x.title || x.titulo || "").trim(),
-            bullets: Array.isArray(x.bullets) ? x.bullets : []
-          }));
+          // NOVA&PABLO · FIX ÚNICO · convertir estructura IA en diapositivas reales
+function convertirEstructuraIAEnSlides(raw, maxSlides) {
+  if (!Array.isArray(raw)) return [];
+
+  const limite = parseInt(maxSlides || "10", 10) || 10;
+
+  // Si el backend ya devuelve objetos, respetamos el formato correcto
+  if (raw.some(x => x && typeof x === "object" && !Array.isArray(x))) {
+    return raw.map(x => ({
+      title: String(x.title || x.titulo || x.diapositiva || "").trim(),
+      bullets: Array.isArray(x.bullets)
+        ? x.bullets
+        : String(x.contenido || x.texto || "")
+            .split(/\r?\n/)
+            .map(l => l.trim())
+            .filter(Boolean)
+    })).filter(s => s.title).slice(0, limite);
+  }
+
+  // Si el backend devuelve texto plano/líneas, lo convertimos a diapositivas
+  const lineas = raw
+    .map(x => String(x || "").trim())
+    .filter(Boolean)
+    .filter(l => !/^aquí tienes/i.test(l))
+    .filter(l => !/^estructura de la presentación/i.test(l));
+
+  const slides = [];
+  let actual = null;
+
+  function cerrarActual() {
+    if (actual && actual.title) {
+      actual.bullets = (actual.bullets || []).filter(Boolean);
+      slides.push(actual);
+    }
+    actual = null;
+  }
+
+  for (const linea of lineas) {
+    const m =
+      linea.match(/^(?:diapositiva|slide)\s*\d+\s*[:.)-]\s*(.+)$/i) ||
+      linea.match(/^\d+\s*[.)-]\s*(.+)$/);
+
+    if (m) {
+      cerrarActual();
+      actual = { title: m[1].trim(), bullets: [] };
+      continue;
+    }
+
+    if (!actual) {
+      actual = { title: linea.replace(/^[-•*]\s*/, "").trim(), bullets: [] };
+      continue;
+    }
+
+    const bullet = linea.replace(/^[-•*]\s*/, "").trim();
+    if (bullet && bullet !== actual.title) actual.bullets.push(bullet);
+  }
+
+  cerrarActual();
+
+  return slides.filter(s => s.title).slice(0, limite);
+}
+
+ultimaEstructuraLimpia = convertirEstructuraIAEnSlides(data.estructura, numDiapositivas);
 
           planPro = aplicarReglasPro(construirPlanPro(ultimaEstructuraLimpia));
           renderPlanPro(planPro);
