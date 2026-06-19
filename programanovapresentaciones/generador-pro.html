@@ -432,7 +432,7 @@ select option:checked {
         }
 
         if (slide.needs.image) {
-          slide.imagePrompt = `Imagen corporativa profesional, moderna, sin texto, sobre: ${slide.title}. Estilo limpio y alta calidad.`;
+          slide.imagePrompt = `Imagen profesional, moderna, limpia y premium, acorde al contenido de la diapositiva: ${slide.title}. Sin texto dentro de la imagen, sin letras, sin palabras, sin títulos, sin carteles, sin tipografía, sin logotipos con texto. Solo elementos visuales, personas, objetos, tecnología, espacios o conceptos visuales relacionados con el tema. Alta calidad.`;
         }
 
         return slide;
@@ -584,54 +584,87 @@ function convertirEstructuraIAEnSlides(raw, maxSlides) {
 
   const limite = parseInt(maxSlides || "10", 10) || 10;
 
+  function limpiarTituloNova(texto) {
+    return String(texto || "")
+      .replace(/\*\*/g, "")
+      .replace(/^[-•*]\s*/, "")
+      .replace(/^t[ií]tulo\s+de\s+la\s+diapositiva\s*[:.)-]\s*/i, "")
+      .replace(/^t[ií]tulo\s*[:.)-]\s*/i, "")
+      .replace(/^diapositiva\s*\d+\s*[:.)-]\s*/i, "")
+      .replace(/^slide\s*\d+\s*[:.)-]\s*/i, "")
+      .trim();
+  }
+
+  function limpiarBulletNova(texto) {
+    return String(texto || "")
+      .replace(/\*\*/g, "")
+      .replace(/^[-•*]\s*/, "")
+      .replace(/^idea\s+principal\s*[:.)-]\s*/i, "")
+      .replace(/^contenido\s*[:.)-]\s*/i, "")
+      .trim();
+  }
+
   // Si el backend ya devuelve objetos, respetamos el formato correcto
   if (raw.some(x => x && typeof x === "object" && !Array.isArray(x))) {
     return raw.map(x => ({
-      title: String(x.title || x.titulo || x.diapositiva || "").trim(),
+      title: limpiarTituloNova(x.title || x.titulo || x.diapositiva || ""),
       bullets: Array.isArray(x.bullets)
-        ? x.bullets
+        ? x.bullets.map(limpiarBulletNova).filter(Boolean)
         : String(x.contenido || x.texto || "")
             .split(/\r?\n/)
-            .map(l => l.trim())
+            .map(limpiarBulletNova)
             .filter(Boolean)
     })).filter(s => s.title).slice(0, limite);
   }
 
-  // Si el backend devuelve texto plano/líneas, lo convertimos a diapositivas
+  // Si el backend devuelve texto plano/líneas, lo convertimos a diapositivas limpias
   const lineas = raw
-    .map(x => String(x || "").trim())
+    .map(x => String(x || "").replace(/\*\*/g, "").trim())
     .filter(Boolean)
+    .filter(l => !/^claro[, ]+aquí tienes/i.test(l))
     .filter(l => !/^aquí tienes/i.test(l))
-    .filter(l => !/^estructura de la presentación/i.test(l));
+    .filter(l => !/^estructura de la presentación/i.test(l))
+    .filter(l => !/^presentación titulada/i.test(l));
 
   const slides = [];
   let actual = null;
 
   function cerrarActual() {
     if (actual && actual.title) {
-      actual.bullets = (actual.bullets || []).filter(Boolean);
+      actual.title = limpiarTituloNova(actual.title);
+      actual.bullets = (actual.bullets || [])
+        .map(limpiarBulletNova)
+        .filter(Boolean)
+        .filter(b => b.toLowerCase() !== actual.title.toLowerCase());
+
+      if (!actual.bullets.length) {
+        actual.bullets = ["Contenido principal desarrollado a partir del tema solicitado."];
+      }
+
       slides.push(actual);
     }
     actual = null;
   }
 
-  for (const linea of lineas) {
+  for (const lineaOriginal of lineas) {
+    const linea = String(lineaOriginal || "").trim();
+
     const m =
       linea.match(/^(?:diapositiva|slide)\s*\d+\s*[:.)-]\s*(.+)$/i) ||
       linea.match(/^\d+\s*[.)-]\s*(.+)$/);
 
     if (m) {
       cerrarActual();
-      actual = { title: m[1].trim(), bullets: [] };
+      actual = { title: limpiarTituloNova(m[1]), bullets: [] };
       continue;
     }
 
     if (!actual) {
-      actual = { title: linea.replace(/^[-•*]\s*/, "").trim(), bullets: [] };
+      actual = { title: limpiarTituloNova(linea), bullets: [] };
       continue;
     }
 
-    const bullet = linea.replace(/^[-•*]\s*/, "").trim();
+    const bullet = limpiarBulletNova(linea);
     if (bullet && bullet !== actual.title) actual.bullets.push(bullet);
   }
 
