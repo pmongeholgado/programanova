@@ -661,7 +661,6 @@ function configurarPorteroGeneral() {
   document.getElementById("porteroTitulo").innerText = "PORTERO DEL EDIFICIO NOVA";
 
   document.getElementById("porteroEmailBox").style.display = "block";
-  document.getElementById("porteroEmailBox").style.display = "none";
   
   document.getElementById("porteroTexto1").innerHTML =
     'Bienvenido al <strong>Edificio Nova</strong>. Para acceder debes activar el acceso inicial.';
@@ -702,6 +701,7 @@ function configurarPorteroGeneral() {
 
 function configurarPorteroGenerador() {
 
+  document.getElementById("porteroEmailBox").style.display = "none";
   document.getElementById("porteroTitulo").innerText = "PORTERO DEL EDIFICIO · GENERADOR IA";
 
   document.getElementById("porteroTexto1").innerHTML =
