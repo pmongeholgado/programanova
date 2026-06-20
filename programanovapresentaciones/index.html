@@ -687,8 +687,8 @@ function configurarPorteroGeneral() {
 
   };
 
-  document.getElementById("porteroBtnAcceso").innerText = "Activar acceso 0,90 €";
-  document.getElementById("porteroBtnAcceso").onclick = activarAcceso;
+  document.getElementById("porteroBtnAcceso").innerText = "Pagar acceso 0,90 €";
+  document.getElementById("porteroBtnAcceso").onclick = pagarAccesoNova;
 
   document.getElementById("porteroBtnCerrar").innerText = "Volver";
   document.getElementById("porteroBtnCerrar").onclick = cerrarPortero;
@@ -861,6 +861,40 @@ document.querySelectorAll('a[href*="chatnovap"]').forEach(function(link){
 
 const params = new URLSearchParams(window.location.search);
 
+if (params.get("acceso") === "ok") {
+  const email = (params.get("email") || localStorage.getItem("porteroEmailNova") || "").trim().toLowerCase();
+
+  if (email) {
+    fetch("https://programanovabackend-production-a426.up.railway.app/activar-portero-codigo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.ok) {
+        localStorage.setItem("accesoInicialNova", "activo");
+        localStorage.setItem("porteroCodigoNova", data.codigo);
+
+        alert(
+          "Acceso activado correctamente.\n\n" +
+          "Tu código de entrada es:\n" +
+          data.codigo +
+          "\n\nGuárdalo para entrar desde otro dispositivo con tu email."
+        );
+
+        window.history.replaceState({}, document.title, window.location.pathname);
+      } else {
+        alert("Pago realizado, pero no se pudo activar el código.");
+      }
+    })
+    .catch(err => {
+      console.error("Error activando portero:", err);
+      alert("Pago realizado, pero hubo un error activando el acceso.");
+    });
+  }
+}
+    
 if (params.get("generador") === "ok") {
 
   localStorage.setItem("accesoGeneradorNova", "activo");
@@ -877,14 +911,26 @@ if (params.get("chatnovap") === "ok") {
 }
     
 async function pagarAccesoNova() {
+  const emailInput = document.getElementById("porteroEmail");
+  const email = emailInput ? emailInput.value.trim().toLowerCase() : "";
+
+  if (!email || !email.includes("@") || !email.includes(".")) {
+    alert("Introduce un email válido para recibir tu código de entrada.");
+    return;
+  }
+
+  localStorage.setItem("porteroEmailNova", email);
+
   try {
     const res = await fetch(
       "https://programanovabackend-production-a426.up.railway.app/crear-checkout-portero",
       {
-        method: "POST"
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
       }
     );
-    
+
     const data = await res.json();
 
     if (data.url) {
@@ -898,7 +944,42 @@ async function pagarAccesoNova() {
     alert("Error conectando con el backend.");
   }
 }
+    
+async function validarCodigoPortero() {
+  const email = (document.getElementById("porteroEmail")?.value || "").trim().toLowerCase();
+  const codigo = (document.getElementById("porteroCodigo")?.value || "").trim().toUpperCase();
 
+  if (!email || !codigo) {
+    alert("Introduce email y código de entrada.");
+    return;
+  }
+
+  try {
+    const res = await fetch(
+      "https://programanovabackend-production-a426.up.railway.app/validar-portero-codigo",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, codigo })
+      }
+    );
+
+    const data = await res.json();
+
+    if (data.ok) {
+      localStorage.setItem("accesoInicialNova", "activo");
+      cerrarPortero();
+      alert("Acceso principal validado correctamente.");
+    } else {
+      alert(data.mensaje || "No se pudo validar el acceso.");
+    }
+
+  } catch (err) {
+    console.error(err);
+    alert("Error validando el acceso.");
+  }
+}
+    
 /* =========================
    CONTADOR SENCILLO PORTADA
    ========================= */
@@ -946,7 +1027,29 @@ document.addEventListener("DOMContentLoaded", cargarContadorNovaPortada);
       ✔ 5 usos del chat con IA de la portada<br>
       ✔ Acceso a información de los botones
     </p>
+    
+    <div id="porteroEmailBox" style="margin-bottom:18px;">
+  <input
+    id="porteroEmail"
+    type="email"
+    placeholder="Introduce tu email"
+    style="width:100%; padding:11px 12px; border-radius:8px; border:1px solid #64748b; background:#020617; color:white; margin-bottom:10px;"
+  />
 
+  <input
+    id="porteroCodigo"
+    type="text"
+    placeholder="Código de entrada si ya lo tienes"
+    style="width:100%; padding:11px 12px; border-radius:8px; border:1px solid #64748b; background:#020617; color:white; margin-bottom:10px;"
+  />
+
+  <button
+    onclick="validarCodigoPortero()"
+    style="width:100%; padding:10px 14px; border-radius:8px; border:none; background:#16a34a; color:white; cursor:pointer; font-weight:600;"
+  >
+    Entrar con email + código
+  </button>
+</div>
     <p id="porteroPrecio" style="font-weight:600; margin-bottom:26px;">
       Acceso inicial: 0,90 €
     </p>
