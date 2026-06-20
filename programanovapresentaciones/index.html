@@ -275,6 +275,23 @@
         </a>
         
       </div>
+
+<div id="contadorNovaPortada" style="
+  margin-top:18px;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 14px;
+  border-radius:999px;
+  background:rgba(15,23,42,0.72);
+  border:1px solid rgba(125,211,252,0.45);
+  color:#dbeafe;
+  font-size:13px;
+  font-weight:600;
+">
+  👥 Visitas a Programa Nova: <span id="contadorNovaNumero">...</span>
+</div>
+      
     </section>
 
     <section class="content">
@@ -881,6 +898,35 @@ async function pagarAccesoNova() {
     alert("Error conectando con el backend.");
   }
 }
+
+/* =========================
+   CONTADOR SENCILLO PORTADA
+   ========================= */
+
+async function cargarContadorNovaPortada() {
+  const numero = document.getElementById("contadorNovaNumero");
+  if (!numero) return;
+
+  try {
+    const res = await fetch("https://programanovabackend-production-a426.up.railway.app/contador-visita", {
+      method: "POST"
+    });
+
+    const data = await res.json();
+
+    if (data && data.ok && typeof data.visitas !== "undefined") {
+      numero.innerText = data.visitas;
+    } else {
+      numero.innerText = "—";
+    }
+  } catch (e) {
+    console.warn("Contador Nova no disponible:", e);
+    numero.innerText = "—";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", cargarContadorNovaPortada);
+    
 </script>
 <!-- PORTERO PLATAFORMA NOVA -->
 
