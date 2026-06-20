@@ -50,6 +50,35 @@ def guardar_contador_visitas(total):
         json.dumps({"visitas": total}, ensure_ascii=False),
         encoding="utf-8"
     )
+
+# ============================
+# PORTERO 0,90 · EMAIL + CÓDIGO
+# ============================
+
+PORTERO_FILE = Path("portero_accesos_nova.json")
+
+
+def leer_portero_accesos():
+    try:
+        if PORTERO_FILE.exists():
+            return json.loads(PORTERO_FILE.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    return {}
+
+
+def guardar_portero_accesos(data):
+    PORTERO_FILE.write_text(
+        json.dumps(data, ensure_ascii=False, indent=2),
+        encoding="utf-8"
+    )
+
+
+def generar_codigo_portero(email):
+    base = email.split("@")[0].upper().replace(".", "").replace("-", "")
+    base = "".join(ch for ch in base if ch.isalnum())[:6] or "NOVA"
+    marca = datetime.utcnow().strftime("%H%M%S")
+    return f"NOVA-{base}-{marca}"
 # ============================
 # CONFIGURACIÓN STRIPE
 # ============================
@@ -114,6 +143,13 @@ class ImagenRequest(BaseModel):
 class ImagenResponse(BaseModel):
     ok: bool
     dataUrl: str
+class PorteroCheckoutRequest(BaseModel):
+    email: str
+
+
+class PorteroValidarRequest(BaseModel):
+    email: str
+    codigo: str    
     
 # ============================
 # ENDPOINT RAÍZ
@@ -268,14 +304,31 @@ def generar_imagen(data: ImagenRequest):
 # ============================
 
 @app.post("/crear-checkout-portero")
-def crear_checkout_portero():
+def crear_checkout_portero(data: PorteroCheckoutRequest):
 
     if not STRIPE_SECRET_KEY:
         raise HTTPException(status_code=500, detail="Stripe no configurado")
 
+    email = (data.email or "").strip().lower()
+
+    if "@" not in email or "." not in email:
+        raise HTTPException(status_code=400, detail="Email no válido")
+
     try:
+        codigo = generar_codigo_portero(email)
+
+        accesos = leer_portero_accesos()
+        accesos[email] = {
+            "email": email,
+            "codigo": codigo,
+            "activo": False,
+            "creado": datetime.utcnow().isoformat()
+        }
+        guardar_portero_accesos(accesos)
+
         session = stripe.checkout.Session.create(
             payment_method_types=["card"],
+            customer_email=email,
             line_items=[
                 {
                     "price_data": {
@@ -289,7 +342,7 @@ def crear_checkout_portero():
                 }
             ],
             mode="payment",
-            success_url="https://programanovapresentaciones.com?acceso=ok",
+            success_url=f"https://programanovapresentaciones.com?acceso=ok&email={email}",
             cancel_url="https://programanovapresentaciones.com?acceso=cancel",
         )
 
@@ -297,4 +350,46 @@ def crear_checkout_portero():
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/activar-portero-codigo")
+def activar_portero_codigo(data: PorteroCheckoutRequest):
+    email = (data.email or "").strip().lower()
+    accesos = leer_portero_accesos()
+
+    if email not in accesos:
+        raise HTTPException(status_code=404, detail="Acceso no encontrado")
+
+    accesos[email]["activo"] = True
+    accesos[email]["activado"] = datetime.utcnow().isoformat()
+    guardar_portero_accesos(accesos)
+
+    return {
+        "ok": True,
+        "email": email,
+        "codigo": accesos[email]["codigo"]
+    }
+
+
+@app.post("/validar-portero-codigo")
+def validar_portero_codigo(data: PorteroValidarRequest):
+    email = (data.email or "").strip().lower()
+    codigo = (data.codigo or "").strip().upper()
+
+    accesos = leer_portero_accesos()
+    acceso = accesos.get(email)
+
+    if not acceso:
+        return {"ok": False, "mensaje": "Acceso no encontrado"}
+
+    if not acceso.get("activo"):
+        return {"ok": False, "mensaje": "Acceso no activado"}
+
+    if acceso.get("codigo", "").upper() != codigo:
+        return {"ok": False, "mensaje": "Código incorrecto"}
+
+    return {
+        "ok": True,
+        "mensaje": "Acceso principal validado"
+    }
    
