@@ -4,6 +4,8 @@
 # ============================
 
 import os
+import json
+from pathlib import Path
 from datetime import datetime
 from typing import Optional
 
@@ -25,6 +27,29 @@ if not OPENAI_API_KEY:
     raise RuntimeError("❌ OPENAI_API_KEY no está definida en las variables de entorno")
 
 client = OpenAI(api_key=OPENAI_API_KEY)
+
+# ============================
+# CONTADOR SENCILLO PORTADA
+# ============================
+
+VISITAS_FILE = Path("contador_visitas_nova.json")
+
+
+def leer_contador_visitas():
+    try:
+        if VISITAS_FILE.exists():
+            data = json.loads(VISITAS_FILE.read_text(encoding="utf-8"))
+            return int(data.get("visitas", 0))
+    except Exception:
+        return 0
+    return 0
+
+
+def guardar_contador_visitas(total):
+    VISITAS_FILE.write_text(
+        json.dumps({"visitas": total}, ensure_ascii=False),
+        encoding="utf-8"
+    )
 # ============================
 # CONFIGURACIÓN STRIPE
 # ============================
@@ -102,6 +127,19 @@ def root():
         "hora": datetime.utcnow().isoformat()
     }
 
+# ============================
+# CONTADOR VISITAS PORTADA
+# ============================
+
+@app.post("/contador-visita")
+def contador_visita():
+    total = leer_contador_visitas() + 1
+    guardar_contador_visitas(total)
+
+    return {
+        "ok": True,
+        "visitas": total
+    }
 
 # ============================
 # CHAT CON IA (REAL)
